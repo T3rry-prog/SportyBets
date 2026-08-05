@@ -373,7 +373,7 @@ async function loadMatchSelector() {
 
 // ── SELECT MATCH ──
 async function selectMatch(id, home, away, hs, as_, status, minute, isFeatured) {
-  selectedMatch = { id, home, away, hs, as_, status, minute };
+  selectedMatch = { id, home, away, hs, as_: parseInt(as_), status, minute };
   document.getElementById('feat-editor').style.display = 'block';
   document.getElementById('feat-events-section').style.display = 'block';
   document.getElementById('feat-editor-title').textContent = `${home} vs ${away}`;
@@ -401,8 +401,8 @@ async function selectMatch(id, home, away, hs, as_, status, minute, isFeatured) 
 }
 
 // ── ADJUST SCORE ──
-function adjustScore(team, delta) {
-  if(!selectedMatch) return;
+async function adjustScore(team, delta) {
+  if(!selectedMatch) { showToast('Select a match first','err'); return; }
   if(team==='home') {
     selectedMatch.hs = Math.max(0, (selectedMatch.hs||0) + delta);
     document.getElementById('fe-home-score').textContent = selectedMatch.hs;
@@ -410,6 +410,18 @@ function adjustScore(team, delta) {
     selectedMatch.as_ = Math.max(0, (selectedMatch.as_||0) + delta);
     document.getElementById('fe-away-score').textContent = selectedMatch.as_;
   }
+  // Save instantly to Supabase
+  try {
+    const minute = parseInt(document.getElementById('fe-minute').value)||selectedMatch.minute||0;
+    await db.from('matches').update({
+      home_score: selectedMatch.hs,
+      away_score: selectedMatch.as_,
+      status: currentStatus,
+      minute: minute,
+    }).eq('id', selectedMatch.id);
+    showToast(`✅ ${team==='home'?selectedMatch.home:selectedMatch.away} ${delta>0?'+1 goal':'goal removed'}!`,'ok');
+    loadMatchSelector();
+  } catch(e) { showToast('Save error: '+e.message,'err'); }
 }
 
 // ── SET STATUS ──
