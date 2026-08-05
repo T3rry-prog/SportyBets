@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>SportyBet Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;font-size:13px;min-height:100vh;max-width:480px;margin:0 auto;}
+:root{--red:#C41E1E;--red2:#A01010;--gold:#F0C040;--border:#3D2020;--surface:#1A0A0A;--card:#241010;--muted:#9A7070;--green:#27AE60;--r:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* LOGIN */
+.login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:28px 22px;width:100%;}
+.login-logo{font-size:22px;font-weight:800;color:var(--gold);text-align:center;margin-bottom:4px;}
+.login-sub{text-align:center;font-size:11px;color:var(--muted);margin-bottom:22px;}
+.login-badge{background:rgba(196,30,30,.15);border:1px solid var(--red);border-radius:var(--r);padding:8px 13px;text-align:center;font-size:11px;font-weight:700;color:var(--red);margin-bottom:18px;}
+
+/* ADMIN WRAPPER */
+.admin-wrap{display:none;padding-bottom:40px;}
+
+/* HEADER */
+.adm-hdr{background:#110505;border-bottom:3px solid var(--red);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.adm-logo{font-size:16px;font-weight:800;color:var(--gold);}
+.adm-badge{font-size:10px;font-weight:700;background:var(--red);color:#fff;padding:2px 8px;border-radius:20px;}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--r);padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;}
+
+/* SECTIONS */
+.adm-section{margin:12px 10px 0;}
+.adm-section-hd{background:var(--red);border-radius:var(--r) var(--r) 0 0;padding:10px 14px;font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.6px;}
+.adm-panel{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:14px;}
+
+/* MATCH SELECTOR */
+.match-pill{padding:9px 13px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:6px;transition:all .1s;display:flex;align-items:center;justify-content:space-between;}
+.match-pill:last-child{margin-bottom:0;}
+.match-pill.active{border-color:var(--gold);color:var(--gold);background:rgba(240,192,64,.05);}
+.match-pill .mp-score{font-size:14px;font-weight:800;color:var(--red);}
+.mp-live{display:inline-flex;align-items:center;gap:3px;background:var(--red);color:#fff;font-size:8px;font-weight:800;padding:2px 6px;border-radius:10px;}
+.mp-dot{width:4px;height:4px;background:#fff;border-radius:50%;animation:blink 1s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* FORM FIELDS */
+.f-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block;}
+.f-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:14px;color:#F5EEEE;outline:none;transition:border-color .15s;}
+.f-input:focus{border-color:var(--gold);}
+.f-select{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:13px;color:#F5EEEE;outline:none;}
+.f-row{margin-bottom:12px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+/* SCORE DISPLAY */
+.score-display{display:flex;align-items:center;justify-content:center;gap:20px;padding:16px 0;margin-bottom:14px;}
+.score-team{text-align:center;}
+.score-name{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px;}
+.score-num{font-size:40px;font-weight:800;color:var(--gold);line-height:1;}
+.score-vs{font-size:14px;font-weight:600;color:var(--muted);}
+.score-controls{display:flex;gap:6px;margin-top:8px;}
+.sc-btn{flex:1;padding:8px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);font-size:16px;font-weight:800;color:#fff;cursor:pointer;text-align:center;}
+.sc-btn.plus{border-color:var(--green);color:var(--green);}
+.sc-btn.minus{border-color:var(--red);color:var(--red);}
+
+/* EVENTS */
+.event-type-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+.ev-type-btn{padding:10px 8px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;text-align:center;transition:all .1s;}
+.ev-type-btn.sel{border-color:var(--gold);color:var(--gold);background:rgba(240,192,64,.07);}
+.ev-type-btn.goal-s{border-color:#27AE60;color:#27AE60;}
+.ev-type-btn.red-s{border-color:var(--red);color:var(--red);}
+.ev-type-btn.yellow-s{border-color:var(--gold);color:var(--gold);}
+.ev-type-btn.corner-s{border-color:#2F80ED;color:#2F80ED;}
+
+/* EVENTS LOG */
+.ev-log{margin-top:12px;border-top:1px solid var(--border);padding-top:10px;}
+.ev-log-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.ev-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.ev-item:last-child{border-bottom:none;}
+.ev-min{font-size:11px;font-weight:800;color:var(--gold);width:28px;flex-shrink:0;}
+.ev-ico{font-size:14px;flex-shrink:0;}
+.ev-txt{flex:1;color:var(--muted);}
+.ev-del{color:var(--red);cursor:pointer;font-size:14px;padding:2px 4px;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:13px;border-radius:var(--r);background:var(--red);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;transition:opacity .1s;}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-gold{width:100%;padding:12px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:8px;}
+.btn-outline{width:100%;padding:11px;border-radius:var(--r);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;}
+.btn-sm{padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;border:none;}
+
+/* STATUS */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A1A1A;border:1px solid var(--border);border-radius:var(--r);padding:11px 18px;font-size:13px;font-weight:600;z-index:999;white-space:nowrap;display:none;}
+.toast.show{display:block;animation:fadeUp .2s ease;}
+.toast.ok{border-color:var(--green);color:var(--green);}
+.toast.err{border-color:var(--red);color:var(--red);}
+
+/* LOADING */
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;}
+
+/* TABS */
+.adm-tabs{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:10px 10px 0;}
+.adm-tab{flex:1;text-align:center;padding:10px 6px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);transition:all .1s;}
+.adm-tab:last-child{border-right:none;}
+.adm-tab.active{background:var(--red);color:#fff;}
+
+/* INPUT */
+.field-inline{display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--card);}
+.field-inline:focus-within{border-color:var(--gold);}
+.fi-pre{padding:10px 12px;font-size:12px;font-weight:700;color:var(--muted);border-right:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
+.fi-in{flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;color:#F5EEEE;outline:none;}
+
+/* STATUS TOGGLE */
+.status-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;}
+.status-btn{padding:9px 6px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;text-align:center;}
+.status-btn.sel-upcoming{border-color:var(--gold);color:var(--gold);}
+.status-btn.sel-live{border-color:var(--red);color:var(--red);}
+.status-btn.sel-finished{border-color:var(--green);color:var(--green);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">SportyBet</div>
+    <div class="login-sub">Admin Dashboard · Restricted Access</div>
+    <div class="login-badge">🔐 Authorised Personnel Only</div>
+    <div class="f-row"><label class="f-label">Admin Password</label><input class="f-input" type="password" id="admin-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()"/></div>
+    <button class="btn-primary" onclick="doAdminLogin()">Access Dashboard →</button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Default password: <strong style="color:var(--gold);">sportybet2025</strong></div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="admin-wrap" id="admin-wrap">
+
+  <div class="adm-hdr">
+    <div>
+      <div class="adm-logo">⚙️ SportyBet Admin</div>
+    </div>
+    <div style="display:flex;gap:7px;align-items:center;">
+      <span class="adm-badge">LIVE EDITOR</span>
+      <button class="btn-logout" onclick="adminLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="adm-tabs">
+    <div class="adm-tab active" onclick="setAdmTab(this,'tab-featured')">⭐ Featured</div>
+    <div class="adm-tab" onclick="setAdmTab(this,'tab-matches')">📋 Matches</div>
+    <div class="adm-tab" onclick="setAdmTab(this,'tab-events')">⚡ Events</div>
+  </div>
+
+  <!-- TAB: FEATURED MATCH EDITOR -->
+  <div id="tab-featured" style="animation:fadeUp .2s ease;">
+
+    <div class="adm-section">
+      <div class="adm-section-hd">Select Featured Match</div>
+      <div class="adm-panel">
+        <div id="match-selector">
+          <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="adm-section" id="feat-editor" style="display:none;">
+      <div class="adm-section-hd" id="feat-editor-title">Edit Featured Match</div>
+      <div class="adm-panel">
+
+        <!-- SCORE -->
+        <div class="score-display">
+          <div class="score-team">
+            <div class="score-name" id="fe-home-name">Home</div>
+            <div class="score-num" id="fe-home-score">0</div>
+            <div class="score-controls">
+              <div class="sc-btn plus" onclick="adjustScore('home',1)">+</div>
+              <div class="sc-btn minus" onclick="adjustScore('home',-1)">−</div>
+            </div>
+          </div>
+          <div class="score-vs">VS</div>
+          <div class="score-team">
+            <div class="score-name" id="fe-away-name">Away</div>
+            <div class="score-num" id="fe-away-score">0</div>
+            <div class="score-controls">
+              <div class="sc-btn plus" onclick="adjustScore('away',1)">+</div>
+              <div class="sc-btn minus" onclick="adjustScore('away',-1)">−</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATUS + MINUTE -->
+        <div class="f-row">
+          <label class="f-label">Match Status</label>
+          <div class="status-row">
+            <div class="status-btn sel-upcoming" id="sb-upcoming" onclick="setStatus('upcoming')">Upcoming</div>
+            <div class="status-btn" id="sb-live" onclick="setStatus('live')">🔴 Live</div>
+            <div class="status-btn" id="sb-finished" onclick="setStatus('finished')">✅ Finished</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Minute</label>
+            <input class="f-input" type="number" id="fe-minute" placeholder="e.g. 45" min="0" max="120"/>
+          </div>
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Half</label>
+            <select class="f-select" id="fe-half">
+              <option value="1">1st Half</option>
+              <option value="2">2nd Half</option>
+              <option value="ET">Extra Time</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <button class="btn-primary" onclick="saveScore()">💾 Save Score & Status</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="adm-section" id="feat-events-section" style="display:none;">
+      <div class="adm-section-hd">Add Live Event</div>
+      <div class="adm-panel">
+
+        <div class="f-row">
+          <label class="f-label">Event Type</label>
+          <div class="event-type-row">
+            <div class="ev-type-btn" id="et-goal" onclick="setEvType('goal',this)">⚽ Goal</div>
+            <div class="ev-type-btn" id="et-red_card" onclick="setEvType('red_card',this)">🟥 Red Card</div>
+            <div class="ev-type-btn" id="et-yellow_card" onclick="setEvType('yellow_card',this)">🟨 Yellow Card</div>
+            <div class="ev-type-btn" id="et-corner" onclick="setEvType('corner',this)">🚩 Corner</div>
+            <div class="ev-type-btn" id="et-penalty" onclick="setEvType('penalty',this)">🎯 Penalty</div>
+            <div class="ev-type-btn" id="et-substitution" onclick="setEvType('substitution',this)">🔄 Sub</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Team</label>
+            <select class="f-select" id="ev-team">
+              <option value="home">Home</option>
+              <option value="away">Away</option>
+            </select>
+          </div>
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Minute</label>
+            <input class="f-input" type="number" id="ev-minute" placeholder="e.g. 45" min="1" max="120"/>
+          </div>
+        </div>
+
+        <div class="f-row" style="margin-top:10px;">
+          <label class="f-label">Player Name (optional)</label>
+          <input class="f-input" type="text" id="ev-player" placeholder="e.g. Haaland"/>
+        </div>
+
+        <button class="btn-gold" onclick="addEvent()">⚡ Add Event</button>
+
+        <!-- EVENTS LOG -->
+        <div class="ev-log">
+          <div class="ev-log-title">Match Events</div>
+          <div id="events-log-list">
+            <div style="font-size:11px;color:var(--muted);text-align:center;padding:10px 0;">No events yet</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: ALL MATCHES -->
+  <div id="tab-matches" style="display:none;animation:fadeUp .2s ease;">
+    <div class="adm-section">
+      <div class="adm-section-hd">All Matches</div>
+      <div class="adm-panel" id="all-matches-list">
+        <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: QUICK EVENTS -->
+  <div id="tab-events" style="display:none;animation:fadeUp .2s ease;">
+    <div class="adm-section">
+      <div class="adm-section-hd">Quick Event Entry</div>
+      <div class="adm-panel">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Add events to any match quickly. Select match first from Featured tab, then use this for rapid entry during live games.</div>
+        <div class="f-row">
+          <label class="f-label">Currently Editing</label>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;font-size:12px;font-weight:700;color:var(--gold);" id="quick-match-name">No match selected — go to Featured tab first</div>
+        </div>
+        <div class="three-col" style="margin-bottom:10px;">
+          <button class="btn-sm" style="background:rgba(39,174,96,.15);border:1.5px solid #27AE60;color:#27AE60;" onclick="quickEvent('goal')">⚽ Goal</button>
+          <button class="btn-sm" style="background:rgba(196,30,30,.15);border:1.5px solid var(--red);color:var(--red);" onclick="quickEvent('red_card')">🟥 Red</button>
+          <button class="btn-sm" style="background:rgba(240,192,64,.1);border:1.5px solid var(--gold);color:var(--gold);" onclick="quickEvent('yellow_card')">🟨 Yellow</button>
+        </div>
+        <div class="three-col">
+          <button class="btn-sm" style="background:rgba(47,128,237,.1);border:1.5px solid #2F80ED;color:#2F80ED;" onclick="quickEvent('corner')">🚩 Corner</button>
+          <button class="btn-sm" style="background:rgba(240,192,64,.1);border:1.5px solid var(--gold);color:var(--gold);" onclick="quickEvent('penalty')">🎯 Penalty</button>
+          <button class="btn-sm" style="background:rgba(255,255,255,.05);border:1.5px solid var(--border);color:var(--muted);" onclick="quickEvent('substitution')">🔄 Sub</button>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <select class="f-select" id="quick-team" style="flex:1;"><option value="home">Home Team</option><option value="away">Away Team</option></select>
+          <input class="f-input" type="number" id="quick-minute" placeholder="Min" style="width:70px;flex-shrink:0;" min="1" max="120"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+const ADMIN_PASSWORD = 'sportybet2025';
+let selectedMatch = null;
+let selectedEvType = null;
+let currentStatus = 'upcoming';
+
+// ── LOGIN ──
+function doAdminLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  if(pass === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-wrap').style.display = 'block';
+    loadMatchSelector();
+    loadAllMatches();
+  } else {
+    document.getElementById('admin-pass').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('admin-pass').style.borderColor = '', 1000);
+  }
+}
+document.getElementById('admin-pass').addEventListener('keydown', e => { if(e.key === 'Enter') doAdminLogin(); });
+function adminLogout() { document.getElementById('login-screen').style.display='flex'; document.getElementById('admin-wrap').style.display='none'; }
+
+// ── TABS ──
+function setAdmTab(el, tab) {
+  document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['tab-featured','tab-matches','tab-events'].forEach(t => document.getElementById(t).style.display = 'none');
+  document.getElementById(tab).style.display = 'block';
+  if(tab === 'tab-matches') loadAllMatches();
+}
+
+// ── LOAD MATCH SELECTOR ──
+async function loadMatchSelector() {
+  try {
+    const { data, error } = await db.from('matches').select('*').order('kick_off',{ascending:true});
+    if(error) throw error;
+    const el = document.getElementById('match-selector');
+    if(!data||!data.length) { el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px;">No matches found. Add matches in Supabase first.</div>'; return; }
+    el.innerHTML = data.map(m => `
+      <div class="match-pill ${m.is_featured?'active':''}" onclick="selectMatch('${m.id}','${m.home_team}','${m.away_team}',${m.home_score},${m.away_score},'${m.status}',${m.minute||0},${m.is_featured})">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:${m.is_featured?'var(--gold)':'inherit'};">${m.home_team} vs ${m.away_team}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;">${m.league} ${m.is_featured?'· ⭐ FEATURED':''}</div>
+        </div>
+        <div style="text-align:right;">
+          ${m.status==='live'?`<div class="mp-live"><div class="mp-dot"></div>${m.minute||0}'</div>`:''}
+          <div class="mp-score">${m.home_score}–${m.away_score}</div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { showToast('Error loading matches: '+e.message,'err'); }
+}
+
+// ── SELECT MATCH ──
+async function selectMatch(id, home, away, hs, as_, status, minute, isFeatured) {
+  selectedMatch = { id, home, away, hs, as_, status, minute };
+  document.getElementById('feat-editor').style.display = 'block';
+  document.getElementById('feat-events-section').style.display = 'block';
+  document.getElementById('feat-editor-title').textContent = `${home} vs ${away}`;
+  document.getElementById('fe-home-name').textContent = home;
+  document.getElementById('fe-away-name').textContent = away;
+  document.getElementById('fe-home-score').textContent = hs;
+  document.getElementById('fe-away-score').textContent = as_;
+  document.getElementById('fe-minute').value = minute;
+  document.getElementById('quick-match-name').textContent = `${home} vs ${away}`;
+  setStatus(status);
+  // highlight selected pill
+  document.querySelectorAll('.match-pill').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  // Load events for this match
+  await loadEvents(id);
+  // set featured
+  if(!isFeatured) {
+    if(confirm(`Set ${home} vs ${away} as the Featured Match?`)) {
+      await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
+      await db.from('matches').update({is_featured:true}).eq('id',id);
+      showToast('✅ Featured match updated!','ok');
+      loadMatchSelector();
+    }
+  }
+}
+
+// ── ADJUST SCORE ──
+function adjustScore(team, delta) {
+  if(!selectedMatch) return;
+  if(team==='home') {
+    selectedMatch.hs = Math.max(0, (selectedMatch.hs||0) + delta);
+    document.getElementById('fe-home-score').textContent = selectedMatch.hs;
+  } else {
+    selectedMatch.as_ = Math.max(0, (selectedMatch.as_||0) + delta);
+    document.getElementById('fe-away-score').textContent = selectedMatch.as_;
+  }
+}
+
+// ── SET STATUS ──
+function setStatus(s) {
+  currentStatus = s;
+  ['upcoming','live','finished'].forEach(x => {
+    const el = document.getElementById('sb-'+x);
+    if(el) el.className = 'status-btn' + (x===s?' sel-'+x:'');
+  });
+}
+
+// ── SAVE SCORE ──
+async function saveScore() {
+  if(!selectedMatch) { showToast('Select a match first','err'); return; }
+  const minute = parseInt(document.getElementById('fe-minute').value)||0;
+  try {
+    const { error } = await db.from('matches').update({
+      home_score: selectedMatch.hs,
+      away_score: selectedMatch.as_,
+      status: currentStatus,
+      minute: minute,
+    }).eq('id', selectedMatch.id);
+    if(error) throw error;
+    selectedMatch.minute = minute;
+    selectedMatch.status = currentStatus;
+    showToast('✅ Score saved!','ok');
+    loadMatchSelector();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+// ── EVENT TYPE ──
+function setEvType(type, el) {
+  selectedEvType = type;
+  document.querySelectorAll('.ev-type-btn').forEach(b => { b.classList.remove('sel','goal-s','red-s','yellow-s','corner-s'); });
+  const cls = {goal:'goal-s',red_card:'red-s',yellow_card:'yellow-s',corner:'corner-s'}[type]||'sel';
+  el.classList.add(cls);
+}
+
+// ── ADD EVENT ──
+async function addEvent() {
+  if(!selectedMatch) { showToast('Select a match first','err'); return; }
+  if(!selectedEvType) { showToast('Select event type','err'); return; }
+  const team = document.getElementById('ev-team').value;
+  const minute = parseInt(document.getElementById('ev-minute').value)||selectedMatch.minute||0;
+  const player = document.getElementById('ev-player').value.trim();
+  try {
+    const { error } = await db.from('live_events').insert({
+      match_id: selectedMatch.id,
+      event_type: selectedEvType,
+      team,
+      minute,
+      player_name: player||null,
+    });
+    if(error) throw error;
+    showToast('⚡ Event added!','ok');
+    document.getElementById('ev-player').value = '';
+    await loadEvents(selectedMatch.id);
+    // Also auto-update match minute
+    await db.from('matches').update({minute}).eq('id',selectedMatch.id);
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+// ── QUICK EVENT ──
+async function quickEvent(type) {
+  if(!selectedMatch) { showToast('Select a match from Featured tab first','err'); return; }
+  const team = document.getElementById('quick-team').value;
+  const minute = parseInt(document.getElementById('quick-minute').value)||selectedMatch.minute||0;
+  const icons = {goal:'⚽',red_card:'🟥',yellow_card:'🟨',corner:'🚩',penalty:'🎯',substitution:'🔄'};
+  try {
+    await db.from('live_events').insert({match_id:selectedMatch.id,event_type:type,team,minute,player_name:null});
+    await db.from('matches').update({minute}).eq('id',selectedMatch.id);
+    showToast(`${icons[type]||'⚡'} Event added — ${minute}'`,'ok');
+    await loadEvents(selectedMatch.id);
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+// ── LOAD EVENTS ──
+async function loadEvents(matchId) {
+  try {
+    const { data } = await db.from('live_events').select('*').eq('match_id',matchId).order('minute',{ascending:true});
+    const el = document.getElementById('events-log-list');
+    if(!el) return;
+    if(!data||!data.length) { el.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px 0;">No events yet</div>'; return; }
+    const icons = {goal:'⚽',red_card:'🟥',yellow_card:'🟨',corner:'🚩',penalty:'🎯',substitution:'🔄',foul:'⚠️'};
+    el.innerHTML = data.map(e => `
+      <div class="ev-item">
+        <div class="ev-min">${e.minute||0}'</div>
+        <div class="ev-ico">${icons[e.event_type]||'⚡'}</div>
+        <div class="ev-txt">${e.event_type.replace(/_/g,' ')} · ${e.team}${e.player_name?' · '+e.player_name:''}</div>
+        <div class="ev-del" onclick="deleteEvent('${e.id}')">✕</div>
+      </div>
+    `).join('');
+  } catch(e) { console.error('Events load error:', e); }
+}
+
+// ── DELETE EVENT ──
+async function deleteEvent(id) {
+  if(!confirm('Delete this event?')) return;
+  try {
+    await db.from('live_events').delete().eq('id',id);
+    if(selectedMatch) await loadEvents(selectedMatch.id);
+    showToast('Event deleted','ok');
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+// ── ALL MATCHES ──
+async function loadAllMatches() {
+  try {
+    const { data } = await db.from('matches').select('*').order('kick_off',{ascending:true});
+    const el = document.getElementById('all-matches-list');
+    if(!el) return;
+    if(!data||!data.length) { el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px;">No matches found.</div>'; return; }
+    el.innerHTML = data.map(m => `
+      <div style="padding:11px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:12px;font-weight:700;">${m.home_team} vs ${m.away_team}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;">${m.league} · ${m.status.toUpperCase()} ${m.is_featured?'· ⭐':''}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:800;color:var(--gold);">${m.home_score}–${m.away_score}</div>
+          <button style="margin-top:4px;background:var(--red2);border:none;border-radius:3px;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;cursor:pointer;" onclick="setFeatured('${m.id}')">⭐ Feature</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error('All matches error:', e); }
+}
+
+// ── SET FEATURED ──
+async function setFeatured(id) {
+  try {
+    await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
+    await db.from('matches').update({is_featured:true}).eq('id',id);
+    showToast('⭐ Featured match set!','ok');
+    loadAllMatches();
+    loadMatchSelector();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+// ── TOAST ──
+function showToast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
