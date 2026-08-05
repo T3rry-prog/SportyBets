@@ -1269,7 +1269,9 @@ async function doRegister() {
 
     const userId = data?.user?.id;
     if(userId) {
-      await db.from('users').insert({
+      // Small delay to ensure auth session is fully established
+      await new Promise(r => setTimeout(r, 500));
+      const {error:insertErr} = await db.from('users').insert({
         id:userId,
         phone:fmt,
         full_name:first+' '+last,
@@ -1278,6 +1280,7 @@ async function doRegister() {
         vip_tier:'Bronze',
         promo_code:document.getElementById('rpromo')?.value||null,
       });
+      if(insertErr) console.error('Profile insert error:',insertErr);
     }
     btn.textContent='Create Account →'; btn.disabled=false;
     currentUser=data.user; await loadProfile(); updateAuthUI();
