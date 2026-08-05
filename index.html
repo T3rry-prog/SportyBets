@@ -1252,8 +1252,8 @@ async function doRegister() {
   const cleanPhone=phone.replace(/^0/,'').replace(/\s/g,'');
   const fmt=dialCode+cleanPhone;
 
-  // Use phone as unique identifier — no email confirmation needed
-  const email=`u${fmt}@sb-users.com`;
+  // Use phone as unique identifier
+  const email=`${fmt}@sportybet.app`;
 
   try {
     // Check if phone already registered
@@ -1305,7 +1305,7 @@ async function doLogin() {
     const {data:udata} = await db.from('users').select('phone').like('phone','%'+cleanPhone).maybeSingle();
     if(udata?.phone) fmt=udata.phone;
   } catch(_){}
-  const email=`u${fmt}@sb-users.com`;
+  const email=`${fmt}@sportybet.app`;
   try {
     const {data,error} = await db.auth.signInWithPassword({email,password:pass});
     if(error) throw error;
