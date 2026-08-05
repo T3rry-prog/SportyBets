@@ -31,6 +31,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes winnersScroll{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
 
 /* HEADER */
 .header{background:var(--header);border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;position:sticky;top:0;z-index:200;}
@@ -454,6 +455,18 @@ button,input,select{font-family:'Inter',sans-serif;}
     <span class="bs-text">🎁 100% bonus up to KSh 5,000 on first deposit</span>
     <button class="bs-btn" onclick="goPage('register')">Claim Now</button>
   </div>
+  <!-- GRAND PRIZE WINNERS -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
+    <div style="background:var(--red);padding:7px 13px;display:flex;align-items:center;gap:7px;">
+      <span style="font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;">🏆 Grand Prize Winners</span>
+    </div>
+    <div style="height:220px;overflow:hidden;position:relative;">
+      <div id="winners-scroll" style="position:absolute;width:100%;animation:winnersScroll 18s linear infinite;">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </div>
+
   <div id="featured-section"></div>
   <div class="jackpot">
     <div><div class="jp-tag">🏆 Midweek Jackpot</div><div class="jp-amt">KSh 12,500,000</div><div class="jp-sub">Predict 17 matches · Closes Wed 21:00 EAT</div></div>
@@ -676,9 +689,25 @@ button,input,select{font-family:'Inter',sans-serif;}
     <div class="field"><label>First Name</label><input class="input-solo" type="text" id="rn1" placeholder="John"/></div>
     <div class="field"><label>Last Name</label><input class="input-solo" type="text" id="rn2" placeholder="Doe"/></div>
   </div>
-  <div class="field"><label>M-Pesa Phone</label><div class="field-wrap"><div class="field-pre">🇰🇪 +254</div><input type="tel" id="rp" placeholder="7XX XXX XXX"/></div></div>
+  <div class="field">
+    <label>Country</label>
+    <div class="field-wrap">
+      <select id="rcountry" style="background:transparent;color:var(--text);" onchange="updateDialCode(this)">
+        <option value="" data-code="" data-flag="">🌍 Select Country</option>
+        <option value="KE" data-code="+254" data-flag="🇰🇪">🇰🇪 Kenya</option>
+        <option value="NG" data-code="+234" data-flag="🇳🇬">🇳🇬 Nigeria</option>
+        <option value="GH" data-code="+233" data-flag="🇬🇭">🇬🇭 Ghana</option>
+        <option value="TZ" data-code="+255" data-flag="🇹🇿">🇹🇿 Tanzania</option>
+        <option value="UG" data-code="+256" data-flag="🇺🇬">🇺🇬 Uganda</option>
+        <option value="ZA" data-code="+27" data-flag="🇿🇦">🇿🇦 South Africa</option>
+        <option value="GB" data-code="+44" data-flag="🇬🇧">🇬🇧 United Kingdom</option>
+        <option value="US" data-code="+1" data-flag="🇺🇸">🇺🇸 United States</option>
+        <option value="OTHER" data-code="+" data-flag="🌍">🌍 Other</option>
+      </select>
+    </div>
+  </div>
+  <div class="field"><label>Phone Number</label><div class="field-wrap"><div class="field-pre" id="dial-code-display">🌍 +</div><input type="tel" id="rp" placeholder="Enter phone number"/></div></div>
   <div class="field"><label>Password</label><div class="pass-wrap"><input type="password" id="rpass" placeholder="Min. 6 characters" oninput="updateStrength()"/><div class="pass-eye" onclick="toggleEye('rpass',this)">👁️</div></div><div class="strength-bar" id="s-bar"></div><div class="strength-hint" id="s-hint"></div></div>
-  <div class="field"><label>Country</label><div class="field-wrap"><select id="rcountry" style="background:transparent;color:var(--text);"><option>🌍 Select Country</option><option>🇰🇪 Kenya</option><option>🇳🇬 Nigeria</option><option>🇬🇭 Ghana</option><option>🇹🇿 Tanzania</option><option>🇺🇬 Uganda</option><option>🇿🇦 South Africa</option><option>🇬🇧 United Kingdom</option><option>🇺🇸 United States</option><option>🌍 Other</option></select></div></div>
   <div class="field"><label>Promo Code (optional)</label><input class="input-solo" type="text" id="rpromo" placeholder="e.g. XOVA100"/></div>
   <div class="check-label"><input type="checkbox" id="rterms"/><span>I am 18+ and agree to the <span style="color:var(--gold);cursor:pointer;" onclick="goPage('terms')">Terms</span> and <span style="color:var(--gold);cursor:pointer;" onclick="goPage('privacy')">Privacy Policy</span></span></div>
   <button class="btn-auth" id="reg-btn" onclick="doRegister()">Create Account →</button>
@@ -790,7 +819,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 <div id="page-faq" class="page">
 <div class="faq-wrap">
   <div style="font-size:18px;font-weight:800;margin-bottom:12px;">Frequently Asked Questions</div>
-  <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I deposit money?<span class="faq-ico">+</span></div><div class="faq-a">Go to Wallet → Deposit, enter your amount, and tap Pay via M-Pesa. An STK push is sent to your phone. Enter your PIN and funds credited instantly. Minimum KSh 50.</div></div>
+  <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I deposit money?<span class="faq-ico">+</span></div><div class="faq-a">Go to Wallet → Deposit, enter your amount, and tap Pay via M-Pesa. An STK push is sent to your phone. Enter your PIN and funds credited instantly. Minimum KSh 100.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How quickly can I withdraw?<span class="faq-ico">+</span></div><div class="faq-a">Withdrawals processed within 30 seconds, 24/7. No fees from SportyBet.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is Cash Out?<span class="faq-ico">+</span></div><div class="faq-a">Cash Out lets you settle a live bet before the match ends. Lock in profit before the final whistle.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What markets are available?<span class="faq-ico">+</span></div><div class="faq-a">1X2, Double Chance, BTTS, Over/Under (1.5/2.5/3.5), Half Time Result, Draw No Bet, Correct Score, Total Goals Bands, Asian Handicap. Use Bet Builder to combine any markets.</div></div>
@@ -857,7 +886,7 @@ button,input,select{font-family:'Inter',sans-serif;}
   <div style="font-size:18px;font-weight:800;margin-bottom:4px;">How SportyBet Works</div>
   <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Get started in under 2 minutes.</div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">1</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">📱 Register for free</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Create account with your phone number. 60 seconds. No documents needed.</div></div></div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">2</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">💰 Deposit via M-Pesa</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">From KSh 50. STK push to phone — enter PIN. Balance credited instantly.</div></div></div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">2</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">💰 Deposit via M-Pesa</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">From KSh 100. STK push to phone — enter PIN. Balance credited instantly.</div></div></div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">3</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">⚽ Pick your bets</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Tap odds to select. Choose from all markets — 1X2, BTTS, O/U, Correct Score and more.</div></div></div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">4</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">💰 Cash out anytime</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Cash out before the final whistle and lock in profit on live bets.</div></div></div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:16px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">5</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">🎉 Win and withdraw</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Balance updates instantly. Withdraw to M-Pesa in under 30 seconds, any time.</div></div></div>
@@ -1009,6 +1038,7 @@ function renderFeatured(m) {
   const mkts12 = (m.markets||[]).filter(mk=>mk.market_type==='1x2');
   const h=mkts12.find(mk=>mk.selection==='Home Win'), d=mkts12.find(mk=>mk.selection==='Draw'), a=mkts12.find(mk=>mk.selection==='Away Win');
   const mn = `${m.home_team} vs ${m.away_team}`;
+  const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
   document.getElementById('featured-section').innerHTML = `
     <div class="featured-wrap">
       <div class="feat-badge">⭐ Featured</div>
@@ -1022,12 +1052,16 @@ function renderFeatured(m) {
         <div class="feat-meta">${m.league_flag||''} ${m.league}</div>
         ${chips?`<div class="feat-events">${chips}</div>`:''}
       </div>
-      <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,.1);">
+      <div style="padding:10px 14px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <div style="font-size:10px;color:rgba(255,255,255,.4);">Min bet: <strong style="color:var(--gold);">KSh 500</strong></div>
+        <button onclick="shareFeatured('${shareUrl}','${mn}')" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer;">🔗 Share Match</button>
+      </div>
+      <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);">
         <div class="odds-mkt-lbl" style="color:rgba(255,255,255,.4);">Match Result (1X2)</div>
         <div class="odds-3" style="margin-top:5px;">
-          ${h?`<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl">1 Home</div><div class="odd-val">${h.odds}</div></div>`:''}
-          ${d?`<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl">X Draw</div><div class="odd-val">${d.odds}</div></div>`:''}
-          ${a?`<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl">2 Away</div><div class="odd-val">${a.odds}</div></div>`:''}
+          ${h?`<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl">1 Home</div><div class="odd-val">${h.odds}</div></div>`:''}
+          ${d?`<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl">X Draw</div><div class="odd-val">${d.odds}</div></div>`:''}
+          ${a?`<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl">2 Away</div><div class="odd-val">${a.odds}</div></div>`:''}
         </div>
       </div>
     </div>`;
@@ -1402,12 +1436,99 @@ function bbAddToSlip() {
   renderSlip(); goPage('slip');
 }
 
+// ── DIAL CODE ──
+function updateDialCode(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  const code = opt.getAttribute('data-code') || '+';
+  const flag = opt.getAttribute('data-flag') || '🌍';
+  const display = document.getElementById('dial-code-display');
+  if(display) display.textContent = flag + ' ' + code;
+  // update placeholder
+  const phoneInput = document.getElementById('rp');
+  if(phoneInput) {
+    const placeholders = {'+254':'7XX XXX XXX','+234':'8XX XXX XXXX','+233':'5X XXX XXXX','+255':'7XX XXX XXX','+256':'7XX XXX XXX','+27':'8X XXX XXXX','+44':'7XXX XXXXXX','+1':'(XXX) XXX-XXXX'};
+    phoneInput.placeholder = placeholders[code] || 'Enter phone number';
+  }
+}
+
+// ── GRAND PRIZE WINNERS ──
+const WINNERS_DATA = [
+  {amount:'KES 43,092.00', ago:'1 min ago', masked:'*********0'},
+  {amount:'KES 135,000.00', ago:'3 min ago', masked:'*********5'},
+  {amount:'KES 45,675.00', ago:'20 min ago', masked:'*********8'},
+  {amount:'KES 83,119.40', ago:'28 min ago', masked:'*********5'},
+  {amount:'KES 38,950.00', ago:'32 min ago', masked:'*********1'},
+  {amount:'KES 261,183.90', ago:'56 min ago', masked:'*********0'},
+  {amount:'KES 38,250.00', ago:'57 min ago', masked:'*********2'},
+  {amount:'KES 86,919.61', ago:'1 hr ago', masked:'*********8'},
+  {amount:'KES 418,039.69', ago:'1 hr ago', masked:'*********1'},
+  {amount:'KES 48,750.00', ago:'1 hr ago', masked:'*********7'},
+];
+
+function renderWinners() {
+  const el = document.getElementById('winners-scroll');
+  if(!el) return;
+  // duplicate list for seamless loop
+  const rows = [...WINNERS_DATA, ...WINNERS_DATA].map(w => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🏆</div>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:var(--gold);">${w.amount}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px;">Sports Betting · ${w.masked}</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);text-align:right;flex-shrink:0;">${w.ago}</div>
+    </div>
+  `).join('');
+  el.innerHTML = rows;
+}
+
+// ── SHARE FEATURED MATCH ──
+function shareFeatured(url, matchName) {
+  if(navigator.share) {
+    navigator.share({ title: matchName + ' — SportyBet', text: 'Bet on ' + matchName + ' now!', url });
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      alert('Link copied! Share it with anyone to open this match directly.');
+    });
+  }
+}
+
+// ── FEATURED ODD (min 500) ──
+function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
+  addOdd(btn, matchId, marketType, matchName, selection, val);
+  // Set minimum stake to 500 for featured match bets
+  const stakeEl = document.getElementById('stake');
+  if(stakeEl && parseFloat(stakeEl.value) < 500) {
+    stakeEl.value = 500;
+    calcPayout();
+  }
+  // Show slip with note
+  goPage('slip');
+}
+
+// ── DEEP LINK: open specific match from URL ──
+function checkDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const matchId = params.get('match');
+  if(matchId && allMatches.length) {
+    const m = allMatches.find(x => x.id === matchId);
+    if(m) {
+      // Scroll to featured or highlight that match
+      document.getElementById('featured-section')?.scrollIntoView({behavior:'smooth'});
+    }
+  }
+}
+
 // ── INIT ──
 async function init() {
   const {data:{session}} = await db.auth.getSession();
   if(session?.user){currentUser=session.user;await loadProfile();updateAuthUI();}
   await loadMatches();
   subscribeRealtime();
+  renderWinners();
+  checkDeepLink();
 }
 init();
 </script>
