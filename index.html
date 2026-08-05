@@ -551,11 +551,11 @@ button,input,select{font-family:'Inter',sans-serif;}
         <div class="stake-pre">KSh</div>
         <input class="stake-in" id="stake" type="number" value="100" min="50" oninput="calcPayout()"/>
       </div>
-      <div class="qs-row">
-        <div class="qs" onclick="setStake(50)">KSh 50</div>
-        <div class="qs" onclick="setStake(100)">KSh 100</div>
-        <div class="qs" onclick="setStake(500)">KSh 500</div>
-        <div class="qs" onclick="setStake(1000)">KSh 1K</div>
+      <div class="qs-row" id="qs-row">
+        <div class="qs" onclick="setStake(100)">100</div>
+        <div class="qs" onclick="setStake(500)">500</div>
+        <div class="qs" onclick="setStake(1000)">1K</div>
+        <div class="qs" onclick="setStake(2000)">2K</div>
       </div>
       <div class="pw-row"><span class="pw-l">Potential Win</span><span class="pw-v" id="pot-win">KSh 100</span></div>
       <button class="btn-place" onclick="validateAndPlaceBet()">Place Bet via M-Pesa 📱</button>
@@ -1169,8 +1169,16 @@ function addOdd(btn, matchId, marketType, matchName, selection, val) {
   slip = slip.filter(s=>!(s.matchId===matchId&&s.marketType===marketType));
   document.querySelectorAll(`[onclick*="'${matchId}','${marketType}'"]`).forEach(b=>b.classList.remove('sel'));
   if(!was) { btn.classList.add('sel'); slip.push({id:Date.now(),matchId,marketType,matchName,selection,val:parseFloat(val)}); }
-  // Reset featured flag if any non-featured bets in slip
-  if(!slip.some(s=>s.matchId==='featured')) isFeaturedBet=false;
+  if(!slip.some(s=>s.matchId==='featured')) {
+    isFeaturedBet=false;
+    // Reset stake buttons to normal
+    const qsRow = document.getElementById('qs-row');
+    if(qsRow) qsRow.innerHTML = `
+      <div class="qs" onclick="setStake(100)">100</div>
+      <div class="qs" onclick="setStake(500)">500</div>
+      <div class="qs" onclick="setStake(1000)">1K</div>
+      <div class="qs" onclick="setStake(2000)">2K</div>`;
+  }
   renderSlip();
 }
 
@@ -1322,15 +1330,35 @@ async function doLogout() { await db.auth.signOut(); currentUser=null; currentPr
 
 async function loadProfile() {
   if(!currentUser) return;
-  try { const {data}=await db.from('users').select('*').eq('id',currentUser.id).single(); currentProfile=data; updateProfileUI(); }
-  catch(e){ console.error('Profile error:',e); }
+  try {
+    const {data, error} = await db.from('users').select('*').eq('id',currentUser.id).single();
+    if(error) throw error;
+    currentProfile = data;
+    updateProfileUI();
+    updateAuthUI();
+  } catch(e) {
+    console.error('Profile error:',e);
+    // Profile may not exist yet — try once more after delay
+    setTimeout(async () => {
+      try {
+        const {data} = await db.from('users').select('*').eq('id',currentUser.id).single();
+        if(data) { currentProfile=data; updateProfileUI(); updateAuthUI(); }
+      } catch(_) {}
+    }, 2000);
+  }
 }
 
 function updateAuthUI() {
   const g=document.getElementById('hdr-guest'), u=document.getElementById('hdr-user');
   if(!g||!u) return;
-  if(currentUser&&currentProfile) { g.style.display='none'; u.style.display='flex'; setEl('hdr-bal',parseFloat(currentProfile.balance||0).toLocaleString()); }
-  else { g.style.display='flex'; u.style.display='none'; }
+  if(currentUser) {
+    g.style.display='none';
+    u.style.display='flex';
+    if(currentProfile) setEl('hdr-bal', parseFloat(currentProfile.balance||0).toLocaleString());
+  } else {
+    g.style.display='flex';
+    u.style.display='none';
+  }
 }
 
 function updateProfileUI() {
@@ -1597,7 +1625,6 @@ function showShareToast() {
 
 // ── FEATURED ODD (min 500, requires auth) ──
 function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
-  // Must be logged in to bet on featured match
   if(!currentUser) {
     sessionStorage.setItem('pendingFeaturedBet', JSON.stringify({matchId,marketType,matchName,selection,val}));
     sessionStorage.setItem('afterAuthPage', 'home');
@@ -1609,6 +1636,13 @@ function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
   // Force min 500 stake
   const stakeEl = document.getElementById('stake');
   if(stakeEl && parseFloat(stakeEl.value) < 500) { stakeEl.value = 500; calcPayout(); }
+  // Update quick stake buttons for featured (min 500)
+  const qsRow = document.getElementById('qs-row');
+  if(qsRow) qsRow.innerHTML = `
+    <div class="qs" onclick="setStake(500)">500</div>
+    <div class="qs" onclick="setStake(1000)">1K</div>
+    <div class="qs" onclick="setStake(2000)">2K</div>
+    <div class="qs" onclick="setStake(5000)">5K</div>`;
   goPage('slip');
 }
 
