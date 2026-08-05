@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sync Odds — SportyBet Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;padding:20px;max-width:480px;margin:0 auto;}
+h1{color:#F0C040;font-size:18px;margin-bottom:6px;}
+p{font-size:12px;color:#9A7070;margin-bottom:20px;line-height:1.6;}
+.btn{width:100%;padding:14px;border-radius:6px;background:#C41E1E;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-secondary{background:transparent;border:1.5px solid #3D2020;color:#9A7070;font-size:13px;font-weight:600;}
+.log{background:#1A0A0A;border:1px solid #3D2020;border-radius:6px;padding:14px;font-size:11px;color:#9A7070;line-height:1.8;min-height:120px;margin-top:14px;white-space:pre-wrap;font-family:monospace;}
+.ok{color:#27AE60;}
+.err{color:#E8002D;}
+.sports{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;}
+.sport-chip{background:#1A0A0A;border:1.5px solid #3D2020;border-radius:6px;padding:8px 10px;font-size:11px;font-weight:600;color:#9A7070;cursor:pointer;text-align:center;}
+.sport-chip.on{border-color:#F0C040;color:#F0C040;}
+</style>
+</head>
+<body>
+<h1>⚡ Odds Sync</h1>
+<p>Fetch real matches and odds from The Odds API and push to your Supabase database.</p>
+
+<div class="sports" id="sport-list">
+  <div class="sport-chip on" data-sport="soccer_epl">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</div>
+  <div class="sport-chip on" data-sport="soccer_spain_la_liga">🇪🇸 La Liga</div>
+  <div class="sport-chip on" data-sport="soccer_italy_serie_a">🇮🇹 Serie A</div>
+  <div class="sport-chip on" data-sport="soccer_germany_bundesliga">🇩🇪 Bundesliga</div>
+  <div class="sport-chip on" data-sport="soccer_france_ligue_one">🇫🇷 Ligue 1</div>
+  <div class="sport-chip on" data-sport="soccer_uefa_champs_league">🏆 Champions League</div>
+</div>
+
+<button class="btn" id="sync-btn" onclick="runSync()">🔄 Sync Matches & Odds Now</button>
+<button class="btn btn-secondary" onclick="window.location.href='/admin'">← Back to Admin</button>
+
+<div class="log" id="log">Ready to sync. Press the button above.</div>
+
+<script>
+const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
+const ODDS_KEY = 'a1d378665ea009cd834637a70f80c1e6';
+const ODDS_BASE = 'https://api.the-odds-api.com/v4';
+
+// Toggle sport chips
+document.querySelectorAll('.sport-chip').forEach(c => {
+  c.onclick = () => c.classList.toggle('on');
+});
+
+function log(msg, type='') {
+  const el = document.getElementById('log');
+  const line = document.createElement('div');
+  line.className = type;
+  line.textContent = msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('log').innerHTML = '';
+}
+
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+async function runSync() {
+  const btn = document.getElementById('sync-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Syncing...';
+  clearLog();
+
+  const selectedSports = [...document.querySelectorAll('.sport-chip.on')].map(c => ({
+    key: c.getAttribute('data-sport'),
+    league: c.textContent.trim().split(' ').slice(1).join(' '),
+    flag: c.textContent.trim().split(' ')[0],
+  }));
+
+  if(!selectedSports.length) {
+    log('No sports selected.', 'err');
+    btn.disabled = false;
+    btn.textContent = '🔄 Sync Matches & Odds Now';
+    return;
+  }
+
+  log(`Starting sync for ${selectedSports.length} leagues...`);
+  let totalNew = 0, totalUpdated = 0, totalOdds = 0;
+
+  for(const sport of selectedSports) {
+    log(`\nFetching ${sport.league}...`);
+    try {
+      const url = `${ODDS_BASE}/sports/${sport.key}/odds/?apiKey=${ODDS_KEY}&regions=eu,uk&markets=h2h,totals&oddsFormat=decimal&dateFormat=iso`;
+      const res = await fetch(url);
+
+      if(res.status === 401) { log('❌ Invalid API key', 'err'); break; }
+      if(res.status === 422) { log(`⚠️ ${sport.league} not available on free plan`, 'err'); continue; }
+      if(!res.ok) { log(`❌ Error ${res.status} for ${sport.league}`, 'err'); continue; }
+
+      // Check remaining requests
+      const remaining = res.headers.get('x-requests-remaining');
+      const used = res.headers.get('x-requests-used');
+      if(remaining) log(`API requests remaining: ${remaining} (used: ${used})`);
+
+      const games = await res.json();
+      if(!games.length) { log(`No games found for ${sport.league}`); continue; }
+      log(`Found ${games.length} games`, 'ok');
+
+      for(const game of games) {
+        const kickoff = new Date(game.commence_time);
+        const now = new Date();
+        const diffHours = (kickoff - now) / 3600000;
+        let status = diffHours > 0 ? 'upcoming' : diffHours > -2 ? 'live' : 'finished';
+
+        // Check existing
+        const { data: existing } = await db.from('matches')
+          .select('id').eq('home_team', game.home_team).eq('away_team', game.away_team)
+          .gte('kick_off', new Date(kickoff - 3600000).toISOString())
+          .lte('kick_off', new Date(kickoff.getTime() + 3600000).toISOString())
+          .maybeSingle();
+
+        let matchId;
+        if(existing) {
+          await db.from('matches').update({ status, league: sport.league, league_flag: sport.flag }).eq('id', existing.id);
+          matchId = existing.id;
+          totalUpdated++;
+        } else {
+          const { data: nm } = await db.from('matches').insert({
+            sport: 'football', league: sport.league, league_flag: sport.flag,
+            home_team: game.home_team, away_team: game.away_team,
+            home_score: 0, away_score: 0, status,
+            kick_off: game.commence_time, minute: 0, is_featured: false,
+            home_form: ['W','D','W','L','W'], away_form: ['L','W','D','W','L'],
+          }).select().single();
+          if(!nm) continue;
+          matchId = nm.id;
+          totalNew++;
+          log(`  ✅ Added: ${game.home_team} vs ${game.away_team}`, 'ok');
+        }
+
+        // Sync odds
+        for(const bm of (game.bookmakers||[]).slice(0,1)) {
+          for(const mkt of (bm.markets||[])) {
+            const mktType = mkt.key === 'h2h' ? '1x2' : mkt.key === 'totals' ? 'over_under' : null;
+            if(!mktType) continue;
+
+            for(const outcome of mkt.outcomes) {
+              let selection = '';
+              if(mktType === '1x2') {
+                if(outcome.name === game.home_team) selection = 'Home Win';
+                else if(outcome.name === game.away_team) selection = 'Away Win';
+                else selection = 'Draw';
+              } else {
+                selection = outcome.name === 'Over' ? `Over ${outcome.point||2.5}` : `Under ${outcome.point||2.5}`;
+              }
+
+              const { data: eo } = await db.from('markets').select('id')
+                .eq('match_id', matchId).eq('market_type', mktType).eq('selection', selection).maybeSingle();
+
+              if(eo) {
+                await db.from('markets').update({ odds: outcome.price }).eq('id', eo.id);
+              } else {
+                await db.from('markets').insert({ match_id: matchId, market_type: mktType, selection, odds: outcome.price });
+              }
+              totalOdds++;
+            }
+          }
+        }
+      }
+    } catch(e) {
+      log(`❌ ${sport.league} error: ${e.message}`, 'err');
+    }
+  }
+
+  log(`\n✅ Sync complete!`, 'ok');
+  log(`New matches: ${totalNew}`, 'ok');
+  log(`Updated: ${totalUpdated}`, 'ok');
+  log(`Odds synced: ${totalOdds}`, 'ok');
+
+  btn.disabled = false;
+  btn.textContent = '🔄 Sync Again';
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+</html>
