@@ -420,13 +420,13 @@ button,input,select{font-family:'Inter',sans-serif;}
 <div class="sport-nav-wrap" id="sport-nav-wrap">
   <div class="sport-nav">
     <div class="sp active" onclick="setSport(this)">⚽ Football</div>
-    <div class="sp" onclick="setSport(this)">🏀 Basketball</div>
-    <div class="sp" onclick="setSport(this)">🎾 Tennis</div>
-    <div class="sp" onclick="setSport(this)">🏉 Rugby</div>
-    <div class="sp" onclick="setSport(this)">🏏 Cricket</div>
-    <div class="sp" onclick="setSport(this)">🥊 Boxing</div>
-    <div class="sp" onclick="setSport(this)">🏒 Hockey</div>
-    <div class="sp" onclick="setSport(this)">🎮 Esports</div>
+    <div class="sp" onclick="setSport(this)" style="position:relative;">🏀 Basketball<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
+    <div class="sp" onclick="setSport(this)" style="position:relative;">🎾 Tennis<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
+    <div class="sp" onclick="setSport(this)" style="position:relative;">🏉 Rugby<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
+    <div class="sp" onclick="setSport(this)" style="position:relative;">🏏 Cricket<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
+    <div class="sp" onclick="setSport(this)" style="position:relative;">🥊 Boxing<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
+    <div class="sp" onclick="setSport(this)" style="position:relative;">🏒 Hockey<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
+    <div class="sp" onclick="setSport(this)" style="position:relative;">🎮 Esports<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
   </div>
   <div class="ticker">
     <div class="ticker-lbl">● LIVE</div>
@@ -1005,7 +1005,63 @@ function goPage(p) {
   if(p === 'wallet' && currentUser) loadWallet();
 }
 
-function setSport(el) { document.querySelectorAll('.sp').forEach(s=>s.classList.remove('active')); el.classList.add('active'); }
+let currentSport = 'football';
+
+function setSport(el) {
+  document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  const sportText = el.textContent.trim();
+  const sportMap = {
+    '⚽ Football': 'football',
+    '🏀 Basketball': 'basketball',
+    '🎾 Tennis': 'tennis',
+    '🏉 Rugby': 'rugby',
+    '🏏 Cricket': 'cricket',
+    '🥊 Boxing': 'boxing',
+    '🏒 Hockey': 'hockey',
+    '🎮 Esports': 'esports',
+  };
+  currentSport = sportMap[sportText] || 'football';
+  filterMatchesBySport();
+}
+
+function filterMatchesBySport() {
+  const supported = ['football'];
+  if(!supported.includes(currentSport)) {
+    const comingSoon = `
+      <div style="text-align:center;padding:40px 20px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);margin-bottom:10px;">
+        <div style="font-size:40px;margin-bottom:12px;">${getSportEmoji(currentSport)}</div>
+        <div style="font-size:15px;font-weight:800;margin-bottom:6px;">${currentSport.charAt(0).toUpperCase()+currentSport.slice(1)} Coming Soon</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;">We're adding ${currentSport} markets very soon.</div>
+        <button onclick="switchToFootball()" style="background:var(--red);border:none;border-radius:var(--r);color:#fff;padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;">⚽ Back to Football</button>
+      </div>`;
+    const lm = document.getElementById('live-matches'); if(lm) lm.innerHTML = comingSoon;
+    const um = document.getElementById('upcoming-matches'); if(um) um.innerHTML = '';
+    document.getElementById('featured-section').innerHTML = '';
+    return;
+  }
+  // Football — render everything
+  const featured = allMatches.find(m => m.is_featured);
+  if(featured) renderFeatured(featured);
+  else document.getElementById('featured-section').innerHTML = '';
+  renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && m.sport==='football'), true);
+  renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming' && m.sport==='football'), false);
+}
+
+function getSportEmoji(sport) {
+  const map = {basketball:'🏀',tennis:'🎾',rugby:'🏉',cricket:'🏏',boxing:'🥊',hockey:'🏒',esports:'🎮'};
+  return map[sport] || '🏆';
+}
+
+function switchToFootball() {
+  const footballBtn = document.querySelector('.sp');
+  if(footballBtn) {
+    document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
+    footballBtn.classList.add('active');
+    currentSport = 'football';
+    filterMatchesBySport();
+  }
+}
 function setDay(el) { document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
 
 // ── LOAD MATCHES ──
@@ -1014,14 +1070,11 @@ async function loadMatches() {
     const { data, error } = await db.from('matches').select('*, markets(*), live_events(*)').order('kick_off', {ascending:true});
     if(error) throw error;
     allMatches = data || [];
-    const featured = allMatches.find(m => m.is_featured);
-    if(featured) renderFeatured(featured);
-    renderMatchList('live-matches', allMatches.filter(m=>m.status==='live'), true);
-    renderMatchList('upcoming-matches', allMatches.filter(m=>m.status==='upcoming'), false);
+    filterMatchesBySport();
     updateTicker(allMatches.filter(m=>m.status==='live'));
   } catch(e) {
     console.error('Match load error:', e);
-    const msg = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Run the SQL setup first.</div>';
+    const msg = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Check connection.</div>';
     const lm = document.getElementById('live-matches'); if(lm) lm.innerHTML = msg;
     const um = document.getElementById('upcoming-matches'); if(um) um.innerHTML = msg;
   }
