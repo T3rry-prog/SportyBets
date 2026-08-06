@@ -51,10 +51,19 @@ function setEl(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function disableAll(v){['live-btn','odds-btn','both-btn'].forEach(id=>{const e=document.getElementById(id);if(e)e.disabled=v;});}
 
 async function callFn(name) {
-  const res = await fetch(`${SUPA_URL}/functions/v1/${name}`,{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPA_KEY}`}
+  const res = await fetch(`${SUPA_URL}/functions/v1/${name}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${SUPA_KEY}`,
+      'apikey': SUPA_KEY,
+    },
+    body: JSON.stringify({})
   });
+  if(!res.ok) {
+    const txt = await res.text();
+    throw new Error(`HTTP ${res.status}: ${txt}`);
+  }
   return res.json();
 }
 
