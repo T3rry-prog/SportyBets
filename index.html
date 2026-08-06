@@ -976,6 +976,7 @@ let currentProfile = null;
 let slip = [];
 let slipMode = 'single';
 let bbSel = {};
+let currentSport = 'football';
 let mpesaMode = 'deposit';
 let isDark = true;
 let allMatches = [];
@@ -1004,8 +1005,6 @@ function goPage(p) {
   if(p === 'dashboard' && currentUser) loadDashboard();
   if(p === 'wallet' && currentUser) loadWallet();
 }
-
-let currentSport = 'football';
 
 function setSport(el) {
   document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
@@ -1044,8 +1043,8 @@ function filterMatchesBySport() {
   const featured = allMatches.find(m => m.is_featured);
   if(featured) renderFeatured(featured);
   else document.getElementById('featured-section').innerHTML = '';
-  renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && m.sport==='football'), true);
-  renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming' && m.sport==='football'), false);
+  renderMatchList('live-matches', allMatches.filter(m => m.status==='live'), true);
+  renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
 }
 
 function getSportEmoji(sport) {
