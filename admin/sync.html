@@ -3,88 +3,122 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Sync Odds — SportyBet Admin</title>
+<title>Sync — SportyBet Admin</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;padding:20px;max-width:480px;margin:0 auto;}
 h1{color:#F0C040;font-size:18px;margin-bottom:6px;}
 p{font-size:12px;color:#9A7070;margin-bottom:16px;line-height:1.6;}
-.btn{width:100%;padding:14px;border-radius:6px;background:#C41E1E;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;}
+.btn{width:100%;padding:14px;border-radius:6px;background:#C41E1E;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
-.btn2{background:transparent;border:1.5px solid #3D2020;color:#9A7070;font-size:13px;font-weight:600;}
+.btn2{background:#1A0A0A;border:1.5px solid #3D2020;color:#9A7070;font-size:13px;font-weight:600;}
+.btn-gold{background:#F0C040;color:#000;}
 .stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
 .stat{background:#1A0A0A;border:1px solid #3D2020;border-radius:6px;padding:10px;text-align:center;}
 .stat-v{font-size:22px;font-weight:800;color:#F0C040;}
 .stat-l{font-size:10px;color:#9A7070;margin-top:2px;}
-.log{background:#1A0A0A;border:1px solid #3D2020;border-radius:6px;padding:14px;font-size:11px;color:#9A7070;line-height:1.9;min-height:160px;margin-top:14px;font-family:monospace;overflow-y:auto;max-height:400px;}
+.log{background:#1A0A0A;border:1px solid #3D2020;border-radius:6px;padding:14px;font-size:11px;color:#9A7070;line-height:1.9;min-height:160px;margin-top:14px;font-family:monospace;overflow-y:auto;max-height:360px;}
 .ok{color:#27AE60;}.err{color:#E8002D;}.warn{color:#F0C040;}
+.divider{height:1px;background:#3D2020;margin:12px 0;}
 </style>
 </head>
 <body>
-<h1>⚡ Odds Sync</h1>
-<p>Calls your Supabase Edge Function which fetches real matches from The Odds API and saves them to your database.</p>
+<h1>⚡ Data Sync</h1>
+<p>Sync live scores from API-Football and odds from The Odds API.</p>
 
 <div class="stat-row">
   <div class="stat"><div class="stat-v" id="st-new">—</div><div class="stat-l">New</div></div>
   <div class="stat"><div class="stat-v" id="st-upd">—</div><div class="stat-l">Updated</div></div>
-  <div class="stat"><div class="stat-v" id="st-odds">—</div><div class="stat-l">Odds</div></div>
+  <div class="stat"><div class="stat-v" id="st-live">—</div><div class="stat-l">Live Now</div></div>
 </div>
 
-<button class="btn" id="sync-btn" onclick="runSync()">🔄 Sync Matches & Odds Now</button>
+<button class="btn btn-gold" id="live-btn" onclick="syncLive()">📺 Sync Live Scores (API-Football)</button>
+<button class="btn" id="odds-btn" onclick="syncOdds()">📊 Sync Odds (The Odds API)</button>
+<button class="btn" id="both-btn" onclick="syncBoth()">🔄 Sync Both Now</button>
+<div class="divider"></div>
 <button class="btn btn2" onclick="window.location.href='/admin'">← Back to Admin</button>
 
-<div class="log" id="log">Press Sync to fetch real matches from The Odds API.</div>
+<div class="log" id="log">Press a button above to start syncing.</div>
 
 <script>
 const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
 
 const logEl = document.getElementById('log');
-function log(msg, cls='') { const d=document.createElement('div'); d.className=cls; d.textContent=msg; logEl.appendChild(d); logEl.scrollTop=logEl.scrollHeight; }
-function setEl(id,v) { const e=document.getElementById(id); if(e) e.textContent=v; }
+function log(msg,cls=''){const d=document.createElement('div');d.className=cls;d.textContent=msg;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}
+function clearLog(){logEl.innerHTML='';}
+function setEl(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function disableAll(v){['live-btn','odds-btn','both-btn'].forEach(id=>{const e=document.getElementById(id);if(e)e.disabled=v;});}
 
-async function runSync() {
-  const btn = document.getElementById('sync-btn');
-  btn.disabled=true; btn.textContent='⏳ Syncing...';
-  logEl.innerHTML='';
-  log('Calling Supabase Edge Function...');
+async function callFn(name) {
+  const res = await fetch(`${SUPA_URL}/functions/v1/${name}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPA_KEY}`}
+  });
+  return res.json();
+}
 
+async function syncLive() {
+  disableAll(true); clearLog();
+  log('Calling sync-live (API-Football)...');
   try {
-    const res = await fetch(`${SUPA_URL}/functions/v1/sync-odds`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPA_KEY}`,
-      }
-    });
-
-    const data = await res.json();
-
-    if(!res.ok || !data.success) {
-      log('Error: ' + (data.error || 'Unknown error'), 'err');
-      log('Edge Function may not be deployed yet. See instructions below.', 'warn');
-      btn.disabled=false; btn.textContent='🔄 Try Again';
-      return;
+    const d = await callFn('sync-live');
+    if(d.logs) d.logs.forEach(l=>log(l,l.startsWith('Added')?'ok':l.startsWith('Error')?'err':''));
+    if(d.success){
+      setEl('st-new',d.newC||0);
+      setEl('st-upd',d.updC||0);
+      setEl('st-live',d.liveC||0);
+      log('✅ Live sync done!','ok');
+    } else {
+      log('Error: '+(d.error||'Unknown'),'err');
     }
+  } catch(e){log('Failed: '+e.message,'err');}
+  disableAll(false);
+}
 
-    setEl('st-new', data.newCount);
-    setEl('st-upd', data.updCount);
-    setEl('st-odds', data.oddsCount);
+async function syncOdds() {
+  disableAll(true); clearLog();
+  log('Calling sync-odds (The Odds API)...');
+  try {
+    const d = await callFn('sync-odds');
+    if(d.logs) d.logs.forEach(l=>log(l,l.startsWith('Added')?'ok':l.startsWith('Error')?'err':''));
+    if(d.success){
+      setEl('st-new',d.newCount||0);
+      setEl('st-upd',d.updCount||0);
+      log('✅ Odds sync done!','ok');
+    } else {
+      log('Error: '+(d.error||'Unknown'),'err');
+    }
+  } catch(e){log('Failed: '+e.message,'err');}
+  disableAll(false);
+}
 
-    if(data.logs) data.logs.forEach(l => {
-      const cls = l.startsWith('Added') ? 'ok' : l.startsWith('Error') ? 'err' : '';
-      log(l, cls);
-    });
+async function syncBoth() {
+  disableAll(true); clearLog();
+  log('Step 1/2: Syncing live scores...');
+  try {
+    const d1 = await callFn('sync-live');
+    if(d1.logs) d1.logs.forEach(l=>log(l,l.startsWith('Added')?'ok':l.startsWith('Error')?'err':''));
+    if(d1.success) log(`✅ Live: ${d1.newC||0} new, ${d1.updC||0} updated, ${d1.liveC||0} live`,'ok');
+    else log('Live sync error: '+(d1.error||'Unknown'),'err');
+  } catch(e){log('Live sync failed: '+e.message,'err');}
 
-    log('', '');
-    log('✅ Sync complete!', 'ok');
+  log('');
+  log('Step 2/2: Syncing odds...');
+  try {
+    const d2 = await callFn('sync-odds');
+    if(d2.logs) d2.logs.forEach(l=>log(l,l.startsWith('Added')?'ok':l.startsWith('Error')?'err':''));
+    if(d2.success){
+      setEl('st-new',d2.newCount||0);
+      setEl('st-upd',d2.updCount||0);
+      log(`✅ Odds: ${d2.newCount||0} new, ${d2.oddsCount||0} odds synced`,'ok');
+    } else {
+      log('Odds sync error: '+(d2.error||'Unknown'),'err');
+    }
+  } catch(e){log('Odds sync failed: '+e.message,'err');}
 
-  } catch(e) {
-    log('Failed to reach Edge Function: ' + e.message, 'err');
-    log('Make sure you have deployed the Edge Function. See steps below.', 'warn');
-  }
-
-  btn.disabled=false; btn.textContent='🔄 Sync Again';
+  log(''); log('✅ All done!','ok');
+  disableAll(false);
 }
 </script>
 </body>
