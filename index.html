@@ -730,9 +730,9 @@ button,input,select{font-family:'Inter',sans-serif;}
   </div>
   <div class="qa-grid">
     <div class="qa-item" onclick="openMpesa('deposit')"><div class="qa-ico">💰</div><div class="qa-lbl">Deposit</div></div>
-    <div class="qa-item" onclick="goPage('wallet')"><div class="qa-ico">📤</div><div class="qa-lbl">Withdraw</div></div>
+    <div class="qa-item" onclick="goPage('mybets')"><div class="qa-ico">📋</div><div class="qa-lbl">My Bets</div></div>
     <div class="qa-item" onclick="goPage('builder')"><div class="qa-ico">🏗️</div><div class="qa-lbl">Builder</div></div>
-    <div class="qa-item" onclick="goPage('whatsapp')"><div class="qa-ico">💬</div><div class="qa-lbl">WhatsApp</div></div>
+    <div class="qa-item" onclick="goPage('wallet')"><div class="qa-ico">📤</div><div class="qa-lbl">Withdraw</div></div>
   </div>
   <div class="sec-hd"><div class="sec-title">Recent Bets</div><div class="sec-link">All →</div></div>
   <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:10px;" id="recent-bets">
@@ -894,6 +894,22 @@ button,input,select{font-family:'Inter',sans-serif;}
 </div>
 </div>
 
+<!-- MY BETS PAGE -->
+<div id="page-mybets" class="page">
+<div style="padding:12px 10px 76px;">
+  <div style="font-size:18px;font-weight:800;margin-bottom:12px;">📋 My Bets</div>
+  <div class="slip-tabs" style="margin-bottom:12px;">
+    <div class="stab active" onclick="setMyBetsTab(this,'pending')">Active</div>
+    <div class="stab" onclick="setMyBetsTab(this,'won')">Won</div>
+    <div class="stab" onclick="setMyBetsTab(this,'lost')">Lost</div>
+    <div class="stab" onclick="setMyBetsTab(this,'all')">All</div>
+  </div>
+  <div id="mybets-list">
+    <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+  </div>
+</div>
+</div>
+
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ico">🏠</div>Home</div>
@@ -989,8 +1005,8 @@ function toggleTheme() {
 }
 
 // ── NAVIGATION ──
-const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks'];
-const BN_MAP = {home:'bn-home',live:'bn-live',slip:'bn-slip',promos:'bn-promos',account:'bn-account',dashboard:'bn-account',wallet:'bn-account',leaderboard:'bn-promos'};
+const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets'];
+const BN_MAP = {home:'bn-home',live:'bn-live',slip:'bn-slip',promos:'bn-promos',account:'bn-account',dashboard:'bn-account',wallet:'bn-account',leaderboard:'bn-promos',mybets:'bn-account'};
 
 function goPage(p) {
   ALL_PAGES.forEach(n => { const el = document.getElementById('page-'+n); if(el) el.classList.remove('active'); });
@@ -1246,7 +1262,34 @@ function renderSlip() {
     body.innerHTML='<div class="slip-empty"><div class="se-ico">🎯</div><div class="se-txt">Select odds from any match to build your slip</div></div>';
     if(foot) foot.style.display='none'; return;
   }
-  body.innerHTML = slip.map((s,i)=>`<div class="slip-item"><div class="si-match">${s.matchName}</div><div class="si-mkt">${s.marketType.replace(/_/g,' ').toUpperCase()}</div><div class="si-sel">${s.selection}</div><div class="si-bot"><div class="si-odd">${parseFloat(s.val).toFixed(2)}</div><div class="si-rm" onclick="removeItem(${i})">✕</div></div></div>`).join('');
+
+  // Calculate total odds
+  const totalOdds = slipMode==='acca' ? slip.reduce((a,s)=>a*s.val,1) : (slip.length ? slip[slip.length-1].val : 1);
+
+  // Show acca summary banner if accumulator mode
+  const accaBanner = slipMode==='acca' && slip.length > 1 ? `
+    <div style="background:linear-gradient(110deg,var(--red),#8B0000);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">${slip.length} Fold Accumulator</div>
+        <div style="font-size:22px;font-weight:800;color:var(--gold);">${totalOdds.toFixed(2)}x</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:10px;color:rgba(255,255,255,.6);margin-bottom:2px;">Potential Win</div>
+        <div style="font-size:16px;font-weight:800;color:#fff;">KSh ${Math.round((parseFloat(document.getElementById('stake')?.value)||100)*totalOdds).toLocaleString()}</div>
+      </div>
+    </div>` : '';
+
+  body.innerHTML = accaBanner + slip.map((s,i)=>`
+    <div class="slip-item">
+      <div class="si-match">${s.matchName}</div>
+      <div class="si-mkt">${s.marketType.replace(/_/g,' ').toUpperCase()}</div>
+      <div class="si-sel">${s.selection}</div>
+      <div class="si-bot">
+        <div class="si-odd">${parseFloat(s.val).toFixed(2)}</div>
+        <div class="si-rm" onclick="removeItem(${i})">✕</div>
+      </div>
+    </div>`).join('');
+
   if(foot) foot.style.display='block';
   calcPayout();
 }
@@ -1530,11 +1573,24 @@ function mpesaConfirm() {
 async function recordDeposit() {
   if(!currentUser||!currentProfile) return;
   const amt=parseFloat(document.getElementById('mpesa-amount').textContent.replace('KSh ','').replace(/,/g,''));
+  const ref=document.getElementById('mpesa-ref').textContent;
   try {
-    const newBal=(currentProfile.balance||0)+amt;
-    await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
-    await db.from('transactions').insert({user_id:currentUser.id,type:'deposit',amount:amt,balance_before:currentProfile.balance,balance_after:newBal,status:'completed',mpesa_code:document.getElementById('mpesa-ref').textContent,mpesa_phone:currentProfile.phone,description:'M-Pesa Deposit'});
-    currentProfile.balance=newBal; updateProfileUI();
+    // Save deposit as PENDING — admin must confirm M-Pesa before crediting
+    await db.from('transactions').insert({
+      user_id:currentUser.id,
+      type:'deposit',
+      amount:amt,
+      balance_before:currentProfile.balance,
+      balance_after:currentProfile.balance, // not yet credited
+      status:'pending', // pending until admin confirms
+      mpesa_code:ref,
+      mpesa_phone:currentProfile.phone,
+      description:`M-Pesa Deposit — Awaiting confirmation`,
+      reference:ref,
+    });
+    // Show pending message instead of instant credit
+    document.getElementById('mpesa-s3-title').textContent = 'Payment Submitted!';
+    document.getElementById('mpesa-s3-sub').textContent = 'Your deposit is being verified. Balance will update within 5 minutes once M-Pesa payment is confirmed.';
   } catch(e){console.error('Deposit error:',e);}
 }
 
@@ -1768,7 +1824,68 @@ function resumePendingActions() {
   }
 }
 
-// ── INIT ──
+// ── MY BETS ──
+let myBetsFilter = 'pending';
+function setMyBetsTab(el, filter) {
+  myBetsFilter = filter;
+  document.querySelectorAll('#page-mybets .stab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  loadMyBets();
+}
+
+async function loadMyBets() {
+  if(!currentUser) { goPage('login'); return; }
+  const el = document.getElementById('mybets-list');
+  if(!el) return;
+  el.innerHTML = '<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
+  try {
+    let q = db.from('bets').select('*,bet_selections(*)').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    if(myBetsFilter !== 'all') q = q.eq('status', myBetsFilter);
+    const {data:bets} = await q;
+    if(!bets||!bets.length) {
+      el.innerHTML = `<div style="text-align:center;padding:40px 20px;"><div style="font-size:36px;margin-bottom:10px;">🎯</div><div style="font-size:13px;color:var(--muted);">No ${myBetsFilter === 'all' ? '' : myBetsFilter} bets yet</div></div>`;
+      return;
+    }
+    const statusColors = {won:'var(--odds)',lost:'var(--live)',pending:'var(--gold)',void:'var(--muted)'};
+    const statusBg = {won:'var(--odds-bg)',lost:'var(--live-bg)',pending:'rgba(240,192,64,.1)',void:'rgba(255,255,255,.05)'};
+    el.innerHTML = bets.map(b => {
+      const sels = b.bet_selections || [];
+      const statusCol = statusColors[b.status] || 'var(--muted)';
+      const statusBgCol = statusBg[b.status] || 'rgba(255,255,255,.05)';
+      const profit = b.status==='won' ? `+KSh ${(b.actual_win-b.stake).toLocaleString()}` : b.status==='lost' ? `-KSh ${parseFloat(b.stake).toLocaleString()}` : `KSh ${parseFloat(b.potential_win).toLocaleString()}`;
+      return `
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
+          <div style="padding:12px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">${b.bet_type} · ${b.reference||''}</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:2px;">${new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'})}</div>
+            </div>
+            <div style="background:${statusBgCol};border-radius:4px;padding:4px 10px;font-size:11px;font-weight:800;color:${statusCol};">${b.status.toUpperCase()}</div>
+          </div>
+          ${sels.map(s=>`
+            <div style="padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:12px;font-weight:600;">${s.match_name||''}</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:1px;">${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:var(--odds);font-weight:700;">${s.selection||''}</span></div>
+              </div>
+              <div style="font-size:14px;font-weight:800;color:var(--gold);">${parseFloat(s.odds||0).toFixed(2)}</div>
+            </div>`).join('')}
+          <div style="padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:var(--card);">
+            <div style="font-size:12px;color:var(--muted);">Stake: <strong style="color:var(--text);">KSh ${parseFloat(b.stake).toLocaleString()}</strong> · Odds: <strong style="color:var(--gold);">${parseFloat(b.total_odds).toFixed(2)}</strong></div>
+            <div style="font-size:13px;font-weight:800;color:${statusCol};">${profit}</div>
+          </div>
+          ${b.status==='pending'&&b.bet_type!=='accumulator'?`<div style="padding:8px 13px;background:var(--live-bg);border-top:1px solid rgba(232,0,45,.15);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:var(--live);">💰 Cash Out Available</span><button onclick="openCashout('${b.reference}',${Math.round(b.potential_win*0.75)},${b.stake})" style="background:var(--odds);border:none;border-radius:4px;color:#fff;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;">Cash Out</button></div>`:''}
+        </div>`;
+    }).join('');
+  } catch(e) { console.error('My bets error:',e); }
+}
+
+// Load my bets when page opens
+const _origGoPage = goPage;
+goPage = function(p) {
+  _origGoPage(p);
+  if(p==='mybets') loadMyBets();
+};
 async function init() {
   const {data:{session}} = await db.auth.getSession();
   if(session?.user){currentUser=session.user;await loadProfile();updateAuthUI();}
