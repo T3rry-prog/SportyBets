@@ -1015,14 +1015,32 @@ button,input,select{font-family:'Inter',sans-serif;}
 <!-- BET SUCCESS -->
 <div class="success-modal" id="bet-success">
   <div class="success-box">
-    <div style="font-size:44px;margin-bottom:10px;">🎉</div>
-    <div style="font-size:18px;font-weight:800;margin-bottom:6px;">Bet Placed!</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Your bet has been confirmed successfully.</div>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:16px;">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Bet Reference</div>
-      <div style="font-size:20px;font-weight:800;color:var(--gold);" id="bet-ref">#XO00000</div>
+    <div style="font-size:44px;margin-bottom:8px;">🎉</div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Bet Placed!</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Your bet is confirmed and live.</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:12px;text-align:left;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
+        <span style="color:var(--muted);">Reference</span>
+        <span style="font-weight:800;color:var(--gold);" id="bet-ref">#XO00000</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
+        <span style="color:var(--muted);">Stake</span>
+        <span style="font-weight:700;" id="bet-stake-display">KSh 0</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
+        <span style="color:var(--muted);">Total Odds</span>
+        <span style="font-weight:700;" id="bet-odds-display">0.00</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;">
+        <span style="color:var(--muted);font-weight:700;">Possible Win</span>
+        <span style="font-weight:800;color:#27AE60;font-size:16px;" id="bet-win-display">KSh 0</span>
+      </div>
     </div>
-    <button style="width:100%;padding:12px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:14px;font-weight:800;cursor:pointer;" onclick="closeBetSuccess()">Done — View My Bets</button>
+    <div id="bet-selections-display" style="background:rgba(39,174,96,.06);border:1px solid rgba(39,174,96,.2);border-radius:var(--r);padding:10px 13px;margin-bottom:12px;text-align:left;font-size:11px;color:var(--muted);line-height:1.8;"></div>
+    <div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:var(--r);padding:9px 13px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;font-weight:600;color:var(--gold);">🏆 Good luck! We'll notify you when results are in.</div>
+    </div>
+    <button style="width:100%;padding:12px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:14px;font-weight:800;cursor:pointer;" onclick="closeBetSuccess()">Done ✓</button>
   </div>
 </div>
 <script>
@@ -1724,15 +1742,46 @@ async function recordBet() {
   const potWin=Math.round(stake*totalOdds);
   const ref='#XO'+Math.floor(Math.random()*90000+10000);
   try {
-    const {data:bet}=await db.from('bets').insert({user_id:currentUser.id,bet_type:slipMode==='acca'?'accumulator':'single',stake,total_odds:totalOdds,potential_win:potWin,status:'pending',reference:ref}).select().single();
+    const {data:bet}=await db.from('bets').insert({
+      user_id:currentUser.id,
+      bet_type:slipMode==='acca'?'accumulator':'single',
+      stake,total_odds:parseFloat(totalOdds.toFixed(2)),
+      potential_win:potWin,status:'pending',reference:ref
+    }).select().single();
+
     if(bet) {
-      await db.from('bet_selections').insert(slip.map(s=>({bet_id:bet.id,match_name:s.matchName,market_type:s.marketType,selection:s.selection,odds:s.val,status:'pending'})));
+      await db.from('bet_selections').insert(slip.map(s=>({
+        bet_id:bet.id,match_name:s.matchName,
+        market_type:s.marketType,selection:s.selection,
+        odds:s.val,status:'pending'
+      })));
       const newBal=(currentProfile.balance||0)-stake;
-      await db.from('users').update({balance:newBal,vip_points:(currentProfile.vip_points||0)+Math.floor(stake/10)}).eq('id',currentUser.id);
-      await db.from('transactions').insert({user_id:currentUser.id,type:'bet',amount:stake,balance_before:currentProfile.balance,balance_after:newBal,status:'completed',description:'Bet placed: '+ref});
-      currentProfile.balance=newBal; updateProfileUI();
+      const newVip=(currentProfile.vip_points||0)+Math.floor(stake/10);
+      await db.from('users').update({balance:newBal,vip_points:newVip}).eq('id',currentUser.id);
+      await db.from('transactions').insert({
+        user_id:currentUser.id,type:'bet',amount:stake,
+        balance_before:currentProfile.balance,balance_after:newBal,
+        status:'completed',description:'Bet placed: '+ref
+      });
+      currentProfile.balance=newBal;
+      currentProfile.vip_points=newVip;
+      updateProfileUI();
     }
-    setEl('bet-ref',ref);
+
+    // Populate bet success modal
+    setEl('bet-ref', ref);
+    setEl('bet-stake-display', 'KSh '+stake.toLocaleString());
+    setEl('bet-odds-display', parseFloat(totalOdds.toFixed(2)).toString()+'x');
+    setEl('bet-win-display', 'KSh '+potWin.toLocaleString());
+
+    // Show selections
+    const selDisplay = document.getElementById('bet-selections-display');
+    if(selDisplay) {
+      selDisplay.innerHTML = slip.map(s =>
+        `<div style="padding:2px 0;">✓ <strong style="color:var(--text);">${s.matchName}</strong> — ${s.selection} @ ${parseFloat(s.val.toString()).toFixed(2)}</div>`
+      ).join('');
+    }
+
   } catch(e){console.error('Bet error:',e);}
 }
 
@@ -1741,6 +1790,32 @@ function mpesaDone() {
   if(mpesaMode==='bet') setTimeout(()=>document.getElementById('bet-success').classList.add('open'),200);
 }
 function closeBetSuccess() { document.getElementById('bet-success').classList.remove('open'); clearSlip(); goPage('home'); }
+
+// ── WIN NOTIFICATION ──
+function showWinNotification(amount, matchName, ref) {
+  const old = document.getElementById('win-modal');
+  if(old) old.remove();
+  const el = document.createElement('div');
+  el.id = 'win-modal';
+  el.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
+  el.innerHTML = `
+    <div style="background:var(--surface);border:2px solid var(--gold);border-radius:14px;padding:28px 20px;width:100%;max-width:340px;text-align:center;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red));"></div>
+      <div style="font-size:52px;margin-bottom:10px;">🏆</div>
+      <div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Congratulations!</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:4px;">You Won!</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">${matchName}</div>
+      <div style="background:linear-gradient(135deg,rgba(240,192,64,.15),rgba(240,192,64,.05));border:1px solid rgba(240,192,64,.3);border-radius:var(--r);padding:14px;margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Winnings credited to your wallet</div>
+        <div style="font-size:32px;font-weight:800;color:var(--gold);">KSh ${parseFloat(amount).toLocaleString()}</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Ref: ${ref}</div>
+      <button onclick="document.getElementById('win-modal').remove();goPage('wallet');" style="width:100%;padding:13px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;">💰 View My Wallet</button>
+      <button onclick="document.getElementById('win-modal').remove();" style="width:100%;padding:10px;border-radius:var(--r);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;">Continue Betting</button>
+    </div>
+  `;
+  document.body.appendChild(el);
+}
 
 // ── NOTIFICATIONS (replace browser alerts) ──
 function showNotif(msg, type='info') {
@@ -2035,9 +2110,35 @@ goPage = function(p) {
   _origGoPage(p);
   if(p==='mybets') loadMyBets();
 };
+// ── CHECK FOR WINS ──
+async function checkForWins() {
+  if(!currentUser) return;
+  try {
+    const { data: wonBets } = await db.from('bets')
+      .select('*,bet_selections(*)')
+      .eq('user_id', currentUser.id)
+      .eq('status', 'won')
+      .limit(3);
+    if(wonBets && wonBets.length > 0) {
+      const bet = wonBets[0];
+      const matchName = bet.bet_selections?.[0]?.match_name || 'Your bet';
+      // Only show if won in last 10 minutes
+      const wonAt = new Date(bet.updated_at||bet.created_at);
+      const minsAgo = (Date.now() - wonAt.getTime()) / 60000;
+      if(minsAgo < 10) showWinNotification(bet.actual_win||bet.potential_win, matchName, bet.reference);
+    }
+  } catch(e) { console.error('Win check error:', e); }
+}
+
 async function init() {
   const {data:{session}} = await db.auth.getSession();
-  if(session?.user){currentUser=session.user;await loadProfile();updateAuthUI();}
+  if(session?.user){
+    currentUser=session.user;
+    await loadProfile();
+    updateAuthUI();
+    // Check for wins after short delay
+    setTimeout(checkForWins, 2000);
+  }
   await loadMatches();
   subscribeRealtime();
   renderWinners();
