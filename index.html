@@ -68,9 +68,13 @@ button,input,select{font-family:'Inter',sans-serif;}
 .ft-team{flex:1;text-align:center;}
 .ft-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;}
 .ft-score{font-size:42px;font-weight:800;color:var(--gold);line-height:1;}
-.ft-vs{font-size:14px;font-weight:600;color:var(--muted);padding:0 10px;}
-.feat-meta{text-align:center;font-size:11px;color:var(--muted);margin-bottom:10px;}
+.ft-vs{font-size:14px;font-weight:600;color:rgba(255,255,255,.6);padding:0 10px;}
+.feat-meta{text-align:center;font-size:11px;color:rgba(255,255,255,.6);margin-bottom:10px;}
 .feat-events{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;padding:8px;background:rgba(0,0,0,.2);border-radius:var(--r);}
+.feat-bottom{padding:10px 14px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(0,0,0,.15);}
+.feat-min{font-size:10px;color:rgba(255,255,255,.7);}
+.feat-min strong{color:var(--gold);}
+.feat-share{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 12px;font-size:10px;font-weight:700;color:#fff;cursor:pointer;}
 .ev-chip{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:3px 8px;font-size:10px;color:rgba(255,255,255,.7);}
 .ev-chip.goal{border-color:rgba(39,174,96,.4);color:#69F0AE;}
 .ev-chip.red{border-color:rgba(232,0,45,.4);color:#FF6B6B;}
@@ -114,6 +118,13 @@ button,input,select{font-family:'Inter',sans-serif;}
 /* Force odd value visible in both themes */
 [data-theme="dark"] .odd-val{color:#FFFFFF;}
 [data-theme="light"] .odd-val{color:#1A0505;}
+/* Featured match odds — always dark regardless of theme */
+.featured-wrap .odd-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
+.featured-wrap .odd-btn.sel{background:var(--gold);border-color:var(--gold);}
+.featured-wrap .odd-lbl{color:rgba(255,255,255,.7)!important;}
+.featured-wrap .odd-val{color:#fff!important;}
+.featured-wrap .odd-btn.sel .odd-lbl{color:rgba(0,0,0,.6)!important;}
+.featured-wrap .odd-btn.sel .odd-val{color:#000!important;}
 /* MORE MARKETS */
 .more-mkts{display:none;border-top:1px solid var(--border);background:var(--card);padding:10px 13px;}
 .more-mkts.open{display:block;}
@@ -1124,16 +1135,16 @@ function renderFeatured(m) {
         <div class="feat-meta">${m.league_flag||''} ${m.league}</div>
         ${chips?`<div class="feat-events">${chips}</div>`:''}
       </div>
-      <div style="padding:10px 14px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:8px;">
-        <div style="font-size:10px;color:rgba(255,255,255,.4);">Min bet: <strong style="color:var(--gold);">KSh 500</strong></div>
-        <button onclick="shareFeatured('${shareUrl}','${mn}')" style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer;">🔗 Share Match</button>
+      <div class="feat-bottom">
+        <div class="feat-min">Min bet: <strong>KSh 500</strong></div>
+        <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')">🔗 Share Match</button>
       </div>
-      <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);">
-        <div class="odds-mkt-lbl" style="color:rgba(255,255,255,.4);">Match Result (1X2)</div>
-        <div class="odds-3" style="margin-top:5px;">
-          ${h?`<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl">1 Home</div><div class="odd-val">${h.odds}</div></div>`:''}
-          ${d?`<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl">X Draw</div><div class="odd-val">${d.odds}</div></div>`:''}
-          ${a?`<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl">2 Away</div><div class="odd-val">${a.odds}</div></div>`:''}
+      <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.1);">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Match Result (1X2)</div>
+        <div class="odds-3">
+          ${h?`<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">1 Home</div><div class="odd-val" style="color:#fff;">${h.odds}</div></div>`:''}
+          ${d?`<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">X Draw</div><div class="odd-val" style="color:#fff;">${d.odds}</div></div>`:''}
+          ${a?`<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">2 Away</div><div class="odd-val" style="color:#fff;">${a.odds}</div></div>`:''}
         </div>
       </div>
     </div>`;
