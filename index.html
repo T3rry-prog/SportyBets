@@ -1074,7 +1074,8 @@ function filterMatchesBySport() {
   const featured = allMatches.find(m => m.is_featured);
   if(featured) renderFeatured(featured);
   else document.getElementById('featured-section').innerHTML = '';
-  renderMatchList('live-matches', allMatches.filter(m => m.status==='live'), true);
+  // Live section — exclude featured match
+  renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
   renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
 }
 
