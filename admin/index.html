@@ -627,23 +627,45 @@ function deriveAllMarkets(h, d, a) {
 }
 async function loadMatchSelector() {
   try {
-    const { data, error } = await db.from('matches').select('*').order('kick_off',{ascending:true});
+    const { data, error } = await db.from('matches').select('*').order('created_at',{ascending:false});
     if(error) throw error;
     const el = document.getElementById('match-selector');
-    if(!data||!data.length) { el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px;">No matches found. Add matches in Supabase first.</div>'; return; }
+    if(!data||!data.length) { el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px;">No matches found.</div>'; return; }
     el.innerHTML = data.map(m => `
-      <div class="match-pill ${m.is_featured?'active':''}" onclick="selectMatch('${m.id}','${m.home_team}','${m.away_team}',${m.home_score},${m.away_score},'${m.status}',${m.minute||0},${m.is_featured})">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:${m.is_featured?'var(--gold)':'inherit'};">${m.home_team} vs ${m.away_team}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:2px;">${m.league} ${m.is_featured?'· ⭐ FEATURED':''}</div>
+      <div class="match-pill ${m.is_featured?'active':''}" style="position:relative;">
+        <div onclick="selectMatch('${m.id}','${m.home_team}','${m.away_team}',${m.home_score},${m.away_score},'${m.status}',${m.minute||0},${m.is_featured})" style="flex:1;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:12px;font-weight:700;color:${m.is_featured?'var(--gold)':'inherit'};">${m.home_team} vs ${m.away_team}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;">${m.league} ${m.is_featured?'· ⭐ FEATURED':''} · ${m.status.toUpperCase()}</div>
+          </div>
+          <div style="text-align:right;margin-right:8px;">
+            ${m.status==='live'?`<div class="mp-live"><div class="mp-dot"></div>${m.minute||0}'</div>`:''}
+            <div class="mp-score">${m.home_score}–${m.away_score}</div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          ${m.status==='live'?`<div class="mp-live"><div class="mp-dot"></div>${m.minute||0}'</div>`:''}
-          <div class="mp-score">${m.home_score}–${m.away_score}</div>
-        </div>
+        <button onclick="deleteMatch('${m.id}','${m.home_team} vs ${m.away_team}')" style="background:rgba(196,30,30,.2);border:1px solid var(--red);border-radius:4px;color:var(--red);font-size:11px;font-weight:700;padding:4px 8px;cursor:pointer;flex-shrink:0;">🗑️</button>
       </div>
     `).join('');
   } catch(e) { showToast('Error loading matches: '+e.message,'err'); }
+}
+
+// ── DELETE MATCH ──
+async function deleteMatch(id, name) {
+  if(!confirm(`Delete "${name}"? This will also delete all markets and events for this match.`)) return;
+  try {
+    // Delete events and markets first (cascade should handle it but just in case)
+    await db.from('live_events').delete().eq('match_id', id);
+    await db.from('markets').delete().eq('match_id', id);
+    await db.from('matches').delete().eq('id', id);
+    showToast(`✅ ${name} deleted`, 'ok');
+    // Clear editor if this was selected
+    if(selectedMatch?.id === id) {
+      selectedMatch = null;
+      document.getElementById('feat-editor').style.display = 'none';
+      document.getElementById('feat-events-section').style.display = 'none';
+    }
+    loadMatchSelector();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
 // ── SELECT MATCH ──
