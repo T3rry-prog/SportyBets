@@ -10,16 +10,16 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 [data-theme="dark"]{
   --bg:#1A0A0A;--surface:#241010;--card:#2D1515;--card2:#331818;
-  --border:#3D2020;--border2:#4A2828;--text:#F5EEEE;--text2:#D4B8B8;--muted:#9A7070;
+  --border:#3D2020;--border2:#4A2828;--text:#F5EEEE;--text2:#D4B8B8;--muted:#C49A9A;
   --header:#110808;--sport-bg:#1E0F0F;--input-bg:#2D1515;--match-hover:#331818;
 }
 [data-theme="light"]{
-  --bg:#F0F4F0;--surface:#FFFFFF;--card:#F5F8F5;--card2:#EBF0EB;
-  --border:#E0CCCC;--border2:#CCB8B8;--text:#1A0A0A;--text2:#441818;--muted:#7A5A5A;
-  --header:#8B0000;--sport-bg:#F8EEEE;--input-bg:#F8F5F5;--match-hover:#F5EBEB;
+  --bg:#F5F0F0;--surface:#FFFFFF;--card:#FDF8F8;--card2:#F5EDED;
+  --border:#DCC8C8;--border2:#C8A8A8;--text:#1A0505;--text2:#3D1515;--muted:#6B3030;
+  --header:#8B0000;--sport-bg:#F8EDED;--input-bg:#FFFFFF;--match-hover:#F5EDED;
 }
 :root{
-  --gold:#F0C040;--gold2:#E8A020;--odds:#E8F0FF;--odds-bg:rgba(255,255,255,.1);
+  --gold:#F0C040;--gold2:#E8A020;--odds:#FFFFFF;--odds-bg:rgba(255,255,255,.1);
   --live:#FF3333;--live-bg:rgba(255,51,51,.12);--blue:#2F80ED;--wa:#25D366;
   --red:#C41E1E;--red2:#A01010;--r:6px;
 }
@@ -40,15 +40,15 @@ button,input,select{font-family:'Inter',sans-serif;}
 .logo-sub{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:1.2px;text-transform:uppercase;margin-top:2px;}
 .hdr-right{display:flex;gap:7px;align-items:center;}
 .theme-btn{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:14px;cursor:pointer;color:var(--text);}
-.btn-login{background:transparent;border:1.5px solid var(--border2);color:var(--muted);border-radius:var(--r);padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-login{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:rgba(255,255,255,.8);border-radius:var(--r);padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;}
 .btn-join{background:var(--gold);color:#000;border:none;border-radius:var(--r);padding:7px 13px;font-size:12px;font-weight:800;cursor:pointer;}
 .bal-chip{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:6px 11px;font-size:12px;color:var(--muted);cursor:pointer;}
-.bal-chip strong{color:var(--odds);}
+.bal-chip strong{color:var(--gold);}
 /* SPORT NAV */
 .sport-nav-wrap{position:sticky;top:57px;z-index:150;}
 .sport-nav{background:var(--sport-bg);border-bottom:1px solid var(--border);display:flex;gap:5px;padding:8px 12px;overflow-x:auto;white-space:nowrap;}
 .sport-nav::-webkit-scrollbar{display:none;}
-.sp{display:inline-flex;align-items:center;gap:4px;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;color:var(--muted);flex-shrink:0;cursor:pointer;border:1px solid transparent;transition:all .12s;}
+.sp{display:inline-flex;align-items:center;gap:4px;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0;cursor:pointer;border:1px solid var(--border);transition:all .12s;}
 .sp.active{background:var(--gold);color:#000;border-color:var(--gold);}
 /* TICKER */
 .ticker{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;height:26px;overflow:hidden;}
@@ -83,7 +83,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .live-pill{display:inline-flex;align-items:center;gap:3px;background:var(--live);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
 /* MATCH TABLE */
 .match-table{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:10px;}
-.league-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:6px 13px;font-size:11px;font-weight:600;color:var(--muted);}
+.league-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:6px 13px;font-size:11px;font-weight:700;color:var(--text2);}
 .match-card{border-bottom:1px solid var(--border);}
 .match-card:last-child{border-bottom:none;}
 .match-main{padding:10px 13px;}
@@ -100,17 +100,20 @@ button,input,select{font-family:'Inter',sans-serif;}
 .team-sc{font-size:13px;font-weight:800;color:var(--live);}
 /* ODDS */
 .odds-section{margin-bottom:6px;}
-.odds-mkt-lbl{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.odds-mkt-lbl{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
 .odds-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
 .odds-2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 .odds-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;}
 .odd-btn{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:all .1s;min-height:48px;justify-content:center;}
 .odd-btn.sel{background:var(--gold);border-color:var(--gold);}
 .odd-btn.suspended{opacity:.45;cursor:not-allowed;pointer-events:none;}
-.odd-lbl{font-size:9px;font-weight:600;color:var(--muted);text-align:center;line-height:1.2;}
-.odd-val{font-size:14px;font-weight:800;color:#FFFFFF;}
-.odd-btn.sel .odd-lbl{color:rgba(0,0,0,.5);}
+.odd-lbl{font-size:9px;font-weight:600;color:var(--text2);text-align:center;line-height:1.2;}
+.odd-val{font-size:14px;font-weight:800;color:var(--text);}
+.odd-btn.sel .odd-lbl{color:rgba(0,0,0,.6);}
 .odd-btn.sel .odd-val{color:#000;}
+/* Force odd value visible in both themes */
+[data-theme="dark"] .odd-val{color:#FFFFFF;}
+[data-theme="light"] .odd-val{color:#1A0505;}
 /* MORE MARKETS */
 .more-mkts{display:none;border-top:1px solid var(--border);background:var(--card);padding:10px 13px;}
 .more-mkts.open{display:block;}
@@ -145,8 +148,8 @@ button,input,select{font-family:'Inter',sans-serif;}
 .hf-badge{font-size:11px;font-weight:600;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:5px;}
 .hf-dot{width:5px;height:5px;border-radius:50%;background:var(--odds);}
 .bonus-strip{background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.25);border-top:none;border-radius:0 0 var(--r) var(--r);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.bs-text{font-size:12px;font-weight:600;color:var(--odds);}
-.bs-btn{background:var(--odds);color:#fff;border:none;border-radius:4px;padding:5px 12px;font-size:11px;font-weight:800;cursor:pointer;}
+.bs-text{font-size:12px;font-weight:600;color:#27AE60;}
+.bs-btn{background:#27AE60;color:#fff;border:none;border-radius:4px;padding:5px 12px;font-size:11px;font-weight:800;cursor:pointer;}
 /* JACKPOT */
 .jackpot{background:linear-gradient(110deg,#1A1200,#221A00);border:1px solid rgba(240,192,64,.25);border-radius:var(--r);padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .jp-tag{font-size:10px;font-weight:800;color:var(--gold2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px;}
@@ -164,8 +167,8 @@ button,input,select{font-family:'Inter',sans-serif;}
 .promo-s{font-size:11px;color:var(--muted);}
 .promo-cta{margin-left:auto;background:var(--red2);border:1px solid var(--border2);color:var(--gold);font-size:11px;font-weight:700;padding:6px 12px;border-radius:var(--r);cursor:pointer;flex-shrink:0;}
 /* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--header);border-top:2px solid var(--red);display:flex;z-index:200;}
-.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;font-size:9px;font-weight:600;color:var(--muted);cursor:pointer;gap:3px;transition:all .12s;position:relative;}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--red);border-top:2px solid var(--gold);display:flex;z-index:200;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;font-size:9px;font-weight:600;color:rgba(255,255,255,.6);cursor:pointer;gap:3px;transition:all .12s;position:relative;}
 .bn-item.active{color:var(--gold);}
 .bn-ico{font-size:19px;line-height:1;}
 .slip-badge{position:absolute;top:4px;right:calc(50% - 18px);background:var(--live);color:#fff;font-size:8px;font-weight:800;min-width:14px;height:14px;border-radius:7px;display:none;align-items:center;justify-content:center;padding:0 3px;}
@@ -185,7 +188,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .slip-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-bottom:8px;}
 .si-match{font-size:12px;font-weight:700;margin-bottom:2px;}
 .si-mkt{font-size:10px;color:var(--muted);}
-.si-sel{font-size:12px;font-weight:700;color:var(--odds);margin-top:4px;}
+.si-sel{font-size:12px;font-weight:700;color:#27AE60;margin-top:4px;}
 .si-bot{display:flex;justify-content:space-between;align-items:center;margin-top:7px;}
 .si-odd{font-size:16px;font-weight:800;color:var(--gold);}
 .si-rm{font-size:16px;color:var(--muted);cursor:pointer;padding:4px;}
@@ -204,7 +207,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .qs.active{border-color:var(--gold);color:var(--gold);}
 .pw-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;}
 .pw-l{font-size:13px;color:var(--muted);}
-.pw-v{font-size:19px;font-weight:800;color:var(--odds);}
+.pw-v{font-size:19px;font-weight:800;color:#27AE60;}
 .btn-place{width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;margin-bottom:8px;cursor:pointer;}
 .btn-wa-place{width:100%;padding:12px;border-radius:var(--r);background:var(--wa);border:none;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;}
 .mpesa-note{font-size:10px;color:var(--muted);text-align:center;margin-top:7px;}
@@ -217,7 +220,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .field label{display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
 .field-wrap{display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;}
 .field-wrap:focus-within{border-color:var(--gold);}
-.field-pre{padding:11px 12px;font-size:12px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);background:var(--red);white-space:nowrap;flex-shrink:0;}
+.field-pre{padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--red);white-space:nowrap;flex-shrink:0;}
 .field-wrap input,.field-wrap select{flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;}
 .input-solo{width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;transition:border-color .15s;}
 .input-solo:focus{border-color:var(--gold);}
@@ -254,7 +257,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .bi-pick{font-size:11px;color:var(--muted);}
 .bi-right{text-align:right;}
 .status{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;}
-.s-won{background:var(--odds-bg);color:var(--odds);}
+.s-won{background:rgba(39,174,96,.12);color:#27AE60;}
 .s-lost{background:var(--live-bg);color:var(--live);}
 .s-pending{background:rgba(240,192,64,.12);color:var(--gold);}
 .bi-profit{font-size:12px;font-weight:700;margin-top:3px;}
@@ -262,7 +265,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .wallet-wrap{padding:12px 10px 76px;}
 .wallet-hero{background:linear-gradient(110deg,var(--red),#0A0505);border:1px solid var(--border);border-radius:var(--r);padding:20px 16px;text-align:center;margin-bottom:10px;}
 .wallet-lbl{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
-.wallet-bal{font-size:36px;font-weight:800;color:var(--odds);margin-bottom:16px;}
+.wallet-bal{font-size:36px;font-weight:800;color:#27AE60;margin-bottom:16px;}
 .wallet-btns{display:flex;gap:8px;justify-content:center;}
 .btn-dep{background:var(--gold);color:#000;border:none;border-radius:var(--r);padding:11px 26px;font-size:13px;font-weight:800;cursor:pointer;}
 .btn-wit{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:var(--r);padding:11px 26px;font-size:13px;font-weight:700;cursor:pointer;}
@@ -285,7 +288,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .vip-perks{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
 .vip-perk{background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.2);border-radius:3px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--gold);}
 .acc-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;}
-.acc-panel-hd{background:var(--red);padding:9px 14px;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border);}
+.acc-panel-hd{background:var(--red);padding:9px 14px;font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border);}
 .acc-row{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
 .acc-row:last-child{border-bottom:none;}
 .acc-row:active{background:var(--match-hover);}
@@ -308,7 +311,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .bb-opts{display:flex;gap:5px;padding:10px 12px;flex-wrap:wrap;}
 .bb-opt{padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .1s;}
 .bb-opt.sel{background:var(--gold);border-color:var(--gold);color:#000;font-weight:800;}
-.bb-footer{padding:14px 15px;background:var(--header);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.bb-footer{padding:14px 15px;background:var(--red);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .bb-ol{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:2px;}
 .bb-ov{font-size:26px;font-weight:800;color:var(--gold);}
 .btn-bb{background:var(--red2);border:1.5px solid var(--gold);color:var(--gold);padding:11px 20px;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;}
@@ -321,7 +324,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .lb-av{width:36px;height:36px;border-radius:50%;background:var(--red2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .lb-name{font-size:13px;font-weight:700;}
 .lb-meta{font-size:10px;color:var(--muted);margin-top:1px;}
-.lb-win{font-size:13px;font-weight:800;color:var(--odds);}
+.lb-win{font-size:13px;font-weight:800;color:#27AE60;}
 /* LIVE */
 .live-wrap{padding:10px 10px 76px;}
 .stream-box{background:#000;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;}
@@ -359,7 +362,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .mpesa-logo{text-align:center;font-size:36px;margin-bottom:6px;}
 .mpesa-title{text-align:center;font-size:16px;font-weight:800;margin-bottom:4px;}
 .mpesa-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
-.mpesa-amount{text-align:center;font-size:28px;font-weight:800;color:var(--odds);margin-bottom:4px;}
+.mpesa-amount{text-align:center;font-size:28px;font-weight:800;color:#27AE60;margin-bottom:4px;}
 .mpesa-to{text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;}
 .mpesa-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
 .mpesa-step{display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--card);border-radius:var(--r);}
@@ -376,7 +379,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 .modal-ico{font-size:36px;margin-bottom:10px;}
 .modal-t{font-size:17px;font-weight:800;margin-bottom:6px;}
 .modal-s{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
-.modal-amt{font-size:30px;font-weight:800;color:var(--odds);margin-bottom:4px;}
+.modal-amt{font-size:30px;font-weight:800;color:#27AE60;margin-bottom:4px;}
 .modal-detail{font-size:11px;color:var(--muted);margin-bottom:18px;}
 .modal-btns{display:flex;gap:8px;}
 .modal-keep{flex:1;padding:11px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;}
@@ -391,12 +394,13 @@ button,input,select{font-family:'Inter',sans-serif;}
 .loading-dot:nth-child(2){animation-delay:.2s;}
 .loading-dot:nth-child(3){animation-delay:.4s;}
 /* FOOTER */
-.footer{background:var(--header);border-top:1px solid var(--border);padding:16px 14px 80px;}
+.footer{background:var(--red);border-top:1px solid var(--border);padding:16px 14px 80px;}
 .footer-logo{font-size:18px;font-weight:800;color:var(--gold);margin-bottom:6px;}
-.footer-sub{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.footer-sub{font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:12px;}
 .footer-links{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
-.footer-links span{font-size:11px;color:var(--muted);cursor:pointer;}
-.footer-copy{font-size:10px;color:var(--muted);line-height:1.6;}
+.footer-links span{font-size:11px;color:rgba(255,255,255,.6);cursor:pointer;text-decoration:underline;}
+.footer-links span:hover{color:#fff;}
+.footer-copy{font-size:10px;color:rgba(255,255,255,.5);line-height:1.6;}
 </style>
 </head>
 <body>
@@ -580,29 +584,29 @@ button,input,select{font-family:'Inter',sans-serif;}
     </div>
     <div class="bb-mkts">
       <div class="bb-mkt"><div class="bb-mkt-hd">Match Result</div><div class="bb-opts">
-        <div class="bb-opt" onclick="bbPick(this,'result',1.80)">Man City Win <span style="color:var(--odds)">1.80</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'result',3.60)">Draw <span style="color:var(--odds)">3.60</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'result',4.20)">Arsenal Win <span style="color:var(--odds)">4.20</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'result',1.80)">Man City Win <span style="color:#27AE60">1.80</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'result',3.60)">Draw <span style="color:#27AE60">3.60</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'result',4.20)">Arsenal Win <span style="color:#27AE60">4.20</span></div>
       </div></div>
       <div class="bb-mkt"><div class="bb-mkt-hd">Both Teams to Score</div><div class="bb-opts">
-        <div class="bb-opt" onclick="bbPick(this,'btts',1.70)">Yes <span style="color:var(--odds)">1.70</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'btts',2.00)">No <span style="color:var(--odds)">2.00</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'btts',1.70)">Yes <span style="color:#27AE60">1.70</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'btts',2.00)">No <span style="color:#27AE60">2.00</span></div>
       </div></div>
       <div class="bb-mkt"><div class="bb-mkt-hd">Total Goals</div><div class="bb-opts">
-        <div class="bb-opt" onclick="bbPick(this,'goals',1.75)">Over 2.5 <span style="color:var(--odds)">1.75</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'goals',1.95)">Under 2.5 <span style="color:var(--odds)">1.95</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'goals',2.90)">Over 3.5 <span style="color:var(--odds)">2.90</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'goals',1.75)">Over 2.5 <span style="color:#27AE60">1.75</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'goals',1.95)">Under 2.5 <span style="color:#27AE60">1.95</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'goals',2.90)">Over 3.5 <span style="color:#27AE60">2.90</span></div>
       </div></div>
       <div class="bb-mkt"><div class="bb-mkt-hd">Half Time Result</div><div class="bb-opts">
-        <div class="bb-opt" onclick="bbPick(this,'ht',2.20)">Man City HT <span style="color:var(--odds)">2.20</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'ht',2.30)">Draw HT <span style="color:var(--odds)">2.30</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'ht',4.50)">Arsenal HT <span style="color:var(--odds)">4.50</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'ht',2.20)">Man City HT <span style="color:#27AE60">2.20</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'ht',2.30)">Draw HT <span style="color:#27AE60">2.30</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'ht',4.50)">Arsenal HT <span style="color:#27AE60">4.50</span></div>
       </div></div>
       <div class="bb-mkt"><div class="bb-mkt-hd">First Goalscorer</div><div class="bb-opts">
-        <div class="bb-opt" onclick="bbPick(this,'scorer',6.50)">Haaland <span style="color:var(--odds)">6.50</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'scorer',8.00)">Saka <span style="color:var(--odds)">8.00</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'scorer',7.50)">Martinelli <span style="color:var(--odds)">7.50</span></div>
-        <div class="bb-opt" onclick="bbPick(this,'scorer',9.00)">De Bruyne <span style="color:var(--odds)">9.00</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'scorer',6.50)">Haaland <span style="color:#27AE60">6.50</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'scorer',8.00)">Saka <span style="color:#27AE60">8.00</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'scorer',7.50)">Martinelli <span style="color:#27AE60">7.50</span></div>
+        <div class="bb-opt" onclick="bbPick(this,'scorer',9.00)">De Bruyne <span style="color:#27AE60">9.00</span></div>
       </div></div>
     </div>
     <div class="bb-footer">
@@ -961,7 +965,7 @@ button,input,select{font-family:'Inter',sans-serif;}
       <div style="font-size:12px;color:var(--muted);margin-bottom:16px;" id="mpesa-s3-sub">Your balance has been updated</div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:20px;text-align:left;">
         <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;"><span style="color:var(--muted);">Reference</span><span style="font-weight:700;" id="mpesa-ref">PGK000000</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;"><span style="color:var(--muted);">Amount</span><span style="font-weight:700;color:var(--odds);" id="mpesa-confirmed-amt">KSh 100</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;"><span style="color:var(--muted);">Amount</span><span style="font-weight:700;color:#27AE60;" id="mpesa-confirmed-amt">KSh 100</span></div>
       </div>
       <button class="btn-mpesa-go" onclick="mpesaDone()">Done ✓</button>
     </div>
@@ -1866,7 +1870,7 @@ async function loadMyBets() {
             <div style="padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
               <div>
                 <div style="font-size:12px;font-weight:600;">${s.match_name||''}</div>
-                <div style="font-size:11px;color:var(--muted);margin-top:1px;">${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:var(--odds);font-weight:700;">${s.selection||''}</span></div>
+                <div style="font-size:11px;color:var(--muted);margin-top:1px;">${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:#27AE60;font-weight:700;">${s.selection||''}</span></div>
               </div>
               <div style="font-size:14px;font-weight:800;color:var(--gold);">${parseFloat(s.odds||0).toFixed(2)}</div>
             </div>`).join('')}
