@@ -145,11 +145,12 @@ body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;font-size
   </div>
 
   <!-- TABS -->
-  <div class="adm-tabs">
+  <div class="adm-tabs" style="overflow-x:auto;white-space:nowrap;">
     <div class="adm-tab active" onclick="setAdmTab(this,'tab-featured')">⭐ Featured</div>
     <div class="adm-tab" onclick="setAdmTab(this,'tab-matches')">📋 Matches</div>
     <div class="adm-tab" onclick="setAdmTab(this,'tab-events')">⚡ Events</div>
     <div class="adm-tab" onclick="setAdmTab(this,'tab-deposits')">💰 Deposits</div>
+    <div class="adm-tab" onclick="setAdmTab(this,'tab-users')">👥 Users</div>
   </div>
 
   <!-- TAB: FEATURED MATCH EDITOR -->
@@ -382,6 +383,83 @@ body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;font-size
     </div>
   </div>
 
+  <!-- TAB: USERS -->
+  <div id="tab-users" style="display:none;animation:fadeUp .2s ease;">
+    <div class="adm-section">
+      <div class="adm-section-hd">👥 All Users</div>
+      <div class="adm-panel" style="padding:10px 0;">
+        <div style="padding:0 14px 10px;">
+          <input class="f-input" type="text" id="user-search" placeholder="Search by name or phone..." oninput="searchUsers(this.value)" style="margin-bottom:0;"/>
+        </div>
+        <div id="users-list">
+          <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER DETAIL MODAL -->
+    <div id="user-detail" style="display:none;" class="adm-section">
+      <div class="adm-section-hd" id="user-detail-title">Edit User</div>
+      <div class="adm-panel">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👤</div>
+          <div>
+            <div style="font-size:14px;font-weight:800;" id="ud-name">—</div>
+            <div style="font-size:11px;color:var(--muted);" id="ud-phone">—</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;" id="ud-joined">—</div>
+          </div>
+        </div>
+
+        <!-- BALANCE -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Balance Management</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:12px;color:var(--muted);">Current Balance</span>
+            <span style="font-size:18px;font-weight:800;color:var(--green);" id="ud-balance">KSh 0</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <input class="f-input" type="number" id="ud-amt" placeholder="Amount (KSh)" style="flex:1;margin-bottom:0;"/>
+            <select class="f-select" id="ud-type" style="width:100px;flex-shrink:0;">
+              <option value="add">➕ Add</option>
+              <option value="subtract">➖ Deduct</option>
+              <option value="set">= Set</option>
+            </select>
+          </div>
+          <div class="f-row" style="margin-bottom:8px;">
+            <input class="f-input" type="text" id="ud-reason" placeholder="Reason (e.g. Manual deposit, Bonus, Correction)" style="margin-bottom:0;"/>
+          </div>
+          <button class="btn-gold" style="width:100%;" onclick="updateUserBalance()">💰 Update Balance</button>
+        </div>
+
+        <!-- STATUS -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Account Status</div>
+          <div style="display:flex;gap:8px;">
+            <button onclick="setUserStatus(true)" style="flex:1;padding:9px;border-radius:var(--r);background:rgba(39,174,96,.15);border:1.5px solid #27AE60;color:#27AE60;font-size:12px;font-weight:700;cursor:pointer;">✅ Active</button>
+            <button onclick="setUserStatus(false)" style="flex:1;padding:9px;border-radius:var(--r);background:rgba(196,30,30,.15);border:1.5px solid var(--red);color:var(--red);font-size:12px;font-weight:700;cursor:pointer;">🚫 Block</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5;">Blocking prevents the user from logging in or placing bets.</div>
+        </div>
+
+        <!-- VIP POINTS -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">VIP Points</div>
+          <div style="display:flex;gap:6px;">
+            <input class="f-input" type="number" id="ud-vip" placeholder="New VIP points" style="flex:1;margin-bottom:0;"/>
+            <button onclick="updateVIP()" style="padding:10px 14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0;">Set</button>
+          </div>
+        </div>
+
+        <!-- BET HISTORY -->
+        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Recent Bets</div>
+        <div id="ud-bets">
+          <div style="font-size:12px;color:var(--muted);text-align:center;padding:10px;">Loading...</div>
+        </div>
+
+        <button class="btn-outline" style="margin-top:10px;" onclick="document.getElementById('user-detail').style.display='none'">← Back to Users</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -418,12 +496,13 @@ function adminLogout() { document.getElementById('login-screen').style.display='
 function setAdmTab(el, tab) {
   document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  ['tab-featured','tab-matches','tab-events','tab-deposits'].forEach(t => {
+  ['tab-featured','tab-matches','tab-events','tab-deposits','tab-users'].forEach(t => {
     const el = document.getElementById(t); if(el) el.style.display = 'none';
   });
   document.getElementById(tab).style.display = 'block';
   if(tab === 'tab-matches') loadAllMatches();
   if(tab === 'tab-deposits') loadDeposits();
+  if(tab === 'tab-users') loadUsers();
 }
 
 // ── DEPOSITS ──
@@ -882,6 +961,152 @@ function showToast(msg, type='ok') {
   el.textContent = msg;
   el.className = `toast show ${type}`;
   setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ── USERS ──
+let allUsers = [];
+let selectedUser = null;
+
+async function loadUsers() {
+  try {
+    const { data, error } = await db.from('users').select('*').order('created_at', { ascending: false });
+    if(error) throw error;
+    allUsers = data || [];
+    renderUsers(allUsers);
+  } catch(e) { showToast('Error loading users: '+e.message,'err'); }
+}
+
+function renderUsers(users) {
+  const el = document.getElementById('users-list');
+  if(!el) return;
+  if(!users.length) { el.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No users yet</div>'; return; }
+  el.innerHTML = users.map(u => {
+    const joined = new Date(u.created_at).toLocaleDateString('en-KE', {day:'numeric',month:'short',year:'numeric'});
+    const statusColor = u.is_active === false ? 'var(--red)' : '#27AE60';
+    const statusText = u.is_active === false ? '🚫 Blocked' : '✅ Active';
+    return `
+      <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="openUserDetail('${u.id}')">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">👤</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.full_name||'Unknown'}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px;">+${u.phone} · Joined ${joined}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:12px;font-weight:800;color:#27AE60;">KSh ${parseFloat(u.balance||0).toLocaleString()}</div>
+          <div style="font-size:9px;font-weight:700;color:${statusColor};margin-top:2px;">${statusText}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function searchUsers(query) {
+  if(!query) { renderUsers(allUsers); return; }
+  const q = query.toLowerCase();
+  renderUsers(allUsers.filter(u =>
+    (u.full_name||'').toLowerCase().includes(q) ||
+    (u.phone||'').includes(q)
+  ));
+}
+
+async function openUserDetail(userId) {
+  selectedUser = allUsers.find(u => u.id === userId);
+  if(!selectedUser) return;
+  const joined = new Date(selectedUser.created_at).toLocaleString('en-KE', {dateStyle:'medium',timeStyle:'short'});
+  document.getElementById('user-detail').style.display = 'block';
+  document.getElementById('user-detail-title').textContent = selectedUser.full_name || 'User';
+  document.getElementById('ud-name').textContent = selectedUser.full_name || 'Unknown';
+  document.getElementById('ud-phone').textContent = '+' + selectedUser.phone;
+  document.getElementById('ud-joined').textContent = 'Joined: ' + joined;
+  document.getElementById('ud-balance').textContent = 'KSh ' + parseFloat(selectedUser.balance||0).toLocaleString();
+  document.getElementById('ud-vip').value = selectedUser.vip_points || 0;
+  // Scroll to detail
+  setTimeout(() => document.getElementById('user-detail').scrollIntoView({behavior:'smooth',block:'start'}), 100);
+  // Load bets
+  loadUserBets(userId);
+}
+
+async function loadUserBets(userId) {
+  try {
+    const { data } = await db.from('bets').select('*,bet_selections(*)').eq('user_id', userId).order('created_at',{ascending:false}).limit(5);
+    const el = document.getElementById('ud-bets');
+    if(!data||!data.length) { el.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px;">No bets placed yet</div>'; return; }
+    const sc = {won:'#27AE60',lost:'var(--red)',pending:'var(--gold)'};
+    el.innerHTML = data.map(b => {
+      const sel = b.bet_selections?.[0];
+      return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:11px;font-weight:700;">${sel?.match_name||'Bet'}</div>
+          <div style="font-size:10px;color:var(--muted);">${sel?.selection||''} · Odds ${b.total_odds}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;font-weight:800;color:${sc[b.status]||'var(--gold)'};">${b.status.toUpperCase()}</div>
+          <div style="font-size:10px;color:var(--muted);">KSh ${parseFloat(b.stake).toLocaleString()}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { console.error('Bets error:', e); }
+}
+
+async function updateUserBalance() {
+  if(!selectedUser) return;
+  const amt = parseFloat(document.getElementById('ud-amt').value);
+  const type = document.getElementById('ud-type').value;
+  const reason = document.getElementById('ud-reason').value.trim() || 'Admin adjustment';
+  if(!amt || amt <= 0) { showToast('Enter a valid amount','err'); return; }
+
+  let newBal;
+  const current = parseFloat(selectedUser.balance||0);
+  if(type === 'add') newBal = current + amt;
+  else if(type === 'subtract') newBal = Math.max(0, current - amt);
+  else newBal = amt; // set
+
+  if(!confirm(`${type === 'add' ? 'Add' : type === 'subtract' ? 'Deduct' : 'Set'} KSh ${amt.toLocaleString()} ${type === 'set' ? 'as new balance' : type === 'add' ? 'to' : 'from'} ${selectedUser.full_name}?\nNew balance: KSh ${newBal.toLocaleString()}`)) return;
+
+  try {
+    await db.from('users').update({ balance: newBal }).eq('id', selectedUser.id);
+    await db.from('transactions').insert({
+      user_id: selectedUser.id,
+      type: type === 'subtract' ? 'deduction' : 'deposit',
+      amount: amt,
+      balance_before: current,
+      balance_after: newBal,
+      status: 'completed',
+      description: `Admin: ${reason}`,
+    });
+    selectedUser.balance = newBal;
+    document.getElementById('ud-balance').textContent = 'KSh ' + newBal.toLocaleString();
+    document.getElementById('ud-amt').value = '';
+    // Update in allUsers array
+    const idx = allUsers.findIndex(u => u.id === selectedUser.id);
+    if(idx >= 0) allUsers[idx].balance = newBal;
+    showToast(`✅ Balance updated to KSh ${newBal.toLocaleString()}`, 'ok');
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function setUserStatus(active) {
+  if(!selectedUser) return;
+  const action = active ? 'activate' : 'block';
+  if(!confirm(`${active ? 'Activate' : 'Block'} ${selectedUser.full_name}?`)) return;
+  try {
+    await db.from('users').update({ is_active: active }).eq('id', selectedUser.id);
+    selectedUser.is_active = active;
+    const idx = allUsers.findIndex(u => u.id === selectedUser.id);
+    if(idx >= 0) allUsers[idx].is_active = active;
+    showToast(`✅ User ${active ? 'activated' : 'blocked'}`, 'ok');
+    renderUsers(allUsers);
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function updateVIP() {
+  if(!selectedUser) return;
+  const pts = parseInt(document.getElementById('ud-vip').value);
+  if(isNaN(pts) || pts < 0) { showToast('Enter valid VIP points','err'); return; }
+  try {
+    const tier = pts >= 10000 ? 'Diamond' : pts >= 4000 ? 'Platinum' : pts >= 2500 ? 'Gold' : pts >= 1000 ? 'Silver' : 'Bronze';
+    await db.from('users').update({ vip_points: pts, vip_tier: tier }).eq('id', selectedUser.id);
+    showToast(`✅ VIP updated to ${pts} pts (${tier})`, 'ok');
+  } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 </script>
 </body>
