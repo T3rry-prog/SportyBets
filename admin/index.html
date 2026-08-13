@@ -155,8 +155,61 @@ body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;font-size
   <!-- TAB: FEATURED MATCH EDITOR -->
   <div id="tab-featured" style="animation:fadeUp .2s ease;">
 
+    <!-- CREATE MANUAL MATCH -->
     <div class="adm-section">
-      <div class="adm-section-hd">Select Featured Match</div>
+      <div class="adm-section-hd">➕ Create & Feature a Match Manually</div>
+      <div class="adm-panel">
+        <div class="two-col">
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Home Team</label>
+            <input class="f-input" type="text" id="m-home" placeholder="e.g. Man City"/>
+          </div>
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Away Team</label>
+            <input class="f-input" type="text" id="m-away" placeholder="e.g. Arsenal"/>
+          </div>
+        </div>
+        <div class="f-row" style="margin-top:10px;">
+          <label class="f-label">League</label>
+          <input class="f-input" type="text" id="m-league" placeholder="e.g. Premier League"/>
+        </div>
+        <div class="two-col">
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">League Flag</label>
+            <input class="f-input" type="text" id="m-flag" placeholder="e.g. 🏴󠁧󠁢󠁥󠁮󠁧󠁿"/>
+          </div>
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Kick Off Time</label>
+            <input class="f-input" type="datetime-local" id="m-kickoff"/>
+          </div>
+        </div>
+        <div class="two-col" style="margin-top:10px;">
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Home Odds</label>
+            <input class="f-input" type="number" id="m-hodd" placeholder="e.g. 1.80" step="0.01"/>
+          </div>
+          <div class="f-row" style="margin-bottom:0;">
+            <label class="f-label">Draw Odds</label>
+            <input class="f-input" type="number" id="m-dodd" placeholder="e.g. 3.40" step="0.01"/>
+          </div>
+        </div>
+        <div class="f-row" style="margin-top:10px;">
+          <label class="f-label">Away Odds</label>
+          <input class="f-input" type="number" id="m-aodd" placeholder="e.g. 4.20" step="0.01"/>
+        </div>
+        <button class="btn-gold" style="margin-top:4px;" onclick="createManualMatch()">⭐ Create & Set as Featured</button>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div style="display:flex;align-items:center;gap:10px;margin:14px 10px 0;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <div style="font-size:10px;color:var(--muted);font-weight:700;">OR SELECT EXISTING MATCH</div>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+
+    <div class="adm-section">
+      <div class="adm-section-hd">Select from Existing Matches</div>
       <div class="adm-panel">
         <div id="match-selector">
           <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
@@ -448,7 +501,122 @@ async function rejectDeposit(txId) {
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
-// ── LOAD MATCH SELECTOR ──
+// ── CREATE MANUAL MATCH ──
+async function createManualMatch() {
+  const home = document.getElementById('m-home').value.trim();
+  const away = document.getElementById('m-away').value.trim();
+  const league = document.getElementById('m-league').value.trim();
+  const flag = document.getElementById('m-flag').value.trim();
+  const kickoff = document.getElementById('m-kickoff').value;
+  const hOdd = parseFloat(document.getElementById('m-hodd').value);
+  const dOdd = parseFloat(document.getElementById('m-dodd').value);
+  const aOdd = parseFloat(document.getElementById('m-aodd').value);
+
+  if(!home||!away){showToast('Enter both team names','err');return;}
+  if(!hOdd||!dOdd||!aOdd){showToast('Enter all three odds','err');return;}
+
+  try {
+    // Unfeature all existing
+    await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
+
+    // Create new match
+    const {data:nm,error} = await db.from('matches').insert({
+      sport:'football',
+      league: league||'Featured Match',
+      league_flag: flag||'⚽',
+      home_team:home, away_team:away,
+      home_score:0, away_score:0,
+      status:'upcoming',
+      kick_off: kickoff ? new Date(kickoff).toISOString() : new Date().toISOString(),
+      minute:0, is_featured:true,
+      home_form:['W','D','W','L','W'], away_form:['L','W','D','W','L'],
+    }).select().single();
+
+    if(error) throw error;
+
+    // Add 1X2 odds
+    await db.from('markets').insert([
+      {match_id:nm.id,market_type:'1x2',selection:'Home Win',odds:hOdd},
+      {match_id:nm.id,market_type:'1x2',selection:'Draw',odds:dOdd},
+      {match_id:nm.id,market_type:'1x2',selection:'Away Win',odds:aOdd},
+    ]);
+
+    // Derive and add all other markets
+    const derived = deriveAllMarkets(hOdd, dOdd, aOdd);
+    const mktRows = derived.map(m => ({match_id:nm.id,...m}));
+    await db.from('markets').insert(mktRows);
+
+    showToast(`✅ ${home} vs ${away} created and featured!`,'ok');
+
+    // Clear form
+    ['m-home','m-away','m-league','m-flag','m-kickoff','m-hodd','m-dodd','m-aodd'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.value='';
+    });
+
+    // Select the new match in editor
+    selectedMatch={id:nm.id,home,away,hs:0,as_:0,status:'upcoming',minute:0};
+    document.getElementById('feat-editor').style.display='block';
+    document.getElementById('feat-events-section').style.display='block';
+    document.getElementById('feat-editor-title').textContent=`${home} vs ${away}`;
+    document.getElementById('fe-home-name').textContent=home;
+    document.getElementById('fe-away-name').textContent=away;
+    document.getElementById('fe-home-score').textContent='0';
+    document.getElementById('fe-away-score').textContent='0';
+    document.getElementById('quick-match-name').textContent=`${home} vs ${away}`;
+    setStatus('upcoming');
+    loadMatchSelector();
+
+  } catch(e){showToast('Error: '+e.message,'err');}
+}
+
+// ── DERIVE ALL MARKETS ──
+function deriveAllMarkets(h, d, a) {
+  const mg=1/h+1/d+1/a;
+  const pH=(1/h)/mg,pD=(1/d)/mg,pA=(1/a)/mg;
+  const r=v=>Math.max(1.05,Math.round(v*100)/100);
+  const m=1.05;
+  const bal=Math.min(pH,pA)/Math.max(pH,pA);
+  const pO15=Math.min(0.92,0.55+bal*0.25),pO25=Math.min(0.78,0.35+bal*0.30);
+  const pO35=Math.min(0.55,0.20+bal*0.20),pO45=Math.min(0.35,0.10+bal*0.15);
+  const op=Math.min(0.75,Math.max(0.35,1-Math.abs(pH-pA)-pD*0.5));
+  const pHd=pH/(pH+pA),pAd=pA/(pH+pA);
+  const gH=pH*0.85+0.15,gA=pA*0.85+0.15;
+  return [
+    {market_type:'double_chance',selection:'1X',odds:r(m/(pH+pD))},
+    {market_type:'double_chance',selection:'X2',odds:r(m/(pD+pA))},
+    {market_type:'double_chance',selection:'12',odds:r(m/(pH+pA))},
+    {market_type:'dnb',selection:'Home DNB',odds:r(m/pHd)},
+    {market_type:'dnb',selection:'Away DNB',odds:r(m/pAd)},
+    {market_type:'btts',selection:'Yes',odds:Math.max(1.30,r(m/op))},
+    {market_type:'btts',selection:'No',odds:Math.max(1.30,r(m/(1-op)))},
+    {market_type:'over_under',selection:'Over 1.5',odds:r(m/pO15)},
+    {market_type:'over_under',selection:'Under 1.5',odds:Math.max(1.30,r(m/(1-pO15)))},
+    {market_type:'over_under',selection:'Over 2.5',odds:Math.max(1.20,r(m/pO25))},
+    {market_type:'over_under',selection:'Under 2.5',odds:Math.max(1.20,r(m/(1-pO25)))},
+    {market_type:'over_under',selection:'Over 3.5',odds:Math.max(1.40,r(m/pO35))},
+    {market_type:'over_under',selection:'Under 3.5',odds:r(m/(1-pO35))},
+    {market_type:'over_under',selection:'Over 4.5',odds:Math.max(2.00,r(m/pO45))},
+    {market_type:'over_under',selection:'Under 4.5',odds:r(m/(1-pO45))},
+    {market_type:'ht_result',selection:'HT Home',odds:Math.max(1.50,r(h*0.65+0.5))},
+    {market_type:'ht_result',selection:'HT Draw',odds:Math.max(1.80,r(d*0.55))},
+    {market_type:'ht_result',selection:'HT Away',odds:Math.max(2.00,r(a*0.65+0.5))},
+    {market_type:'asian_handicap',selection:'Home -0.5',odds:Math.max(1.30,r(m/(pH+pD*0.5)))},
+    {market_type:'asian_handicap',selection:'Away +0.5',odds:Math.max(1.30,r(m/(pA+pD*0.5)))},
+    {market_type:'asian_handicap',selection:'Home -1',odds:Math.max(1.50,r(m/pH))},
+    {market_type:'asian_handicap',selection:'Away +1',odds:Math.max(1.30,r(m/(pA+pD)))},
+    {market_type:'correct_score',selection:'1-0',odds:Math.max(3.00,r(m/(gH*(1-gA)*0.35)))},
+    {market_type:'correct_score',selection:'2-0',odds:Math.max(5.00,r(m/(gH*gH*(1-gA)*0.18)))},
+    {market_type:'correct_score',selection:'2-1',odds:Math.max(6.00,r(m/(gH*gH*gA*0.16)))},
+    {market_type:'correct_score',selection:'1-1',odds:Math.max(4.00,r(m/(gH*gA*0.22)))},
+    {market_type:'correct_score',selection:'0-1',odds:Math.max(4.00,r(m/((1-gH)*gA*0.35)))},
+    {market_type:'correct_score',selection:'0-2',odds:Math.max(6.00,r(m/((1-gH)*gA*gA*0.18)))},
+    {market_type:'correct_score',selection:'2-2',odds:Math.max(9.00,r(m/(gH*gH*gA*gA*0.10)))},
+    {market_type:'correct_score',selection:'0-0',odds:Math.max(6.00,r(m/(pD*0.25)))},
+    {market_type:'total_goals',selection:'0-1 Goals',odds:Math.max(2.50,r(m/(1-pO15)))},
+    {market_type:'total_goals',selection:'2-3 Goals',odds:Math.max(1.60,r(m/(pO15-pO35)))},
+    {market_type:'total_goals',selection:'4+ Goals',odds:Math.max(2.20,r(m/pO35))},
+  ];
+}
 async function loadMatchSelector() {
   try {
     const { data, error } = await db.from('matches').select('*').order('kick_off',{ascending:true});
