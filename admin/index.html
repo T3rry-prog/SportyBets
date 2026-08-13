@@ -255,7 +255,11 @@ body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;font-size
         <div class="two-col">
           <div class="f-row" style="margin-bottom:0;">
             <label class="f-label">Minute</label>
-            <input class="f-input" type="number" id="fe-minute" placeholder="e.g. 45" min="0" max="120"/>
+            <div style="display:flex;gap:5px;">
+              <input class="f-input" type="number" id="fe-minute" placeholder="e.g. 45" min="0" max="120" style="flex:1;"/>
+              <button onclick="bumpMinute(-1)" style="background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:0 10px;color:#fff;font-size:14px;cursor:pointer;">−</button>
+              <button onclick="bumpMinute(1)" style="background:var(--red);border:none;border-radius:var(--r);padding:0 10px;color:#fff;font-size:14px;cursor:pointer;">+</button>
+            </div>
           </div>
           <div class="f-row" style="margin-bottom:0;">
             <label class="f-label">Half</label>
@@ -565,6 +569,10 @@ async function createManualMatch() {
     document.getElementById('quick-match-name').textContent=`${home} vs ${away}`;
     setStatus('upcoming');
     loadMatchSelector();
+    // Auto scroll to editor
+    setTimeout(()=>{
+      document.getElementById('feat-editor').scrollIntoView({behavior:'smooth',block:'start'});
+    }, 300);
 
   } catch(e){showToast('Error: '+e.message,'err');}
 }
@@ -667,6 +675,13 @@ async function selectMatch(id, home, away, hs, as_, status, minute, isFeatured) 
   }
 }
 
+function bumpMinute(delta) {
+  const inp = document.getElementById('fe-minute');
+  const current = parseInt(inp.value)||0;
+  inp.value = Math.max(0, Math.min(120, current + delta));
+  if(selectedMatch) selectedMatch.minute = parseInt(inp.value);
+}
+
 // ── ADJUST SCORE ──
 async function adjustScore(team, delta) {
   if(!selectedMatch) { showToast('Select a match first','err'); return; }
@@ -692,12 +707,24 @@ async function adjustScore(team, delta) {
 }
 
 // ── SET STATUS ──
+let minuteTimer = null;
 function setStatus(s) {
   currentStatus = s;
   ['upcoming','live','finished'].forEach(x => {
     const el = document.getElementById('sb-'+x);
     if(el) el.className = 'status-btn' + (x===s?' sel-'+x:'');
   });
+  // Auto-increment minute when live
+  if(minuteTimer) clearInterval(minuteTimer);
+  if(s === 'live') {
+    minuteTimer = setInterval(async () => {
+      if(!selectedMatch) return;
+      selectedMatch.minute = (selectedMatch.minute||0) + 1;
+      document.getElementById('fe-minute').value = selectedMatch.minute;
+      await db.from('matches').update({minute:selectedMatch.minute}).eq('id',selectedMatch.id);
+    }, 60000); // every 60 seconds
+    showToast('⏱️ Minute auto-incrementing every 60s','ok');
+  }
 }
 
 // ── SAVE SCORE ──
