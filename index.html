@@ -1568,9 +1568,9 @@ function setWAmt(v){const i=document.getElementById('wf-amt');if(i)i.value=v;}
 async function handleWithdraw(){
   if(!currentUser){goPage('login');return;}
   const amt=parseFloat(document.getElementById('wf-amt')?.value);
-  if(!amt||amt<100){alert('Minimum withdrawal is KSh 100');return;}
-  if(!currentProfile||currentProfile.balance<amt){alert('Insufficient balance');return;}
-  alert(`Withdrawal of KSh ${amt} initiated. You will receive M-Pesa within 30 seconds.`);
+  if(!amt||amt<100){showNotif('Minimum withdrawal is KSh 100', 'warning');return;}
+  if(!currentProfile||currentProfile.balance<amt){showNotif('Insufficient balance for this withdrawal', 'error');return;}
+  showNotif(`Withdrawal of KSh ${amt} initiated. You will receive M-Pesa within 30 seconds.`, 'success');
 }
 
 // ── MPESA FLOW ──
@@ -1653,7 +1653,7 @@ async function mpesaConfirm(amt) {
 
     if(!data.success) {
       closeModal('mpesa-sheet');
-      alert('M-Pesa Error: ' + (data.error || 'STK push failed. Please try again.'));
+      showNotif('M-Pesa Error: ' + (data.error || 'STK push failed. Please try again.'), 'error');
       return;
     }
 
@@ -1678,18 +1678,18 @@ async function mpesaConfirm(amt) {
         } else if(tx?.status === 'failed') {
           clearInterval(poll);
           closeModal('mpesa-sheet');
-          alert('Payment was cancelled or failed. Please try again.');
+          showNotif('Payment was cancelled or failed. Please try again.', 'error');
         } else if(attempts >= 20) {
           clearInterval(poll);
           closeModal('mpesa-sheet');
-          alert('No response received. If you entered your PIN, your deposit will reflect shortly.');
+          showNotif('No response yet. If you entered your PIN, your balance will update shortly.', 'warning');
         }
       } catch(e) { console.error('Poll error:', e); }
     }, 3000);
 
   } catch(e) {
     closeModal('mpesa-sheet');
-    alert('Error: ' + e.message);
+    showNotif('Connection error. Please check your internet and try again.', 'error');
   }
 }
 
@@ -1742,7 +1742,33 @@ function mpesaDone() {
 }
 function closeBetSuccess() { document.getElementById('bet-success').classList.remove('open'); clearSlip(); goPage('home'); }
 
-// ── CASHOUT ──
+// ── NOTIFICATIONS (replace browser alerts) ──
+function showNotif(msg, type='info') {
+  // Remove existing
+  const old = document.getElementById('app-notif');
+  if(old) old.remove();
+
+  const colors = {
+    info: {bg:'var(--surface)',border:'var(--border)',text:'var(--text)',icon:'ℹ️'},
+    error: {bg:'rgba(232,0,45,.08)',border:'rgba(232,0,45,.3)',text:'var(--live)',icon:'❌'},
+    success: {bg:'rgba(39,174,96,.08)',border:'rgba(39,174,96,.3)',text:'#27AE60',icon:'✅'},
+    warning: {bg:'rgba(240,192,64,.08)',border:'rgba(240,192,64,.3)',text:'var(--gold)',icon:'⚠️'},
+  };
+  const c = colors[type] || colors.info;
+
+  const el = document.createElement('div');
+  el.id = 'app-notif';
+  el.style.cssText = `position:fixed;top:70px;left:50%;transform:translateX(-50%);width:calc(100% - 20px);max-width:460px;z-index:9999;background:${c.bg};border:1.5px solid ${c.border};border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:fadeUp .2s ease;`;
+  el.innerHTML = `
+    <div style="font-size:20px;flex-shrink:0;">${c.icon}</div>
+    <div style="flex:1;font-size:13px;font-weight:600;color:${c.text};line-height:1.5;">${msg}</div>
+    <div onclick="this.parentElement.remove()" style="font-size:18px;color:var(--muted);cursor:pointer;flex-shrink:0;margin-left:4px;">✕</div>
+  `;
+  document.body.appendChild(el);
+
+  // Auto dismiss after 4 seconds
+  setTimeout(() => { if(el.parentElement) el.remove(); }, 4000);
+}
 function openCashout(match, cashAmt, stake) {
   setEl('co-amt','KSh '+cashAmt.toLocaleString());
   setEl('co-detail',`Stake: KSh ${stake} · Profit locked in: KSh ${cashAmt-stake}`);
@@ -1769,7 +1795,7 @@ function bbPick(btn,mkt,val) {
   setEl('bb-ov',c?c.toFixed(2)+'x':'—'); setEl('bb-sel-count',`${k.length} selection${k.length!==1?'s':''}`);
 }
 function bbAddToSlip() {
-  const k=Object.keys(bbSel); if(!k.length){alert('Select at least one market first.');return;}
+  const k=Object.keys(bbSel); if(!k.length){showNotif('Select at least one market first.', 'warning');return;}
   const c=Object.values(bbSel).reduce((a,v)=>a*v,1);
   const mn=document.querySelector('.bb-m.active')?.textContent.replace('⚽ ','').trim()||'Builder Match';
   slip.push({id:Date.now(),matchId:'builder',marketType:'builder',matchName:mn,selection:k.join(' + '),val:c});
