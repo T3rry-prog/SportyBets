@@ -1000,7 +1000,7 @@ button,input,select{font-family:'Inter',sans-serif;}
 const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
 const { createClient } = supabase;
-const db = createClient(SUPA_URL, SUPA_KEY);
+const db = createClient(SUPA_URL, SUPA_KEY);;
 
 let currentUser = null;
 let currentProfile = null;
@@ -1545,27 +1545,16 @@ async function handleWithdraw(){
 }
 
 // ── MPESA FLOW ──
-function openMpesa(mode) {
+async function openMpesa(mode) {
   if(!currentUser){ sessionStorage.setItem('pendingAction',mode); goPage('login'); return; }
   mpesaMode=mode;
-  let amt=100;
-  if(mode==='bet') amt=parseFloat(document.getElementById('stake')?.value)||100;
-  else amt=parseFloat(document.getElementById('wf-amt')?.value)||100;
+  let amt = mode==='bet' ? (parseFloat(document.getElementById('stake')?.value)||100) : (parseFloat(document.getElementById('wf-amt')?.value)||100);
 
-  // Min deposit = 100
-  if(mode==='deposit' && amt < 100){
-    const inp=document.getElementById('wf-amt'); if(inp) inp.value=100;
-    amt=100;
-  }
-  // Min bet = 100, featured min = 500 (tracked by isFeaturedBet flag)
-  if(mode==='bet'){
-    const minBet = isFeaturedBet ? 500 : 100;
-    if(amt < minBet){
-      const inp=document.getElementById('stake'); if(inp){inp.value=minBet; calcPayout();}
-      amt=minBet;
-    }
-  }
+  // Enforce minimums
+  if(mode==='deposit' && amt < 100){ amt=100; const i=document.getElementById('wf-amt'); if(i) i.value=100; }
+  if(mode==='bet'){ const min=isFeaturedBet?500:100; if(amt<min){ amt=min; const i=document.getElementById('stake'); if(i){i.value=min;calcPayout();} } }
 
+  // Show M-Pesa sheet
   setEl('mpesa-amount','KSh '+parseInt(amt).toLocaleString());
   setEl('mpesa-confirmed-amt','KSh '+parseInt(amt).toLocaleString());
   document.getElementById('mpesa-s1').style.display='block';
@@ -1574,16 +1563,75 @@ function openMpesa(mode) {
   document.getElementById('mpesa-sheet').classList.add('open');
 }
 
-function mpesaConfirm() {
+async function mpesaConfirm() {
+  if(!currentUser || !currentProfile) return;
+  const amtText = document.getElementById('mpesa-amount')?.textContent || 'KSh 100';
+  const amt = parseFloat(amtText.replace('KSh ','').replace(/,/g,''));
+  const phone = currentProfile.phone;
+
   document.getElementById('mpesa-s1').style.display='none';
   document.getElementById('mpesa-s2').style.display='block';
-  document.getElementById('mpesa-ref').textContent='PGK'+Math.floor(Math.random()*900000+100000);
-  setTimeout(async()=>{
+
+  try {
+    // Call real Daraja STK push
+    const res = await fetch('https://nmcdwmmfdrazmufodirq.supabase.co/functions/v1/mpesa-stk', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPA_KEY}`,
+      },
+      body: JSON.stringify({
+        amount: amt,
+        phone: phone,
+        user_id: currentUser.id,
+        type: mpesaMode,
+      })
+    });
+
+    const data = await res.json();
+
+    if(!data.success) {
+      document.getElementById('mpesa-s2').style.display='none';
+      document.getElementById('mpesa-s1').style.display='block';
+      alert('Error: ' + (data.error || 'STK push failed. Please try again.'));
+      return;
+    }
+
+    // STK sent — wait for user to enter PIN
+    // Poll for confirmation every 3 seconds for up to 60 seconds
+    const txId = data.tx_id;
+    let attempts = 0;
+    const poll = setInterval(async () => {
+      attempts++;
+      try {
+        const { data: tx } = await db.from('transactions').select('status,balance_after,mpesa_code').eq('id', txId).single();
+        if(tx?.status === 'completed') {
+          clearInterval(poll);
+          document.getElementById('mpesa-s2').style.display='none';
+          document.getElementById('mpesa-s3').style.display='block';
+          setEl('mpesa-ref', tx.mpesa_code || 'CONFIRMED');
+          setEl('mpesa-confirmed-amt', 'KSh '+amt.toLocaleString());
+          // Update balance
+          if(tx.balance_after) {
+            currentProfile.balance = tx.balance_after;
+            updateProfileUI();
+          }
+          if(mpesaMode === 'bet') await recordBet();
+        } else if(tx?.status === 'failed' || attempts >= 20) {
+          clearInterval(poll);
+          document.getElementById('mpesa-s2').style.display='none';
+          document.getElementById('mpesa-s1').style.display='block';
+          if(tx?.status === 'failed') alert('Payment was cancelled or failed. Please try again.');
+          else alert('Payment timeout. If you entered your PIN, the deposit will reflect shortly.');
+        }
+      } catch(e) { console.error('Poll error:', e); }
+    }, 3000);
+
+  } catch(e) {
     document.getElementById('mpesa-s2').style.display='none';
-    document.getElementById('mpesa-s3').style.display='block';
-    if(mpesaMode==='bet') await recordBet();
-    else await recordDeposit();
-  },2000);
+    document.getElementById('mpesa-s1').style.display='block';
+    alert('Connection error. Please check your internet and try again.');
+  }
 }
 
 async function recordDeposit() {
