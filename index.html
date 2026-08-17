@@ -1165,14 +1165,34 @@ function renderFeatured(m) {
     ...evs.filter(e=>e.event_type==='yellow_card').map(e=>`<div class="ev-chip yellow">🟨 ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}</div>`),
     ...evs.filter(e=>e.event_type==='corner').map(e=>`<div class="ev-chip corner">🚩 ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}</div>`),
   ].join('');
-  const mkts12 = (m.markets||[]).filter(mk=>mk.market_type==='1x2');
-  const h=mkts12.find(mk=>mk.selection==='Home Win'), d=mkts12.find(mk=>mk.selection==='Draw'), a=mkts12.find(mk=>mk.selection==='Away Win');
+
+  const mkts = m.markets || [];
+  const mk12 = mkts.filter(mk=>mk.market_type==='1x2');
+  const mkCS = mkts.filter(mk=>mk.market_type==='correct_score');
+  const mkOU = mkts.filter(mk=>mk.market_type==='over_under');
+  const mkBTTS = mkts.filter(mk=>mk.market_type==='btts');
+  const h=mk12.find(mk=>mk.selection==='Home Win'), d=mk12.find(mk=>mk.selection==='Draw'), a=mk12.find(mk=>mk.selection==='Away Win');
   const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
   const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
+
+  // Build market sections
+  const oddsSection = (label, items, cols='odds-3') => items.length ? `
+    <div style="margin-bottom:10px;">
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">${label}</div>
+      <div class="${cols}">
+        ${items.map(mk=>`<div class="odd-btn${isSel(m.id,mk.market_type,mk.selection)?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','${mk.market_type}','${mn}','${mk.selection}',${mk.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">${mk.selection}</div><div class="odd-val" style="color:#fff;">${mk.odds}</div></div>`).join('')}
+      </div>
+    </div>` : '';
+
+  // Live timer
+  const liveTag = m.status==='live'
+    ? `<div class="feat-live"><div class="live-dot"></div>LIVE ${m.minute||0}'</div>`
+    : `<div class="feat-live" style="background:var(--gold);color:#000;">${fmtTime(m.kick_off)}</div>`;
+
   document.getElementById('featured-section').innerHTML = `
     <div class="featured-wrap">
       <div class="feat-badge">⭐ Featured</div>
-      ${m.status==='live'?`<div class="feat-live"><div class="live-dot"></div>LIVE ${m.minute||0}'</div>`:`<div class="feat-live" style="background:var(--gold);color:#000;">${fmtTime(m.kick_off)}</div>`}
+      ${liveTag}
       <div class="feat-bg">
         <div class="feat-teams">
           <div class="ft-team"><div class="ft-name">${m.home_team}</div><div class="ft-score">${m.home_score}</div></div>
@@ -1187,14 +1207,35 @@ function renderFeatured(m) {
         <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')">🔗 Share Match</button>
       </div>
       <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.1);">
-        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Match Result (1X2)</div>
-        <div class="odds-3">
-          ${h?`<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">1 Home</div><div class="odd-val" style="color:#fff;">${h.odds}</div></div>`:''}
-          ${d?`<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">X Draw</div><div class="odd-val" style="color:#fff;">${d.odds}</div></div>`:''}
-          ${a?`<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">2 Away</div><div class="odd-val" style="color:#fff;">${a.odds}</div></div>`:''}
-        </div>
+        ${oddsSection('Match Result (1X2)', mk12.filter(mk=>['Home Win','Draw','Away Win'].includes(mk.selection)))}
+        ${oddsSection('Both Teams to Score', mkBTTS, 'odds-2')}
+        ${oddsSection('Over / Under Goals', mkOU.filter(mk=>['Over 1.5','Under 1.5','Over 2.5','Under 2.5','Over 3.5','Under 3.5'].includes(mk.selection)))}
+        ${mkCS.length ? `
+        <div style="margin-bottom:6px;">
+          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Correct Score</div>
+          <div class="odds-4">
+            ${mkCS.slice(0,8).map(mk=>`<div class="odd-btn${isSel(m.id,'correct_score',mk.selection)?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','correct_score','${mn}','${mk.selection}',${mk.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">${mk.selection}</div><div class="odd-val" style="color:#fff;">${mk.odds}</div></div>`).join('')}
+          </div>
+        </div>` : ''}
       </div>
     </div>`;
+
+  // Start live minute timer if match is live
+  if(m.status === 'live') startFeaturedTimer(m.id, m.minute||0);
+}
+
+let featuredTimerInterval = null;
+function startFeaturedTimer(matchId, startMinute) {
+  if(featuredTimerInterval) clearInterval(featuredTimerInterval);
+  let minute = startMinute;
+  featuredTimerInterval = setInterval(() => {
+    minute++;
+    if(minute > 90) { clearInterval(featuredTimerInterval); return; }
+    const liveEl = document.querySelector('.feat-live');
+    if(liveEl && liveEl.querySelector('.live-dot')) {
+      liveEl.innerHTML = `<div class="live-dot"></div>LIVE ${minute}'`;
+    }
+  }, 60000); // every 60 seconds
 }
 
 function renderMatchList(cid, matches, isLive) {
