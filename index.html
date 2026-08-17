@@ -1167,7 +1167,7 @@ function renderFeatured(m) {
   ].join('');
   const mkts12 = (m.markets||[]).filter(mk=>mk.market_type==='1x2');
   const h=mkts12.find(mk=>mk.selection==='Home Win'), d=mkts12.find(mk=>mk.selection==='Draw'), a=mkts12.find(mk=>mk.selection==='Away Win');
-  const mn = `${m.home_team} vs ${m.away_team}`;
+  const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
   const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
   document.getElementById('featured-section').innerHTML = `
     <div class="featured-wrap">
@@ -1207,7 +1207,7 @@ function renderMatchList(cid, matches, isLive) {
 }
 
 function renderCard(m, isLive) {
-  const mn = `${m.home_team} vs ${m.away_team}`;
+  const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
   const mk12 = (m.markets||[]).filter(x=>x.market_type==='1x2');
   const h=mk12.find(x=>x.selection==='Home Win'), d=mk12.find(x=>x.selection==='Draw'), a=mk12.find(x=>x.selection==='Away Win');
   const hasMkts = (m.markets||[]).length > 3;
@@ -1295,13 +1295,13 @@ function setEl(id,v) { const el=document.getElementById(id); if(el) el.textConte
 
 // ── BET SLIP ──
 function addOdd(btn, matchId, marketType, matchName, selection, val) {
+  const decodedName = matchName.replace(/&#39;/g,"'");
   const was = btn.classList.contains('sel');
   slip = slip.filter(s=>!(s.matchId===matchId&&s.marketType===marketType));
   document.querySelectorAll(`[onclick*="'${matchId}','${marketType}'"]`).forEach(b=>b.classList.remove('sel'));
-  if(!was) { btn.classList.add('sel'); slip.push({id:Date.now(),matchId,marketType,matchName,selection,val:parseFloat(val)}); }
+  if(!was) { btn.classList.add('sel'); slip.push({id:Date.now(),matchId,marketType,matchName:decodedName,selection,val:parseFloat(val)}); }
   if(!slip.some(s=>s.matchId==='featured')) {
     isFeaturedBet=false;
-    // Reset stake buttons to normal
     const qsRow = document.getElementById('qs-row');
     if(qsRow) qsRow.innerHTML = `
       <div class="qs" onclick="setStake(100)">100</div>
@@ -1592,10 +1592,16 @@ async function loadWallet() {
     if(!c) return;
     if(!txs||!txs.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No transactions yet</div>';return;}
     c.innerHTML=txs.map(t=>{
-      const pos=['deposit','win','bonus','refund'].includes(t.type);
-      const col=pos?'var(--odds)':t.type==='withdrawal'?'var(--gold)':'var(--live)';
+      const failed = t.status==='failed' || t.status==='cancelled' ||
+        (t.description||'').toLowerCase().includes('cancel') ||
+        (t.description||'').toLowerCase().includes('error') ||
+        (t.description||'').toLowerCase().includes('failed');
+      const pos = ['deposit','win','bonus','refund'].includes(t.type) && !failed;
+      const col = failed?'var(--muted)':pos?'#27AE60':t.type==='withdrawal'?'var(--gold)':'var(--live)';
+      const sign = failed?'':pos?'+':'-';
       const dt=new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'});
-      return `<div class="tx-item"><div><div class="tx-desc">${t.description||t.type.charAt(0).toUpperCase()+t.type.slice(1)}</div><div class="tx-date">${dt}</div></div><div style="font-size:13px;font-weight:800;color:${col};">${pos?'+':'-'}KSh ${parseFloat(t.amount).toLocaleString()}</div></div>`;
+      const desc = failed?`❌ ${t.description||'Failed'}`:t.description||t.type.charAt(0).toUpperCase()+t.type.slice(1);
+      return `<div class="tx-item"><div><div class="tx-desc">${desc}</div><div class="tx-date">${dt}</div></div><div style="font-size:13px;font-weight:800;color:${col};">${sign}KSh ${parseFloat(t.amount).toLocaleString()}</div></div>`;
     }).join('');
   } catch(e){console.error('Wallet error:',e);}
 }
@@ -1816,8 +1822,9 @@ function mpesaDone() {
   if(mpesaMode==='bet') {
     setTimeout(()=>{ document.getElementById('bet-success').classList.add('open'); }, 200);
   } else {
-    // Deposit done — go to home
-    goPage('home');
+    // Reload profile to get updated balance
+    loadProfile().then(()=>{ updateAuthUI(); calcPayout(); });
+    goPage('wallet');
   }
 }
 function closeBetSuccess() { document.getElementById('bet-success').classList.remove('open'); clearSlip(); goPage('home'); }
