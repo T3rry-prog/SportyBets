@@ -929,7 +929,7 @@ button,input,select{font-family:'Inter',sans-serif;}
   <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ico">🏠</div>Home</div>
   <div class="bn-item" id="bn-live" onclick="goPage('live')"><div class="bn-ico">📺</div>Live</div>
   <div class="bn-item" id="bn-slip" onclick="goPage('slip')"><div class="bn-ico" style="position:relative;">🎯<span class="slip-badge" id="slip-badge">0</span></div>Slip</div>
-  <div class="bn-item" id="bn-promos" onclick="goPage('promos')"><div class="bn-ico">🎁</div>Promos</div>
+  <div class="bn-item" id="bn-mybets" onclick="currentUser?goPage('mybets'):goPage('login')"><div class="bn-ico">📋</div>My Bets</div>
   <div class="bn-item" id="bn-account" onclick="currentUser ? goPage('account') : goPage('login')"><div class="bn-ico">👤</div>Account</div>
 </div>
 
@@ -1067,7 +1067,7 @@ function toggleTheme() {
 
 // ── NAVIGATION ──
 const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets'];
-const BN_MAP = {home:'bn-home',live:'bn-live',slip:'bn-slip',promos:'bn-promos',account:'bn-account',dashboard:'bn-account',wallet:'bn-account',leaderboard:'bn-promos',mybets:'bn-account'};
+const BN_MAP = {home:'bn-home',live:'bn-live',slip:'bn-slip',promos:'bn-mybets',account:'bn-account',dashboard:'bn-account',wallet:'bn-account',leaderboard:'bn-mybets',mybets:'bn-mybets'};
 
 function goPage(p) {
   ALL_PAGES.forEach(n => { const el = document.getElementById('page-'+n); if(el) el.classList.remove('active'); });
@@ -1338,9 +1338,17 @@ function setEl(id,v) { const el=document.getElementById(id); if(el) el.textConte
 function addOdd(btn, matchId, marketType, matchName, selection, val) {
   const decodedName = matchName.replace(/&#39;/g,"'");
   const was = btn.classList.contains('sel');
+  // Remove this market from slip
   slip = slip.filter(s=>!(s.matchId===matchId&&s.marketType===marketType));
-  document.querySelectorAll(`[onclick*="'${matchId}','${marketType}'"]`).forEach(b=>b.classList.remove('sel'));
-  if(!was) { btn.classList.add('sel'); slip.push({id:Date.now(),matchId,marketType,matchName:decodedName,selection,val:parseFloat(val)}); }
+  // Deselect all buttons for same match+market by looking at slip state
+  document.querySelectorAll('.odd-btn.sel').forEach(b => {
+    const oc = b.getAttribute('onclick')||'';
+    if(oc.includes(`'${matchId}'`) && oc.includes(`'${marketType}'`)) b.classList.remove('sel');
+  });
+  if(!was) {
+    btn.classList.add('sel');
+    slip.push({id:Date.now(),matchId,marketType,matchName:decodedName,selection,val:parseFloat(val)});
+  }
   if(!slip.some(s=>s.matchId==='featured')) {
     isFeaturedBet=false;
     const qsRow = document.getElementById('qs-row');
@@ -2149,13 +2157,13 @@ async function loadMyBets() {
       el.innerHTML = `<div style="text-align:center;padding:40px 20px;"><div style="font-size:36px;margin-bottom:10px;">🎯</div><div style="font-size:13px;color:var(--muted);">No ${myBetsFilter === 'all' ? '' : myBetsFilter} bets yet</div></div>`;
       return;
     }
-    const statusColors = {won:'var(--odds)',lost:'var(--live)',pending:'var(--gold)',void:'var(--muted)'};
-    const statusBg = {won:'var(--odds-bg)',lost:'var(--live-bg)',pending:'rgba(240,192,64,.1)',void:'rgba(255,255,255,.05)'};
+    const statusColors = {won:'#27AE60',lost:'var(--live)',pending:'var(--gold)',void:'var(--muted)'};
+    const statusBg = {won:'rgba(39,174,96,.12)',lost:'var(--live-bg)',pending:'rgba(240,192,64,.1)',void:'rgba(255,255,255,.05)'};
     el.innerHTML = bets.map(b => {
       const sels = b.bet_selections || [];
       const statusCol = statusColors[b.status] || 'var(--muted)';
       const statusBgCol = statusBg[b.status] || 'rgba(255,255,255,.05)';
-      const profit = b.status==='won' ? `+KSh ${(b.actual_win-b.stake).toLocaleString()}` : b.status==='lost' ? `-KSh ${parseFloat(b.stake).toLocaleString()}` : `KSh ${parseFloat(b.potential_win).toLocaleString()}`;
+      const profit = b.status==='won' ? `+KSh ${parseFloat(b.actual_win||b.potential_win).toLocaleString()}` : b.status==='lost' ? `-KSh ${parseFloat(b.stake).toLocaleString()}` : `Possible: KSh ${parseFloat(b.potential_win).toLocaleString()}`;
       return `
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
           <div style="padding:12px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
