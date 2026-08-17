@@ -1377,16 +1377,28 @@ function setStake(v) {
 }
 
 // Validate stake before placing
-function validateAndPlaceBet() {
+// Validate stake before placing
+async function validateAndPlaceBet() {
   if(!currentUser){ showAuthPrompt('Sign in to place your bet'); return; }
   const stake=parseFloat(document.getElementById('stake')?.value)||0;
   const minBet = isFeaturedBet ? 500 : 100;
   if(stake < minBet){
     const inp=document.getElementById('stake');
     if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',1000); }
+    showNotif(`Minimum bet is KSh ${minBet}`, 'warning');
     return;
   }
-  openMpesa('bet');
+  const balance = parseFloat(currentProfile?.balance||0);
+  if(balance < stake){
+    // Not enough balance — open deposit
+    showNotif(`Insufficient balance. Please deposit at least KSh ${(stake-balance).toLocaleString()} more.`, 'warning');
+    setTimeout(()=>openMpesa('deposit'), 1500);
+    return;
+  }
+  // Has enough balance — place bet directly, no M-Pesa needed
+  await recordBet();
+  // Show success modal
+  document.getElementById('bet-success').classList.add('open');
 }
 function setSlipTab(el,mode) { slipMode=mode; document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); calcPayout(); }
 
