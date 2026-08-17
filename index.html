@@ -573,9 +573,8 @@ button,input,select{font-family:'Inter',sans-serif;}
         <div class="qs" onclick="setStake(2000)">2K</div>
       </div>
       <div class="pw-row"><span class="pw-l">Potential Win</span><span class="pw-v" id="pot-win">KSh 100</span></div>
-      <button class="btn-place" onclick="validateAndPlaceBet()">Place Bet via M-Pesa 📱</button>
-      <button class="btn-wa-place" onclick="validateAndPlaceBet()">💬 Bet via WhatsApp</button>
-      <div class="mpesa-note">M-Pesa prompt will be sent to your phone</div>
+      <button class="btn-place" id="place-bet-btn" onclick="validateAndPlaceBet()">Place Bet</button>
+      <div class="mpesa-note" id="bet-balance-note">Balance: KSh 0</div>
     </div>
   </div>
 </div>
@@ -1370,6 +1369,21 @@ function calcPayout() {
   setEl('tot-odds', odds.toFixed(2));
   setEl('pot-win', 'KSh '+Math.round(stake*odds).toLocaleString());
   setEl('sel-ct', slip.length);
+  // Update button text based on balance
+  const btn = document.getElementById('place-bet-btn');
+  if(btn) {
+    const bal = parseFloat(currentProfile?.balance||0);
+    if(!currentUser) btn.textContent = 'Sign In to Bet';
+    else if(bal >= stake) btn.textContent = `Place Bet — KSh ${stake.toLocaleString()}`;
+    else btn.textContent = `Deposit & Bet (Need KSh ${(stake-bal).toLocaleString()} more)`;
+  }
+  // Update balance note
+  const note = document.getElementById('bet-balance-note');
+  if(note) {
+    const bal = parseFloat(currentProfile?.balance||0);
+    note.textContent = `Available balance: KSh ${bal.toLocaleString()}`;
+    note.style.color = bal >= stake ? 'var(--muted)' : 'var(--live)';
+  }
 }
 function setStake(v) {
   const i=document.getElementById('stake');
@@ -1799,7 +1813,12 @@ async function recordBet() {
 
 function mpesaDone() {
   closeModal('mpesa-sheet');
-  if(mpesaMode==='bet') setTimeout(()=>document.getElementById('bet-success').classList.add('open'),200);
+  if(mpesaMode==='bet') {
+    setTimeout(()=>{ document.getElementById('bet-success').classList.add('open'); }, 200);
+  } else {
+    // Deposit done — go to home
+    goPage('home');
+  }
 }
 function closeBetSuccess() { document.getElementById('bet-success').classList.remove('open'); clearSlip(); goPage('home'); }
 
