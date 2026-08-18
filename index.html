@@ -1144,14 +1144,18 @@ function setDay(el) { document.querySelectorAll('.dtab').forEach(t=>t.classList.
 // ── LOAD MATCHES ──
 async function loadMatches() {
   try {
-    // Only get matches from last 3 hours onwards (exclude old finished games)
-    const cutoff = new Date(Date.now() - 3*60*60*1000).toISOString();
     const { data, error } = await db.from('matches')
       .select('*, markets(*), live_events(*)')
-      .or(`status.eq.live,status.eq.upcoming,and(status.eq.finished,kick_off.gte.${cutoff})`)
+      .in('status', ['live', 'upcoming', 'finished'])
       .order('kick_off', {ascending:true});
     if(error) throw error;
-    allMatches = data || [];
+    // Filter out old finished matches client-side
+    const cutoff = Date.now() - 3*60*60*1000;
+    allMatches = (data||[]).filter(m =>
+      m.status === 'live' ||
+      m.status === 'upcoming' ||
+      (m.status === 'finished' && new Date(m.kick_off).getTime() > cutoff)
+    );
     filterMatchesBySport();
     updateTicker(allMatches.filter(m=>m.status==='live'));
   } catch(e) {
@@ -1949,18 +1953,42 @@ function openCashout(matchOrRef, cashAmt, stake, betId) {
 }
 
 async function processCashout() {
+  // Prevent double cashout
+  const btn = document.querySelector('#co-modal .modal-go');
+  if(btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
   closeModal('co-modal');
   if(!currentUser||!currentProfile) return;
   try {
-    const newBal = (currentProfile.balance||0) + currentCashoutAmt;
+    // Check bet hasn't already been cashed out
     if(currentCashoutBetId) {
-      await db.from('bets').update({status:'cashed_out',actual_win:currentCashoutAmt,cashout_amount:currentCashoutAmt}).eq('id',currentCashoutBetId);
+      const {data:bet} = await db.from('bets').select('status').eq('id',currentCashoutBetId).single();
+      if(bet && bet.status !== 'pending') {
+        showNotif('This bet has already been settled or cashed out.', 'error');
+        return;
+      }
+      await db.from('bets').update({
+        status:'cashed_out',
+        actual_win:currentCashoutAmt,
+        cashout_amount:currentCashoutAmt
+      }).eq('id',currentCashoutBetId).eq('status','pending'); // only if still pending
     }
+    const newBal = (currentProfile.balance||0) + currentCashoutAmt;
     await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
-    await db.from('transactions').insert({user_id:currentUser.id,type:'win',amount:currentCashoutAmt,balance_before:currentProfile.balance,balance_after:newBal,status:'completed',description:`Cash out — KSh ${currentCashoutAmt.toLocaleString()}`});
-    currentProfile.balance = newBal;
+    await db.from('transactions').insert({
+      user_id:currentUser.id,
+      type:'win',
+      amount:currentCashoutAmt,
+      balance_before:currentProfile.balance,
+      balance_after:newBal,
+      status:'completed',
+      description:`Cash out — KSh ${currentCashoutAmt.toLocaleString()}`
+    });
+    const amt = currentCashoutAmt;
+    currentCashoutBetId = null;
+    currentCashoutAmt = 0;
     updateProfileUI();
-    showNotif(`✅ KSh ${currentCashoutAmt.toLocaleString()} cashed out to your wallet!`, 'success');
+    showNotif(`✅ KSh ${amt.toLocaleString()} cashed out to your wallet!`, 'success');
+    if(document.getElementById('page-mybets')?.classList.contains('active')) loadMyBets();
   } catch(e) { showNotif('Cash out failed: '+e.message,'error'); }
 }
 
