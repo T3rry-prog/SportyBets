@@ -421,104 +421,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 </head>
 <body>
 <!-- HEADER -->
-<div class="header">
-  <div onclick="goPage('home')" style="cursor:pointer;line-height:1;">
-  <div style="font-size:28px;font-weight:400;color:#fff;letter-spacing:.5px;font-family:'Fredoka One',cursive;">Sporty<span style="color:#FFD700;">Bet</span></div>
-  <div style="font-size:9px;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;font-family:Arial,sans-serif;">Your Bet, Your Rules</div>
-</div></div>
-  <div class="hdr-right">
-    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
-    <div id="hdr-guest" style="display:flex;gap:7px;">
-      <button class="btn-login" onclick="goPage('login')">Log In</button>
-      <button class="btn-join" onclick="goPage('register')">Join Free</button>
-    </div>
-    <div id="hdr-user" style="display:none;gap:7px;align-items:center;">
-      <div class="bal-chip" onclick="goPage('wallet')">KSh <strong id="hdr-bal">0</strong></div>
-      <button class="btn-login" onclick="goPage('account')">👤</button>
-    </div>
-  </div>
-</div>
-
-<!-- SPORT NAV -->
-<div class="sport-nav-wrap" id="sport-nav-wrap">
-  <div class="sport-nav">
-    <div class="sp active" onclick="setSport(this)">⚽ Football</div>
-    <div class="sp" onclick="setSport(this)" style="position:relative;">🏀 Basketball<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
-    <div class="sp" onclick="setSport(this)" style="position:relative;">🎾 Tennis<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
-    <div class="sp" onclick="setSport(this)" style="position:relative;">🏉 Rugby<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
-    <div class="sp" onclick="setSport(this)" style="position:relative;">🏏 Cricket<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
-    <div class="sp" onclick="setSport(this)" style="position:relative;">🥊 Boxing<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
-    <div class="sp" onclick="setSport(this)" style="position:relative;">🏒 Hockey<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
-    <div class="sp" onclick="setSport(this)" style="position:relative;">🎮 Esports<span style="position:absolute;top:-4px;right:-4px;background:var(--gold);color:#000;font-size:7px;font-weight:800;padding:1px 4px;border-radius:10px;">SOON</span></div>
-  </div>
-  <div class="ticker">
-    <div class="ticker-lbl">● LIVE</div>
-    <div class="ticker-body"><span class="ticker-inner" id="ticker-text"><span><span class="ticker-hi">Loading live scores...</span></span></span></div>
-  </div>
-</div>
-
-<!-- HOME -->
-<div id="page-home" class="page active">
-<div class="content">
-  <div class="hero">
-    <div class="hero-glow"></div>
-    <h1>Your Bet,<br/><span>Your Rules.</span></h1>
-    <p><strong style="color:rgba(255,255,255,.85);">Cash out early. Build custom bets. Withdraw in seconds.</strong></p>
-    <div class="hero-btns">
-      <button class="btn-hero" onclick="goPage('register')">Join Free</button>
-      <button class="btn-hero2" onclick="goPage('live')">📺 Watch Live</button>
-    </div>
-    <div class="hero-footer">
-      <div class="hf-badge"><div class="hf-dot"></div>M-Pesa Instant</div>
-      <div class="hf-badge">💬 WhatsApp Betting</div>
-      <div class="hf-badge">💰 Cash Out</div>
-    </div>
-  </div>
-  <div class="bonus-strip">
-    <span class="bs-text">🎁 100% bonus up to KSh 5,000 on first deposit</span>
-    <button class="bs-btn" onclick="goPage('register')">Claim Now</button>
-  </div>
-  <!-- GRAND PRIZE WINNERS -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
-    <div style="background:var(--red);padding:7px 13px;display:flex;align-items:center;gap:7px;">
-      <span style="font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;">🏆 Grand Prize Winners</span>
-    </div>
-    <div style="height:220px;overflow:hidden;position:relative;">
-      <div id="winners-scroll" style="position:absolute;width:100%;animation:winnersScroll 18s linear infinite;">
-        <!-- filled by JS -->
-      </div>
-    </div>
-  </div>
-
-  <div id="featured-section"></div>
-  <div class="jackpot" onclick="goPage('jackpot')" style="cursor:pointer;">
-    <div><div class="jp-tag">🏆 Midweek Jackpot</div><div class="jp-amt">KSh 12,500,000</div><div class="jp-sub">Predict 17 matches · Closes Wed 21:00 EAT</div></div>
-    <button class="btn-jp" onclick="event.stopPropagation();goPage('jackpot')">Enter →</button>
-  </div>
-  <div class="sec-hd">
-    <div class="sec-title"><div class="live-pill"><div class="live-dot"></div>LIVE</div>In-Play</div>
-    <div class="sec-link" onclick="goPage('live')">All Live →</div>
-  </div>
-  <div class="match-table" id="live-matches"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
-  <div class="sec-hd"><div class="sec-title">Upcoming Matches</div><div class="sec-link">View All →</div></div>
-  <div class="day-tabs">
-    <div class="dtab active" onclick="setDay(this)">Today</div>
-    <div class="dtab" onclick="setDay(this)">Tomorrow</div>
-    <div class="dtab" onclick="setDay(this)">Weekend</div>
-    <div class="dtab" onclick="setDay(this)">This Week</div>
-  </div>
-  <div class="match-table" id="upcoming-matches"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
-  <div class="wa-strip">
-    <div style="font-size:26px;flex-shrink:0;">💬</div>
-    <div><div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;">Bet via WhatsApp</div><div style="font-size:11px;color:rgba(255,255,255,.55);">No app · Instant M-Pesa</div></div>
-    <button class="btn-wa-sm" onclick="goPage('whatsapp')">Open →</button>
-  </div>
-  <div class="sec-hd" style="margin-bottom:0;"><div class="sec-title">🎁 Promotions</div><div class="sec-link" onclick="goPage('promos')">All →</div></div>
-  <div class="match-table">
-    <div class="promo-item"><div class="promo-ico">💰</div><div><div class="promo-t">100% First Deposit Bonus</div><div class="promo-s">Up to KSh 5,000 matched instantly</div></div><button class="promo-cta" onclick="goPage('register')">Claim</button></div>
-    <div class="promo-item"><div class="promo-ico">⚡</div><div><div class="promo-t">Accumulator Boost +50%</div><div class="promo-s">Extra on winning accas of 5+</div></div><button class="promo-cta">Opt In</button></div>
-    <div class="promo-item" style="border-bottom:none;"><div class="promo-ico">🔄</div><div><div class="promo-t">Friday Cash Back</div><div class="promo-s">10% back on losses every Friday</div></div><button class="promo-cta">More</button></div>
-  </div>
   <div class="footer" style="margin-top:10px;">
     <div class="footer-logo">SportyBet</div>
     <div class="footer-sub">The most advanced sports betting platform. 18+ only. Bet responsibly. Play within your limits.</div>
@@ -656,34 +558,11 @@ button,input,select{font-family:'Inter',sans-serif;}
 <div style="padding:10px 10px 76px;">
   <div style="font-size:18px;font-weight:800;margin-bottom:12px;">🎁 All Promotions</div>
   <div class="sec-hd" style="border-radius:var(--r) var(--r) 0 0;"><div class="sec-title">Active Offers</div></div>
-  <div class="match-table">
-    <div class="promo-item"><div class="promo-ico">💰</div><div><div class="promo-t">100% First Deposit Bonus</div><div class="promo-s">Up to KSh 5,000 matched. Min KSh 100.</div></div><button class="promo-cta" onclick="goPage('register')">Claim</button></div>
-    <div class="promo-item"><div class="promo-ico">⚡</div><div><div class="promo-t">Accumulator Boost +50%</div><div class="promo-s">5+ selection accas. Auto-applied.</div></div><button class="promo-cta">Opt In</button></div>
-    <div class="promo-item"><div class="promo-ico">🔄</div><div><div class="promo-t">Friday Cash Back</div><div class="promo-s">10% back on losses every Friday.</div></div><button class="promo-cta">More</button></div>
-    <div class="promo-item"><div class="promo-ico">⭐</div><div><div class="promo-t">VIP Points on Every Bet</div><div class="promo-s">Earn points. Bronze → Diamond.</div></div><button class="promo-cta">View</button></div>
-    <div class="promo-item"><div class="promo-ico">💬</div><div><div class="promo-t">WhatsApp First Bet Bonus</div><div class="promo-s">First WhatsApp bet = KSh 100 free bet.</div></div><button class="promo-cta" onclick="goPage('whatsapp')">Start</button></div>
     <div class="promo-item" style="border-bottom:none;"><div class="promo-ico">🏗️</div><div><div class="promo-t">Bet Builder Saturday Boost</div><div class="promo-s">4+ Builder every Saturday = 20% boost.</div></div><button class="promo-cta" onclick="goPage('builder')">Build</button></div>
   </div>
 </div>
 </div>
 
-<!-- WHATSAPP -->
-<div id="page-whatsapp" class="page">
-<div style="padding:10px 10px 76px;">
-  <div style="background:linear-gradient(115deg,#0D2A1A,#091F0E);border:1px solid #2E7D32;border-radius:var(--r);padding:22px 16px;text-align:center;margin-bottom:10px;">
-    <div style="font-size:50px;margin-bottom:10px;">💬</div>
-    <div style="font-size:20px;font-weight:800;margin-bottom:6px;color:#fff;">Bet via WhatsApp.<br/><span style="color:var(--wa);">No app. Just chat.</span></div>
-    <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:18px;">Place bets, check balance, withdraw — all from WhatsApp. Zero downloads.</div>
-    <button style="width:100%;padding:14px;border-radius:var(--r);background:var(--wa);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;">Open WhatsApp → +254 700 XOVA</button>
-    <button style="width:100%;padding:12px;border-radius:var(--r);background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);font-size:13px;font-weight:600;cursor:pointer;">Save Number</button>
-  </div>
-  <div style="font-size:15px;font-weight:800;margin-bottom:10px;">How It Works</div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">01</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Send BET to start</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Text BET to +254 700 XOVA. Bot replies with today's top matches.</div></div></div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">02</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Pick match & outcome</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Reply with match number then 1 (Home), X (Draw), or 2 (Away).</div></div></div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">03</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min KSh 100). Reply YES. M-Pesa STK push sent instantly.</div></div></div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:10px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">04</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Win & withdraw instantly</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">We notify you on results. Winnings credited to wallet immediately.</div></div></div>
-</div>
-</div>
 
 <!-- LOGIN -->
 <div id="page-login" class="page">
@@ -846,7 +725,7 @@ button,input,select{font-family:'Inter',sans-serif;}
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is Cash Out?<span class="faq-ico">+</span></div><div class="faq-a">Cash Out lets you settle a live bet before the match ends. Lock in profit before the final whistle.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What markets are available?<span class="faq-ico">+</span></div><div class="faq-a">1X2, Double Chance, BTTS, Over/Under (1.5/2.5/3.5), Half Time Result, Draw No Bet, Correct Score, Total Goals Bands, Asian Handicap. Use Bet Builder to combine any markets.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does Bet Builder work?<span class="faq-ico">+</span></div><div class="faq-a">Combine multiple markets from the same match — like Man City Win + Over 2.5 Goals + Haaland to Score — into one bet with a bigger combined odd.</div></div>
-  <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Minimum bet?<span class="faq-ico">+</span></div><div class="faq-a">Minimum stake is KSh 100 per bet on website and WhatsApp.</div></div>
+  <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Minimum bet?<span class="faq-ico">+</span></div><div class="faq-a">Minimum stake is KSh 100 per bet.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is SportyBet licensed?<span class="faq-ico">+</span></div><div class="faq-a">SportyBet is licensed and regulated by the relevant gaming regulatory authority.</div></div>
 </div>
 </div>
@@ -1117,7 +996,7 @@ function toggleTheme() {
 }
 
 // ── NAVIGATION ──
-const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets'];
+const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets'];
 const BN_MAP = {home:'bn-home',live:'bn-live',slip:'bn-slip',promos:'bn-mybets',account:'bn-account',dashboard:'bn-account',wallet:'bn-account',leaderboard:'bn-mybets',mybets:'bn-mybets'};
 
 function goPage(p) {
