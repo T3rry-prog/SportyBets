@@ -1949,6 +1949,9 @@ function openCashout(matchOrRef, cashAmt, stake, betId) {
   currentCashoutAmt = parseFloat(cashAmt);
   setEl('co-amt','KSh '+currentCashoutAmt.toLocaleString());
   setEl('co-detail',`Stake: KSh ${parseFloat(stake).toLocaleString()} · You receive: KSh ${currentCashoutAmt.toLocaleString()}`);
+  // Always reset button state when opening
+  const btn = document.querySelector('#co-modal .modal-go');
+  if(btn) { btn.disabled = false; btn.textContent = 'Cash Out Now'; }
   document.getElementById('co-modal').classList.add('open');
 }
 
