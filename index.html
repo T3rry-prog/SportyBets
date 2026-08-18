@@ -7,16 +7,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 [data-theme="dark"]{
   --bg:#1A0A0A;--surface:#241010;--card:#2D1515;--card2:#331818;
   --border:#3D2020;--border2:#4A2828;--text:#F5EEEE;--text2:#D4B8B8;--muted:#C49A9A;
-  --header:#110808;--sport-bg:#1E0F0F;--input-bg:#2D1515;--match-hover:#331818;
+  --header:#C41E1E;--sport-bg:#1E0F0F;--input-bg:#2D1515;--match-hover:#331818;
 }
 [data-theme="light"]{
   --bg:#F5F0F0;--surface:#FFFFFF;--card:#FDF8F8;--card2:#F5EDED;
   --border:#DCC8C8;--border2:#C8A8A8;--text:#1A0505;--text2:#3D1515;--muted:#6B3030;
-  --header:#8B0000;--sport-bg:#F8EDED;--input-bg:#FFFFFF;--match-hover:#F5EDED;
+  --header:#C41E1E;--sport-bg:#F8EDED;--input-bg:#FFFFFF;--match-hover:#F5EDED;
 }
 :root{
   --gold:#F0C040;--gold2:#E8A020;--odds:#FFFFFF;--odds-bg:rgba(255,255,255,.1);
@@ -34,7 +35,11 @@ button,input,select{font-family:'Inter',sans-serif;}
 @keyframes winnersScroll{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
 
 /* HEADER */
-.header{background:var(--header);border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;position:sticky;top:0;z-index:200;}
+.header{background:#C41E1E;border-bottom:none;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;position:sticky;top:0;z-index:200;}
+.btn-login{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:var(--r);padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;}
+.bal-chip{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;cursor:pointer;}
+.bal-chip strong{color:#fff;font-size:13px;font-weight:800;}
+.bal-label{font-size:10px;color:rgba(255,255,255,.7);font-weight:600;}
 .logo{display:flex;flex-direction:column;line-height:1;cursor:pointer;}
 .logo-main{font-size:22px;font-weight:800;color:var(--gold);letter-spacing:-.5px;}
 .logo-sub{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:1.2px;text-transform:uppercase;margin-top:2px;}
@@ -417,7 +422,10 @@ button,input,select{font-family:'Inter',sans-serif;}
 <body>
 <!-- HEADER -->
 <div class="header">
-  <div class="logo" onclick="goPage('home')"><div class="logo-main">SportyBet</div><div class="logo-sub">Your Bet, Your Rules</div></div>
+  <div onclick="goPage('home')" style="cursor:pointer;line-height:1;">
+  <div style="font-size:28px;font-weight:400;color:#fff;letter-spacing:.5px;font-family:'Fredoka One',cursive;">Sporty<span style="color:#FFD700;">Bet</span></div>
+  <div style="font-size:9px;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;font-family:Arial,sans-serif;">Your Bet, Your Rules</div>
+</div></div>
   <div class="hdr-right">
     <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
     <div id="hdr-guest" style="display:flex;gap:7px;">
@@ -483,9 +491,9 @@ button,input,select{font-family:'Inter',sans-serif;}
   </div>
 
   <div id="featured-section"></div>
-  <div class="jackpot">
+  <div class="jackpot" onclick="goPage('jackpot')" style="cursor:pointer;">
     <div><div class="jp-tag">🏆 Midweek Jackpot</div><div class="jp-amt">KSh 12,500,000</div><div class="jp-sub">Predict 17 matches · Closes Wed 21:00 EAT</div></div>
-    <button class="btn-jp">Enter →</button>
+    <button class="btn-jp" onclick="event.stopPropagation();goPage('jackpot')">Enter →</button>
   </div>
   <div class="sec-hd">
     <div class="sec-title"><div class="live-pill"><div class="live-dot"></div>LIVE</div>In-Play</div>
@@ -672,7 +680,7 @@ button,input,select{font-family:'Inter',sans-serif;}
   <div style="font-size:15px;font-weight:800;margin-bottom:10px;">How It Works</div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">01</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Send BET to start</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Text BET to +254 700 XOVA. Bot replies with today's top matches.</div></div></div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">02</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Pick match & outcome</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Reply with match number then 1 (Home), X (Draw), or 2 (Away).</div></div></div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">03</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min KSh 50). Reply YES. M-Pesa STK push sent instantly.</div></div></div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">03</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min KSh 100). Reply YES. M-Pesa STK push sent instantly.</div></div></div>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:10px;display:flex;gap:12px;"><div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">04</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Win & withdraw instantly</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">We notify you on results. Winnings credited to wallet immediately.</div></div></div>
 </div>
 </div>
@@ -838,7 +846,7 @@ button,input,select{font-family:'Inter',sans-serif;}
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is Cash Out?<span class="faq-ico">+</span></div><div class="faq-a">Cash Out lets you settle a live bet before the match ends. Lock in profit before the final whistle.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What markets are available?<span class="faq-ico">+</span></div><div class="faq-a">1X2, Double Chance, BTTS, Over/Under (1.5/2.5/3.5), Half Time Result, Draw No Bet, Correct Score, Total Goals Bands, Asian Handicap. Use Bet Builder to combine any markets.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does Bet Builder work?<span class="faq-ico">+</span></div><div class="faq-a">Combine multiple markets from the same match — like Man City Win + Over 2.5 Goals + Haaland to Score — into one bet with a bigger combined odd.</div></div>
-  <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Minimum bet?<span class="faq-ico">+</span></div><div class="faq-a">Minimum stake is KSh 50 per bet on website and WhatsApp.</div></div>
+  <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Minimum bet?<span class="faq-ico">+</span></div><div class="faq-a">Minimum stake is KSh 100 per bet on website and WhatsApp.</div></div>
   <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is SportyBet licensed?<span class="faq-ico">+</span></div><div class="faq-a">SportyBet is licensed and regulated by the relevant gaming regulatory authority.</div></div>
 </div>
 </div>
@@ -861,7 +869,7 @@ button,input,select{font-family:'Inter',sans-serif;}
   <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Last updated: 2025</div>
   <div class="legal-sec"><div class="legal-t">1. Eligibility</div><div class="legal-b">You must be at least 18 years of age to register and use SportyBet.</div></div>
   <div class="legal-sec"><div class="legal-t">2. Account Registration</div><div class="legal-b">One account per person. Providing false information results in immediate termination.</div></div>
-  <div class="legal-sec"><div class="legal-t">3. Deposits & Withdrawals</div><div class="legal-b">All payments via M-Pesa. No withdrawal fees. Amounts above KSh 50,000 require ID verification.</div></div>
+  <div class="legal-sec"><div class="legal-t">3. Deposits & Withdrawals</div><div class="legal-b">All payments via M-Pesa. No withdrawal fees. Amounts above KSh 100,000 require ID verification.</div></div>
   <div class="legal-sec"><div class="legal-t">4. Betting Rules</div><div class="legal-b">All bets final once confirmed. SportyBet reserves the right to void bets in cases of pricing errors.</div></div>
   <div class="legal-sec"><div class="legal-t">5. Responsible Gambling</div><div class="legal-b">We provide deposit limits, self-exclusion, and time alerts. Problem Gambling Helpline: 0800 723 253.</div></div>
 </div>
@@ -920,6 +928,49 @@ button,input,select{font-family:'Inter',sans-serif;}
   </div>
   <div id="mybets-list">
     <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+  </div>
+</div>
+</div>
+
+<!-- JACKPOT PAGE -->
+<div id="page-jackpot" class="page">
+<div style="padding:0 0 80px;">
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#1A1200,#2D1E00);padding:20px 16px 16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <div onclick="goPage('home')" style="color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;">←</div>
+      <div style="font-size:10px;font-weight:800;color:var(--gold2);text-transform:uppercase;letter-spacing:1px;">🏆 Midweek Jackpot</div>
+    </div>
+    <div style="font-size:32px;font-weight:800;color:var(--gold);margin-bottom:4px;">KSh 12,500,000</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.6);">Predict all 17 matches correctly to win the jackpot</div>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;">
+        <div style="font-size:18px;font-weight:800;color:#fff;" id="jp-selected">0/17</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);">Selected</div>
+      </div>
+      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;">
+        <div style="font-size:18px;font-weight:800;color:var(--gold);">KSh 100</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);">Entry Fee</div>
+      </div>
+      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;">
+        <div style="font-size:14px;font-weight:800;color:#FF6B6B;" id="jp-countdown">Loading...</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);">Closes In</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Games -->
+  <div style="padding:12px 12px 0;" id="jp-games-list">
+    <div style="text-align:center;padding:30px;"><div class="spinner"></div></div>
+  </div>
+
+  <!-- Submit button -->
+  <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;z-index:100;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:12px;color:var(--muted);">Entry fee: <strong style="color:var(--text);">KSh 100</strong></div>
+      <div style="font-size:12px;color:var(--muted);">Selected: <strong style="color:var(--gold);" id="jp-sel-count">0/17</strong></div>
+    </div>
+    <button id="jp-submit-btn" onclick="submitJackpot()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;opacity:.5;" disabled>Pick All 17 Matches to Enter</button>
   </div>
 </div>
 </div>
@@ -1146,16 +1197,18 @@ async function loadMatches() {
   try {
     const { data, error } = await db.from('matches')
       .select('*, markets(*), live_events(*)')
-      .in('status', ['live', 'upcoming', 'finished'])
       .order('kick_off', {ascending:true});
     if(error) throw error;
-    // Filter out old finished matches client-side
-    const cutoff = Date.now() - 3*60*60*1000;
-    allMatches = (data||[]).filter(m =>
-      m.status === 'live' ||
-      m.status === 'upcoming' ||
-      (m.status === 'finished' && new Date(m.kick_off).getTime() > cutoff)
-    );
+    const now = Date.now();
+    const threeHoursAgo = now - 3*60*60*1000;
+    allMatches = (data||[]).filter(m => {
+      const ko = new Date(m.kick_off).getTime();
+      if(m.is_featured) return true; // always show featured
+      if(m.status === 'live') return true;
+      if(m.status === 'upcoming') return ko > now; // only future upcoming
+      if(m.status === 'finished') return ko > threeHoursAgo; // finished within last 3 hours
+      return false;
+    });
     filterMatchesBySport();
     updateTicker(allMatches.filter(m=>m.status==='live'));
   } catch(e) {
@@ -1212,7 +1265,7 @@ function renderFeatured(m) {
         ${chips?`<div class="feat-events">${chips}</div>`:''}
       </div>
       <div class="feat-bottom">
-        <div class="feat-min">Min bet: <strong>KSh 500</strong></div>
+        <div class="feat-min">Min bet: <strong>KSh 1000</strong></div>
         <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')">🔗 Share Match</button>
       </div>
       <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.1);">
@@ -1969,50 +2022,46 @@ function openCashout(matchOrRef, cashAmt, stake, betId) {
 async function processCashout() {
   const btn = document.querySelector('#co-modal .modal-go');
   if(btn) { btn.disabled=true; btn.textContent='Processing...'; }
-
   if(!currentUser||!currentProfile) { closeModal('co-modal'); return; }
 
   const betId = currentCashoutBetId;
   const amt = currentCashoutAmt;
 
-  // Clear immediately to prevent double processing
+  // Clear IMMEDIATELY — prevents any second call
   currentCashoutBetId = null;
   currentCashoutAmt = 0;
   closeModal('co-modal');
 
+  // Must have a valid bet ID and amount
+  if(!betId || !amt) { showNotif('Invalid cashout.','error'); return; }
+
   try {
-    if(betId) {
-      // Check bet is still pending
-      const {data:bet} = await db.from('bets').select('status').eq('id',betId).single();
-      if(!bet || bet.status !== 'pending') {
-        showNotif('This bet has already been settled.', 'error');
-        return;
-      }
-      // Mark as cashed_out — bet is now OVER
-      const {error} = await db.from('bets').update({
-        status:'cashed_out',
-        actual_win: amt,
-        cashout_amount: amt
-      }).eq('id', betId).eq('status','pending');
-      if(error) throw error;
+    // Atomically update ONLY if status is still pending — returns updated rows
+    const {data:updated, error:updateErr} = await db.from('bets')
+      .update({status:'cashed_out', actual_win:amt, cashout_amount:amt})
+      .eq('id', betId)
+      .eq('status','pending')
+      .select('id');
+
+    if(updateErr) throw updateErr;
+
+    // If 0 rows updated — already cashed out or settled — DO NOT credit balance
+    if(!updated || updated.length === 0) {
+      showNotif('This bet was already settled. No changes made.', 'error');
+      return;
     }
 
-    // Credit balance
+    // Only reach here if bet was successfully marked cashed_out
     const newBal = (currentProfile.balance||0) + amt;
     await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
     await db.from('transactions').insert({
-      user_id:currentUser.id,
-      type:'win',
-      amount:amt,
-      balance_before:currentProfile.balance,
-      balance_after:newBal,
-      status:'completed',
-      description:`Cash out — KSh ${amt.toLocaleString()}`
+      user_id:currentUser.id, type:'win', amount:amt,
+      balance_before:currentProfile.balance, balance_after:newBal,
+      status:'completed', description:`Cash out — KSh ${amt.toLocaleString()}`
     });
     currentProfile.balance = newBal;
     updateProfileUI();
-    showNotif(`✅ KSh ${amt.toLocaleString()} cashed out! Bet ended.`, 'success');
-    // Reload My Bets to reflect new status
+    showNotif(`✅ KSh ${amt.toLocaleString()} cashed out! Bet is now closed.`, 'success');
     setTimeout(loadMyBets, 500);
   } catch(e) {
     showNotif('Cash out failed: '+e.message,'error');
@@ -2284,8 +2333,137 @@ const _origGoPage = goPage;
 goPage = function(p) {
   _origGoPage(p);
   if(p==='mybets') loadMyBets();
+  if(p==='jackpot') initJackpot();
 };
-// ── CHECK FOR WINS ──
+// ── JACKPOT ──
+let jpPicks = {}; // matchId -> selection
+const JP_CLOSE = new Date('2026-08-20T21:00:00+03:00'); // Wed 21:00 EAT — update weekly
+const JP_TOTAL = 17;
+
+function initJackpot() {
+  loadJackpotGames();
+  updateJackpotCountdown();
+  setInterval(updateJackpotCountdown, 60000);
+}
+
+function updateJackpotCountdown() {
+  const el = document.getElementById('jp-countdown');
+  if(!el) return;
+  const diff = JP_CLOSE - Date.now();
+  if(diff <= 0) { el.textContent = 'Closed'; return; }
+  const h = Math.floor(diff/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  el.textContent = h > 24 ? `${Math.floor(h/24)}d ${h%24}h` : `${h}h ${m}m`;
+}
+
+async function loadJackpotGames() {
+  const el = document.getElementById('jp-games-list');
+  if(!el) return;
+  // Use upcoming matches from allMatches, take up to 17
+  const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
+  if(!games.length) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;font-size:13px;color:var(--muted);">No upcoming matches available.<br/>Check back later or sync matches.</div>';
+    return;
+  }
+  renderJackpotGames(games);
+}
+
+function renderJackpotGames(games) {
+  const el = document.getElementById('jp-games-list');
+  if(!el) return;
+  el.innerHTML = games.map((m,i) => {
+    const mkts = (m.markets||[]).filter(x=>x.market_type==='1x2');
+    const h = mkts.find(x=>x.selection==='Home Win');
+    const d = mkts.find(x=>x.selection==='Draw');
+    const a = mkts.find(x=>x.selection==='Away Win');
+    const pick = jpPicks[m.id];
+    return `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
+      <div style="padding:8px 12px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);">MATCH ${i+1} · ${m.league_flag||'⚽'} ${m.league}</div>
+        <div style="font-size:10px;color:var(--muted);">${fmtTime(m.kick_off)}</div>
+      </div>
+      <div style="padding:10px 12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:13px;font-weight:700;flex:1;">${m.home_team}</div>
+          <div style="font-size:11px;color:var(--muted);padding:0 8px;">vs</div>
+          <div style="font-size:13px;font-weight:700;flex:1;text-align:right;">${m.away_team}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">
+          <button onclick="jpPick('${m.id}','1','${i}')" id="jp-${m.id}-1" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='1'?'var(--gold)':'var(--border)'};background:${pick==='1'?'var(--gold)':'var(--card)'};color:${pick==='1'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
+            <div style="font-size:9px;color:${pick==='1'?'rgba(0,0,0,.6)':'var(--muted)'};">1 Home</div>
+            <div>${h?h.odds:'—'}</div>
+          </button>
+          <button onclick="jpPick('${m.id}','X','${i}')" id="jp-${m.id}-X" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='X'?'var(--gold)':'var(--border)'};background:${pick==='X'?'var(--gold)':'var(--card)'};color:${pick==='X'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
+            <div style="font-size:9px;color:${pick==='X'?'rgba(0,0,0,.6)':'var(--muted)'};">X Draw</div>
+            <div>${d?d.odds:'—'}</div>
+          </button>
+          <button onclick="jpPick('${m.id}','2','${i}')" id="jp-${m.id}-2" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='2'?'var(--gold)':'var(--border)'};background:${pick==='2'?'var(--gold)':'var(--card)'};color:${pick==='2'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
+            <div style="font-size:9px;color:${pick==='2'?'rgba(0,0,0,.6)':'var(--muted)'};">2 Away</div>
+            <div>${a?a.odds:'—'}</div>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateJpCount();
+}
+
+function jpPick(matchId, sel, idx) {
+  jpPicks[matchId] = sel;
+  // Update button styles for this match
+  ['1','X','2'].forEach(s => {
+    const btn = document.getElementById(`jp-${matchId}-${s}`);
+    if(!btn) return;
+    const active = s === sel;
+    btn.style.background = active ? 'var(--gold)' : 'var(--card)';
+    btn.style.borderColor = active ? 'var(--gold)' : 'var(--border)';
+    btn.style.color = active ? '#000' : 'var(--text)';
+  });
+  updateJpCount();
+}
+
+function updateJpCount() {
+  const count = Object.keys(jpPicks).length;
+  const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
+  const total = games.length;
+  const txt = `${count}/${total}`;
+  setEl('jp-selected', txt);
+  setEl('jp-sel-count', txt);
+  const btn = document.getElementById('jp-submit-btn');
+  if(btn) {
+    const done = count >= total;
+    btn.disabled = !done;
+    btn.style.opacity = done ? '1' : '.5';
+    btn.textContent = done ? `Enter Jackpot — KSh 100` : `Pick All ${total} Matches to Enter`;
+  }
+}
+
+async function submitJackpot() {
+  if(!currentUser) { showNotif('Sign in to enter the jackpot','warning'); goPage('login'); return; }
+  if(!currentProfile || currentProfile.balance < 100) {
+    showNotif('Insufficient balance. Deposit at least KSh 100 first.','error');
+    return;
+  }
+  const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
+  if(Object.keys(jpPicks).length < games.length) {
+    showNotif('Please pick a result for all matches','warning'); return;
+  }
+  try {
+    const newBal = currentProfile.balance - 100;
+    await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
+    await db.from('transactions').insert({
+      user_id:currentUser.id, type:'bet', amount:100,
+      balance_before:currentProfile.balance, balance_after:newBal,
+      status:'completed', description:'Jackpot entry — Midweek Jackpot'
+    });
+    currentProfile.balance = newBal;
+    updateProfileUI();
+    jpPicks = {};
+    showNotif('🏆 Jackpot entry confirmed! Good luck!','success');
+    goPage('home');
+  } catch(e) { showNotif('Entry failed: '+e.message,'error'); }
+}
 async function checkForWins() {
   if(!currentUser) return;
   try {
