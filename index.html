@@ -1332,7 +1332,18 @@ function subscribeRealtime() {
 // ── HELPERS ──
 function fmtTime(iso) {
   if(!iso) return '—';
-  return new Date(iso).toLocaleTimeString('en-KE',{hour:'2-digit',minute:'2-digit',timeZone:'Africa/Nairobi'});
+  const d = new Date(iso);
+  const now = new Date();
+  const nairobi = {timeZone:'Africa/Nairobi'};
+  const time = d.toLocaleTimeString('en-KE',{hour:'2-digit',minute:'2-digit',...nairobi});
+  // Compare dates in Nairobi timezone
+  const todayStr = now.toLocaleDateString('en-KE', nairobi);
+  const matchStr = d.toLocaleDateString('en-KE', nairobi);
+  const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowStr = tomorrow.toLocaleDateString('en-KE', nairobi);
+  if(matchStr === todayStr) return `Today ${time}`;
+  if(matchStr === tomorrowStr) return `Tomorrow ${time}`;
+  return d.toLocaleDateString('en-KE',{weekday:'short',day:'numeric',month:'short',...nairobi})+' '+time;
 }
 function togglePanel(id) {
   const el = document.getElementById(id); if(!el) return;
@@ -1956,43 +1967,56 @@ function openCashout(matchOrRef, cashAmt, stake, betId) {
 }
 
 async function processCashout() {
-  // Prevent double cashout
   const btn = document.querySelector('#co-modal .modal-go');
-  if(btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+  if(btn) { btn.disabled=true; btn.textContent='Processing...'; }
+
+  if(!currentUser||!currentProfile) { closeModal('co-modal'); return; }
+
+  const betId = currentCashoutBetId;
+  const amt = currentCashoutAmt;
+
+  // Clear immediately to prevent double processing
+  currentCashoutBetId = null;
+  currentCashoutAmt = 0;
   closeModal('co-modal');
-  if(!currentUser||!currentProfile) return;
+
   try {
-    // Check bet hasn't already been cashed out
-    if(currentCashoutBetId) {
-      const {data:bet} = await db.from('bets').select('status').eq('id',currentCashoutBetId).single();
-      if(bet && bet.status !== 'pending') {
-        showNotif('This bet has already been settled or cashed out.', 'error');
+    if(betId) {
+      // Check bet is still pending
+      const {data:bet} = await db.from('bets').select('status').eq('id',betId).single();
+      if(!bet || bet.status !== 'pending') {
+        showNotif('This bet has already been settled.', 'error');
         return;
       }
-      await db.from('bets').update({
+      // Mark as cashed_out — bet is now OVER
+      const {error} = await db.from('bets').update({
         status:'cashed_out',
-        actual_win:currentCashoutAmt,
-        cashout_amount:currentCashoutAmt
-      }).eq('id',currentCashoutBetId).eq('status','pending'); // only if still pending
+        actual_win: amt,
+        cashout_amount: amt
+      }).eq('id', betId).eq('status','pending');
+      if(error) throw error;
     }
-    const newBal = (currentProfile.balance||0) + currentCashoutAmt;
+
+    // Credit balance
+    const newBal = (currentProfile.balance||0) + amt;
     await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
     await db.from('transactions').insert({
       user_id:currentUser.id,
       type:'win',
-      amount:currentCashoutAmt,
+      amount:amt,
       balance_before:currentProfile.balance,
       balance_after:newBal,
       status:'completed',
-      description:`Cash out — KSh ${currentCashoutAmt.toLocaleString()}`
+      description:`Cash out — KSh ${amt.toLocaleString()}`
     });
-    const amt = currentCashoutAmt;
-    currentCashoutBetId = null;
-    currentCashoutAmt = 0;
+    currentProfile.balance = newBal;
     updateProfileUI();
-    showNotif(`✅ KSh ${amt.toLocaleString()} cashed out to your wallet!`, 'success');
-    if(document.getElementById('page-mybets')?.classList.contains('active')) loadMyBets();
-  } catch(e) { showNotif('Cash out failed: '+e.message,'error'); }
+    showNotif(`✅ KSh ${amt.toLocaleString()} cashed out! Bet ended.`, 'success');
+    // Reload My Bets to reflect new status
+    setTimeout(loadMyBets, 500);
+  } catch(e) {
+    showNotif('Cash out failed: '+e.message,'error');
+  }
 }
 
 // ── MODALS ──
@@ -2215,13 +2239,18 @@ async function loadMyBets() {
       el.innerHTML = `<div style="text-align:center;padding:40px 20px;"><div style="font-size:36px;margin-bottom:10px;">🎯</div><div style="font-size:13px;color:var(--muted);">No ${myBetsFilter === 'all' ? '' : myBetsFilter} bets yet</div></div>`;
       return;
     }
-    const statusColors = {won:'#27AE60',lost:'var(--live)',pending:'var(--gold)',void:'var(--muted)'};
-    const statusBg = {won:'rgba(39,174,96,.12)',lost:'var(--live-bg)',pending:'rgba(240,192,64,.1)',void:'rgba(255,255,255,.05)'};
+    const statusColors = {won:'#27AE60',lost:'var(--live)',pending:'var(--gold)',void:'var(--muted)',cashed_out:'#2F80ED'};
+    const statusBg = {won:'rgba(39,174,96,.12)',lost:'var(--live-bg)',pending:'rgba(240,192,64,.1)',void:'rgba(255,255,255,.05)',cashed_out:'rgba(47,128,237,.1)'};
+    const statusLabel = {won:'WON',lost:'LOST',pending:'ACTIVE',void:'VOID',cashed_out:'CASHED OUT'};
     el.innerHTML = bets.map(b => {
       const sels = b.bet_selections || [];
       const statusCol = statusColors[b.status] || 'var(--muted)';
       const statusBgCol = statusBg[b.status] || 'rgba(255,255,255,.05)';
-      const profit = b.status==='won' ? `+KSh ${parseFloat(b.actual_win||b.potential_win).toLocaleString()}` : b.status==='lost' ? `-KSh ${parseFloat(b.stake).toLocaleString()}` : `Possible: KSh ${parseFloat(b.potential_win).toLocaleString()}`;
+      const label = statusLabel[b.status] || b.status.toUpperCase();
+      const profit = b.status==='won' ? `+KSh ${parseFloat(b.actual_win||b.potential_win).toLocaleString()}` 
+        : b.status==='lost' ? `-KSh ${parseFloat(b.stake).toLocaleString()}` 
+        : b.status==='cashed_out' ? `Cashed: KSh ${parseFloat(b.cashout_amount||b.actual_win||0).toLocaleString()}`
+        : `Possible: KSh ${parseFloat(b.potential_win).toLocaleString()}`;
       return `
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
           <div style="padding:12px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
@@ -2229,7 +2258,7 @@ async function loadMyBets() {
               <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">${b.bet_type} · ${b.reference||''}</div>
               <div style="font-size:12px;color:var(--muted);margin-top:2px;">${new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'})}</div>
             </div>
-            <div style="background:${statusBgCol};border-radius:4px;padding:4px 10px;font-size:11px;font-weight:800;color:${statusCol};">${b.status.toUpperCase()}</div>
+            <div style="background:${statusBgCol};border-radius:4px;padding:4px 10px;font-size:11px;font-weight:800;color:${statusCol};">${label}</div>
           </div>
           ${sels.map(s=>`
             <div style="padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
@@ -2244,6 +2273,7 @@ async function loadMyBets() {
             <div style="font-size:13px;font-weight:800;color:${statusCol};">${profit}</div>
           </div>
           ${b.status==='pending'?`<div style="padding:8px 13px;background:rgba(39,174,96,.08);border-top:1px solid rgba(39,174,96,.2);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#27AE60;">💰 Cash Out Available</span><button onclick="openCashout('${b.reference}',${Math.round(b.potential_win*0.75)},${b.stake},'${b.id}')" style="background:#27AE60;border:none;border-radius:4px;color:#fff;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;">Cash Out</button></div>`:''}
+          ${b.status==='cashed_out'?`<div style="padding:8px 13px;background:rgba(47,128,237,.08);border-top:1px solid rgba(47,128,237,.2);text-align:center;font-size:11px;color:#2F80ED;font-weight:600;">✅ Bet cashed out — KSh ${parseFloat(b.cashout_amount||b.actual_win||0).toLocaleString()} credited</div>`:''}
         </div>`;
     }).join('');
   } catch(e) { console.error('My bets error:',e); }
