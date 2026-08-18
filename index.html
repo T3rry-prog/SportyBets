@@ -393,8 +393,8 @@ button,input,select{font-family:'Inter',sans-serif;}
 .modal-amt{font-size:30px;font-weight:800;color:#27AE60;margin-bottom:4px;}
 .modal-detail{font-size:11px;color:var(--muted);margin-bottom:18px;}
 .modal-btns{display:flex;gap:8px;}
-.modal-keep{flex:1;padding:11px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;}
-.modal-go{flex:1;padding:11px;border-radius:var(--r);background:var(--odds);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
+.modal-keep{flex:1;padding:11px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:700;cursor:pointer;}
+.modal-go{flex:1;padding:11px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
 /* SUCCESS */
 .success-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;align-items:center;justify-content:center;padding:20px;}
 .success-modal.open{display:flex;}
@@ -938,12 +938,12 @@ button,input,select{font-family:'Inter',sans-serif;}
   <div class="modal-box">
     <div class="modal-ico">💰</div>
     <div class="modal-t">Cash Out Available</div>
-    <div class="modal-s">Lock in your profit before the final whistle</div>
+    <div class="modal-s">Lock in your winnings before the final whistle</div>
     <div class="modal-amt" id="co-amt">KSh 340</div>
     <div class="modal-detail" id="co-detail">Stake: KSh 200 · Profit: KSh 140</div>
     <div class="modal-btns">
       <button class="modal-keep" onclick="closeModal('co-modal')">Keep Bet</button>
-      <button class="modal-go" onclick="closeModal('co-modal')">Cash Out Now</button>
+      <button class="modal-go" onclick="processCashout()">Cash Out Now</button>
     </div>
   </div>
 </div>
@@ -1144,14 +1144,19 @@ function setDay(el) { document.querySelectorAll('.dtab').forEach(t=>t.classList.
 // ── LOAD MATCHES ──
 async function loadMatches() {
   try {
-    const { data, error } = await db.from('matches').select('*, markets(*), live_events(*)').order('kick_off', {ascending:true});
+    // Only get matches from last 3 hours onwards (exclude old finished games)
+    const cutoff = new Date(Date.now() - 3*60*60*1000).toISOString();
+    const { data, error } = await db.from('matches')
+      .select('*, markets(*), live_events(*)')
+      .or(`status.eq.live,status.eq.upcoming,and(status.eq.finished,kick_off.gte.${cutoff})`)
+      .order('kick_off', {ascending:true});
     if(error) throw error;
     allMatches = data || [];
     filterMatchesBySport();
     updateTicker(allMatches.filter(m=>m.status==='live'));
   } catch(e) {
     console.error('Match load error:', e);
-    const msg = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Check connection.</div>';
+    const msg = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches.</div>';
     const lm = document.getElementById('live-matches'); if(lm) lm.innerHTML = msg;
     const um = document.getElementById('upcoming-matches'); if(um) um.innerHTML = msg;
   }
@@ -1931,10 +1936,32 @@ function showNotif(msg, type='info') {
   // Auto dismiss after 4 seconds
   setTimeout(() => { if(el.parentElement) el.remove(); }, 4000);
 }
-function openCashout(match, cashAmt, stake) {
-  setEl('co-amt','KSh '+cashAmt.toLocaleString());
-  setEl('co-detail',`Stake: KSh ${stake} · Profit locked in: KSh ${cashAmt-stake}`);
+// ── CASHOUT ──
+let currentCashoutBetId = null;
+let currentCashoutAmt = 0;
+
+function openCashout(matchOrRef, cashAmt, stake, betId) {
+  currentCashoutBetId = betId || null;
+  currentCashoutAmt = parseFloat(cashAmt);
+  setEl('co-amt','KSh '+currentCashoutAmt.toLocaleString());
+  setEl('co-detail',`Stake: KSh ${parseFloat(stake).toLocaleString()} · You receive: KSh ${currentCashoutAmt.toLocaleString()}`);
   document.getElementById('co-modal').classList.add('open');
+}
+
+async function processCashout() {
+  closeModal('co-modal');
+  if(!currentUser||!currentProfile) return;
+  try {
+    const newBal = (currentProfile.balance||0) + currentCashoutAmt;
+    if(currentCashoutBetId) {
+      await db.from('bets').update({status:'cashed_out',actual_win:currentCashoutAmt,cashout_amount:currentCashoutAmt}).eq('id',currentCashoutBetId);
+    }
+    await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
+    await db.from('transactions').insert({user_id:currentUser.id,type:'win',amount:currentCashoutAmt,balance_before:currentProfile.balance,balance_after:newBal,status:'completed',description:`Cash out — KSh ${currentCashoutAmt.toLocaleString()}`});
+    currentProfile.balance = newBal;
+    updateProfileUI();
+    showNotif(`✅ KSh ${currentCashoutAmt.toLocaleString()} cashed out to your wallet!`, 'success');
+  } catch(e) { showNotif('Cash out failed: '+e.message,'error'); }
 }
 
 // ── MODALS ──
@@ -2185,7 +2212,7 @@ async function loadMyBets() {
             <div style="font-size:12px;color:var(--muted);">Stake: <strong style="color:var(--text);">KSh ${parseFloat(b.stake).toLocaleString()}</strong> · Odds: <strong style="color:var(--gold);">${parseFloat(b.total_odds).toFixed(2)}</strong></div>
             <div style="font-size:13px;font-weight:800;color:${statusCol};">${profit}</div>
           </div>
-          ${b.status==='pending'&&b.bet_type!=='accumulator'?`<div style="padding:8px 13px;background:var(--live-bg);border-top:1px solid rgba(232,0,45,.15);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:var(--live);">💰 Cash Out Available</span><button onclick="openCashout('${b.reference}',${Math.round(b.potential_win*0.75)},${b.stake})" style="background:var(--odds);border:none;border-radius:4px;color:#fff;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;">Cash Out</button></div>`:''}
+          ${b.status==='pending'?`<div style="padding:8px 13px;background:rgba(39,174,96,.08);border-top:1px solid rgba(39,174,96,.2);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#27AE60;">💰 Cash Out Available</span><button onclick="openCashout('${b.reference}',${Math.round(b.potential_win*0.75)},${b.stake},'${b.id}')" style="background:#27AE60;border:none;border-radius:4px;color:#fff;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;">Cash Out</button></div>`:''}
         </div>`;
     }).join('');
   } catch(e) { console.error('My bets error:',e); }
@@ -2223,13 +2250,25 @@ async function init() {
     currentUser=session.user;
     await loadProfile();
     updateAuthUI();
-    // Check for wins after short delay
     setTimeout(checkForWins, 2000);
   }
   await loadMatches();
   subscribeRealtime();
   renderWinners();
   checkDeepLink();
+
+  // Auto refresh matches every 5 minutes
+  setInterval(async () => {
+    await loadMatches();
+  }, 5 * 60 * 1000);
+
+  // Refresh when user comes back to tab
+  document.addEventListener('visibilitychange', async () => {
+    if(document.visibilityState === 'visible') {
+      await loadMatches();
+      if(currentUser) await loadProfile().then(updateAuthUI);
+    }
+  });
 }
 init();
 </script>
