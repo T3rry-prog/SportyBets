@@ -33,8 +33,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 @keyframes winnersScroll{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
-
-/* HEADER */
 .header{background:#C41E1E;border-bottom:none;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;position:sticky;top:0;z-index:200;}
 .btn-login{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:var(--r);padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;}
 .bal-chip{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;cursor:pointer;}
@@ -49,21 +47,17 @@ button,input,select{font-family:'Inter',sans-serif;}
 .btn-join{background:var(--gold);color:#000;border:none;border-radius:var(--r);padding:7px 13px;font-size:12px;font-weight:800;cursor:pointer;}
 .bal-chip{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:6px 11px;font-size:12px;color:var(--muted);cursor:pointer;}
 .bal-chip strong{color:var(--gold);}
-/* SPORT NAV */
 .sport-nav-wrap{position:sticky;top:57px;z-index:150;}
 .sport-nav{background:var(--sport-bg);border-bottom:1px solid var(--border);display:flex;gap:5px;padding:8px 12px;overflow-x:auto;white-space:nowrap;}
 .sport-nav::-webkit-scrollbar{display:none;}
 .sp{display:inline-flex;align-items:center;gap:4px;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0;cursor:pointer;border:1px solid var(--border);transition:all .12s;}
 .sp.active{background:var(--gold);color:#000;border-color:var(--gold);}
-/* TICKER */
 .ticker{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;height:26px;overflow:hidden;}
 .ticker-lbl{background:var(--live);color:#fff;font-size:9px;font-weight:800;padding:0 8px;height:100%;display:flex;align-items:center;letter-spacing:.5px;flex-shrink:0;}
 .ticker-body{overflow:hidden;flex:1;}
 .ticker-inner{display:inline-block;white-space:nowrap;animation:ticker 40s linear infinite;font-size:11px;color:var(--muted);}
 .ticker-hi{color:var(--text);font-weight:600;}
-/* CONTENT */
 .content{padding:10px 10px 76px;}
-/* FEATURED */
 .featured-wrap{border-radius:var(--r);overflow:hidden;margin-bottom:10px;position:relative;}
 .feat-badge{position:absolute;top:10px;left:10px;background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:3px 9px;border-radius:20px;z-index:2;}
 .feat-live{position:absolute;top:10px;right:10px;background:var(--live);color:#fff;font-size:9px;font-weight:800;padding:3px 9px;border-radius:20px;display:flex;align-items:center;gap:4px;z-index:2;}
@@ -77,6 +71,20 @@ button,input,select{font-family:'Inter',sans-serif;}
 .feat-meta{text-align:center;font-size:11px;color:rgba(255,255,255,.6);margin-bottom:10px;}
 .feat-events{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;padding:8px;background:rgba(0,0,0,.2);border-radius:var(--r);}
 .feat-bottom{padding:10px 14px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(0,0,0,.15);}
+/* FEATURED TIMER */
+.feat-timer-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;background:rgba(0,0,0,.2);border-top:1px solid rgba(255,255,255,.07);}
+.feat-timer-label{font-size:9px;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.feat-timer-units{display:flex;align-items:center;gap:6px;}
+.feat-timer-block{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 10px;text-align:center;min-width:44px;}
+.feat-timer-num{font-size:20px;font-weight:900;color:#fff;line-height:1;font-variant-numeric:tabular-nums;}
+.feat-timer-sub{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px;margin-top:2px;}
+.feat-timer-sep{font-size:18px;font-weight:900;color:rgba(255,255,255,.3);margin-bottom:6px;}
+/* live match clock */
+.feat-clock-wrap{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;background:rgba(255,51,51,.08);border-top:1px solid rgba(255,51,51,.2);}
+.feat-clock-min{font-size:26px;font-weight:900;color:var(--live);font-variant-numeric:tabular-nums;line-height:1;}
+.feat-clock-label{font-size:10px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px;}
+.feat-clock-dot{width:8px;height:8px;border-radius:50%;background:var(--live);animation:blink 1s ease-in-out infinite;flex-shrink:0;}
+.feat-ft{font-size:18px;font-weight:900;color:var(--muted);letter-spacing:2px;padding:10px 14px;text-align:center;border-top:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.2);}
 .feat-min{font-size:10px;color:rgba(255,255,255,.7);}
 .feat-min strong{color:var(--gold);}
 .feat-share{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 12px;font-size:10px;font-weight:700;color:#fff;cursor:pointer;}
@@ -85,12 +93,10 @@ button,input,select{font-family:'Inter',sans-serif;}
 .ev-chip.red{border-color:rgba(232,0,45,.4);color:#FF6B6B;}
 .ev-chip.yellow{border-color:rgba(240,192,64,.4);color:var(--gold);}
 .ev-chip.corner{border-color:rgba(47,128,237,.4);color:#7EC8FF;}
-/* SECTION HDR */
 .sec-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--red);border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;}
 .sec-title{font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:7px;}
 .sec-link{font-size:11px;font-weight:600;color:var(--gold);cursor:pointer;}
 .live-pill{display:inline-flex;align-items:center;gap:3px;background:var(--live);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;}
-/* MATCH TABLE */
 .match-table{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:10px;}
 .league-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:6px 13px;font-size:11px;font-weight:700;color:var(--text2);}
 .match-card{border-bottom:1px solid var(--border);}
@@ -107,7 +113,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .team-row{display:flex;align-items:center;justify-content:space-between;padding:2px 0;}
 .team-name{font-size:13px;font-weight:500;color:var(--text);}
 .team-sc{font-size:13px;font-weight:800;color:var(--live);}
-/* ODDS */
 .odds-section{margin-bottom:6px;}
 .odds-mkt-lbl{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
 .odds-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
@@ -120,23 +125,19 @@ button,input,select{font-family:'Inter',sans-serif;}
 .odd-val{font-size:14px;font-weight:800;color:var(--text);}
 .odd-btn.sel .odd-lbl{color:rgba(0,0,0,.6);}
 .odd-btn.sel .odd-val{color:#000;}
-/* Force odd value visible in both themes */
 [data-theme="dark"] .odd-val{color:#FFFFFF;}
 [data-theme="light"] .odd-val{color:#1A0505;}
-/* Featured match odds — always dark regardless of theme */
 .featured-wrap .odd-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);}
 .featured-wrap .odd-btn.sel{background:var(--gold);border-color:var(--gold);}
 .featured-wrap .odd-lbl{color:rgba(255,255,255,.7)!important;}
 .featured-wrap .odd-val{color:#fff!important;}
 .featured-wrap .odd-btn.sel .odd-lbl{color:rgba(0,0,0,.6)!important;}
 .featured-wrap .odd-btn.sel .odd-val{color:#000!important;}
-/* MORE MARKETS */
 .more-mkts{display:none;border-top:1px solid var(--border);background:var(--card);padding:10px 13px;}
 .more-mkts.open{display:block;}
 .mkt-group{margin-bottom:12px;}
 .mkt-group:last-child{margin-bottom:0;}
 .mkt-title{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border);}
-/* STATS */
 .stats-panel{display:none;border-top:1px solid var(--border);background:var(--card);padding:10px 13px;}
 .stats-panel.open{display:block;}
 .form-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
@@ -146,12 +147,10 @@ button,input,select{font-family:'Inter',sans-serif;}
 .fd.w{background:#1B5E20;color:#69F0AE;}
 .fd.d{background:#33290A;color:#FFD54F;}
 .fd.l{background:#4A0010;color:#FF8A80;}
-/* DAY TABS */
 .day-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-top:none;overflow:hidden;}
 .dtab{flex:1;text-align:center;padding:8px 4px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);transition:all .1s;}
 .dtab:last-child{border-right:none;}
 .dtab.active{background:var(--red);color:var(--gold);}
-/* HERO */
 .hero{background:linear-gradient(120deg,var(--red) 0%,#0A0505 100%);border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;padding:18px 16px 0;position:relative;overflow:hidden;}
 .hero-glow{position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(240,192,64,.18) 0%,transparent 70%);pointer-events:none;}
 .hero h1{font-size:23px;font-weight:800;line-height:1.15;margin-bottom:7px;color:#fff;}
@@ -166,33 +165,27 @@ button,input,select{font-family:'Inter',sans-serif;}
 .bonus-strip{background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.25);border-top:none;border-radius:0 0 var(--r) var(--r);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .bs-text{font-size:12px;font-weight:600;color:#27AE60;}
 .bs-btn{background:#27AE60;color:#fff;border:none;border-radius:4px;padding:5px 12px;font-size:11px;font-weight:800;cursor:pointer;}
-/* JACKPOT */
 .jackpot{background:linear-gradient(110deg,#1A1200,#221A00);border:1px solid rgba(240,192,64,.25);border-radius:var(--r);padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .jp-tag{font-size:10px;font-weight:800;color:var(--gold2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px;}
 .jp-amt{font-size:24px;font-weight:800;color:var(--gold);line-height:1;}
 .jp-sub{font-size:10px;color:var(--muted);margin-top:3px;}
 .btn-jp{background:var(--gold2);color:#fff;border:none;border-radius:var(--r);padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
-/* WA */
 .wa-strip{background:linear-gradient(110deg,#0D2A1A,#0A1F0D);border:1px solid #2E7D32;border-radius:var(--r);padding:13px 15px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
 .btn-wa-sm{background:var(--wa);color:#fff;border:none;border-radius:var(--r);padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
-/* PROMO */
 .promo-item{background:var(--surface);border-bottom:1px solid var(--border);padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .1s;}
 .promo-item:active{background:var(--match-hover);}
 .promo-ico{font-size:24px;flex-shrink:0;}
 .promo-t{font-size:13px;font-weight:700;margin-bottom:2px;}
 .promo-s{font-size:11px;color:var(--muted);}
 .promo-cta{margin-left:auto;background:var(--red2);border:1px solid var(--border2);color:var(--gold);font-size:11px;font-weight:700;padding:6px 12px;border-radius:var(--r);cursor:pointer;flex-shrink:0;}
-/* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--red);border-top:2px solid var(--gold);display:flex;z-index:200;}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;font-size:9px;font-weight:600;color:rgba(255,255,255,.6);cursor:pointer;gap:3px;transition:all .12s;position:relative;}
 .bn-item.active{color:var(--gold);}
 .bn-ico{font-size:19px;line-height:1;}
 .slip-badge{position:absolute;top:4px;right:calc(50% - 18px);background:var(--live);color:#fff;font-size:8px;font-weight:800;min-width:14px;height:14px;border-radius:7px;display:none;align-items:center;justify-content:center;padding:0 3px;}
 .slip-badge.show{display:flex;}
-/* PAGES */
 .page{display:none;}
 .page.active{display:block;animation:fadeUp .18s ease;}
-/* SLIP */
 .slip-wrap{padding:10px 10px 76px;}
 .slip-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
 .stab{flex:1;text-align:center;padding:9px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);border-bottom:2px solid transparent;transition:all .1s;}
@@ -227,7 +220,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .btn-place{width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;margin-bottom:8px;cursor:pointer;}
 .btn-wa-place{width:100%;padding:12px;border-radius:var(--r);background:var(--wa);border:none;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;}
 .mpesa-note{font-size:10px;color:var(--muted);text-align:center;margin-top:7px;}
-/* AUTH */
 .auth-wrap{padding:20px 14px 76px;}
 .auth-logo{text-align:center;font-size:26px;font-weight:800;color:var(--gold);margin-bottom:4px;}
 .auth-tagline{text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;}
@@ -255,7 +247,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .auth-foot{text-align:center;font-size:13px;color:var(--muted);}
 .auth-link{color:var(--gold);font-weight:700;cursor:pointer;}
 .err-box{background:var(--live-bg);border:1px solid rgba(232,0,45,.3);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--live);margin-bottom:13px;display:none;}
-/* DASHBOARD */
 .dash-wrap{padding:12px 10px 76px;}
 .dash-hero{background:linear-gradient(110deg,var(--red),#0A0505);border:1px solid var(--border);border-radius:var(--r);padding:18px 16px;margin-bottom:10px;}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;}
@@ -277,7 +268,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .s-lost{background:var(--live-bg);color:var(--live);}
 .s-pending{background:rgba(240,192,64,.12);color:var(--gold);}
 .bi-profit{font-size:12px;font-weight:700;margin-top:3px;}
-/* WALLET */
 .wallet-wrap{padding:12px 10px 76px;}
 .wallet-hero{background:linear-gradient(110deg,var(--red),#0A0505);border:1px solid var(--border);border-radius:var(--r);padding:20px 16px;text-align:center;margin-bottom:10px;}
 .wallet-lbl{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
@@ -292,7 +282,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .tx-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
 .tx-desc{font-size:12px;font-weight:600;margin-bottom:2px;}
 .tx-date{font-size:10px;color:var(--muted);}
-/* ACCOUNT */
 .account-wrap{padding:12px 10px 76px;}
 .vip-card{background:linear-gradient(110deg,#1A1200,#221800);border:1px solid rgba(240,192,64,.2);border-radius:var(--r);padding:16px;margin-bottom:10px;}
 .vip-tier{font-size:10px;font-weight:800;color:var(--gold2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;}
@@ -310,7 +299,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .acc-row:active{background:var(--match-hover);}
 .acc-row-l{font-size:13px;font-weight:600;}
 .acc-row-r{font-size:12px;color:var(--muted);}
-/* BUILDER */
 .builder-wrap{padding:10px 10px 76px;}
 .bb-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
 .bb-head{background:var(--red);padding:14px 15px;border-bottom:1px solid var(--border);}
@@ -331,7 +319,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .bb-ol{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:2px;}
 .bb-ov{font-size:26px;font-weight:800;color:var(--gold);}
 .btn-bb{background:var(--red2);border:1.5px solid var(--gold);color:var(--gold);padding:11px 20px;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;}
-/* LEADERBOARD */
 .lb-wrap{padding:10px 10px 76px;}
 .lb-list{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:10px;}
 .lb-row{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border);transition:background .1s;}
@@ -341,7 +328,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .lb-name{font-size:13px;font-weight:700;}
 .lb-meta{font-size:10px;color:var(--muted);margin-top:1px;}
 .lb-win{font-size:13px;font-weight:800;color:#27AE60;}
-/* LIVE */
 .live-wrap{padding:10px 10px 76px;}
 .stream-box{background:#000;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;}
 .stream-screen{height:160px;background:linear-gradient(135deg,#1A0505,#0E0505);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;cursor:pointer;}
@@ -354,24 +340,20 @@ button,input,select{font-family:'Inter',sans-serif;}
 .sli-soon{color:var(--muted);background:var(--card);border:1px solid var(--border);}
 .sli-name{font-size:12px;font-weight:600;flex:1;}
 .sli-score{font-size:12px;font-weight:800;color:var(--gold);}
-/* FAQ */
 .faq-wrap{padding:10px 10px 76px;}
 .faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;}
 .faq-q{padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
 .faq-ico{color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;}
 .faq-a{padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;}
 .faq-a.open{display:block;}
-/* CONTACT */
 .contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
 .cc-ico{font-size:26px;flex-shrink:0;}
 .cc-t{font-size:13px;font-weight:700;margin-bottom:3px;}
 .cc-s{font-size:11px;color:var(--muted);margin-bottom:10px;}
-/* LEGAL */
 .legal-wrap{padding:10px 10px 76px;}
 .legal-sec{margin-bottom:14px;}
 .legal-t{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;}
 .legal-b{font-size:12px;color:var(--muted);line-height:1.7;}
-/* MPESA */
 .mpesa-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;align-items:flex-end;justify-content:center;}
 .mpesa-overlay.open{display:flex;}
 .mpesa-sheet{background:var(--surface);border-radius:16px 16px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;animation:slideUp .25s ease;}
@@ -388,7 +370,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 .btn-mpesa-go{width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;}
 .btn-mpesa-cancel{width:100%;padding:11px;border-radius:var(--r);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;}
 .spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;}
-/* CASHOUT MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;align-items:center;justify-content:center;padding:20px;}
 .modal-bg.open{display:flex;}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 20px;width:100%;max-width:340px;text-align:center;}
@@ -400,16 +381,13 @@ button,input,select{font-family:'Inter',sans-serif;}
 .modal-btns{display:flex;gap:8px;}
 .modal-keep{flex:1;padding:11px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:700;cursor:pointer;}
 .modal-go{flex:1;padding:11px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
-/* SUCCESS */
 .success-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;align-items:center;justify-content:center;padding:20px;}
 .success-modal.open{display:flex;}
 .success-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 20px;width:100%;max-width:340px;text-align:center;}
-/* LOADING */
 .loading{display:flex;align-items:center;justify-content:center;padding:30px;color:var(--muted);font-size:12px;gap:8px;}
 .loading-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.4s ease-in-out infinite;}
 .loading-dot:nth-child(2){animation-delay:.2s;}
 .loading-dot:nth-child(3){animation-delay:.4s;}
-/* FOOTER */
 .footer{background:var(--red);border-top:1px solid var(--border);padding:16px 14px 80px;}
 .footer-logo{font-size:18px;font-weight:800;color:var(--gold);margin-bottom:6px;}
 .footer-sub{font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:12px;}
@@ -417,6 +395,15 @@ button,input,select{font-family:'Inter',sans-serif;}
 .footer-links span{font-size:11px;color:rgba(255,255,255,.6);cursor:pointer;text-decoration:underline;}
 .footer-links span:hover{color:#fff;}
 .footer-copy{font-size:10px;color:rgba(255,255,255,.5);line-height:1.6;}
+
+/* FEATURED MARKET TABS */
+.feat-mkt-tabs{display:flex;overflow-x:auto;background:rgba(0,0,0,.25);border-top:1px solid rgba(255,255,255,.08);}
+.feat-mkt-tabs::-webkit-scrollbar{display:none;}
+.fmt{padding:9px 15px;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;flex-shrink:0;transition:all .12s;}
+.fmt.active{color:var(--gold);border-bottom-color:var(--gold);}
+.feat-mkt-body{padding:12px 14px;background:rgba(0,0,0,.1);}
+.feat-mkt-pane{display:none;}
+.feat-mkt-pane.active{display:block;}
 </style>
 </head>
 <body>
@@ -478,18 +465,14 @@ button,input,select{font-family:'Inter',sans-serif;}
     <span class="bs-text">🎁 100% bonus up to KSh 5,000 on first deposit</span>
     <button class="bs-btn" onclick="goPage('register')">Claim Now</button>
   </div>
-  <!-- GRAND PRIZE WINNERS -->
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
     <div style="background:var(--red);padding:7px 13px;display:flex;align-items:center;gap:7px;">
       <span style="font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;">🏆 Grand Prize Winners</span>
     </div>
     <div style="height:220px;overflow:hidden;position:relative;">
-      <div id="winners-scroll" style="position:absolute;width:100%;animation:winnersScroll 18s linear infinite;">
-        <!-- filled by JS -->
-      </div>
+      <div id="winners-scroll" style="position:absolute;width:100%;animation:winnersScroll 18s linear infinite;"></div>
     </div>
   </div>
-
   <div id="featured-section"></div>
   <div class="jackpot" onclick="goPage('jackpot')" style="cursor:pointer;">
     <div><div class="jp-tag">🏆 Midweek Jackpot</div><div class="jp-amt">KSh 12,500,000</div><div class="jp-sub">Predict 17 matches · Closes Wed 21:00 EAT</div></div>
@@ -865,11 +848,11 @@ button,input,select{font-family:'Inter',sans-serif;}
 <!-- TERMS -->
 <div id="page-terms" class="page">
 <div class="legal-wrap">
-  <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Terms & Conditions</div>
+  <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Terms &amp; Conditions</div>
   <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Last updated: 2025</div>
   <div class="legal-sec"><div class="legal-t">1. Eligibility</div><div class="legal-b">You must be at least 18 years of age to register and use SportyBet.</div></div>
   <div class="legal-sec"><div class="legal-t">2. Account Registration</div><div class="legal-b">One account per person. Providing false information results in immediate termination.</div></div>
-  <div class="legal-sec"><div class="legal-t">3. Deposits & Withdrawals</div><div class="legal-b">All payments via M-Pesa. No withdrawal fees. Amounts above KSh 100,000 require ID verification.</div></div>
+  <div class="legal-sec"><div class="legal-t">3. Deposits &amp; Withdrawals</div><div class="legal-b">All payments via M-Pesa. No withdrawal fees. Amounts above KSh 100,000 require ID verification.</div></div>
   <div class="legal-sec"><div class="legal-t">4. Betting Rules</div><div class="legal-b">All bets final once confirmed. SportyBet reserves the right to void bets in cases of pricing errors.</div></div>
   <div class="legal-sec"><div class="legal-t">5. Responsible Gambling</div><div class="legal-b">We provide deposit limits, self-exclusion, and time alerts. Problem Gambling Helpline: 0800 723 253.</div></div>
 </div>
@@ -926,16 +909,13 @@ button,input,select{font-family:'Inter',sans-serif;}
     <div class="stab" onclick="setMyBetsTab(this,'lost')">Lost</div>
     <div class="stab" onclick="setMyBetsTab(this,'all')">All</div>
   </div>
-  <div id="mybets-list">
-    <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
-  </div>
+  <div id="mybets-list"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
 </div>
 </div>
 
 <!-- JACKPOT PAGE -->
 <div id="page-jackpot" class="page">
 <div style="padding:0 0 80px;">
-  <!-- Header -->
   <div style="background:linear-gradient(135deg,#1A1200,#2D1E00);padding:20px 16px 16px;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
       <div onclick="goPage('home')" style="color:rgba(255,255,255,.6);font-size:20px;cursor:pointer;">←</div>
@@ -944,27 +924,12 @@ button,input,select{font-family:'Inter',sans-serif;}
     <div style="font-size:32px;font-weight:800;color:var(--gold);margin-bottom:4px;">KSh 12,500,000</div>
     <div style="font-size:12px;color:rgba(255,255,255,.6);">Predict all 17 matches correctly to win the jackpot</div>
     <div style="display:flex;gap:10px;margin-top:12px;">
-      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;">
-        <div style="font-size:18px;font-weight:800;color:#fff;" id="jp-selected">0/17</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.5);">Selected</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;">
-        <div style="font-size:18px;font-weight:800;color:var(--gold);">KSh 100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.5);">Entry Fee</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;">
-        <div style="font-size:14px;font-weight:800;color:#FF6B6B;" id="jp-countdown">Loading...</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.5);">Closes In</div>
-      </div>
+      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;"><div style="font-size:18px;font-weight:800;color:#fff;" id="jp-selected">0/17</div><div style="font-size:10px;color:rgba(255,255,255,.5);">Selected</div></div>
+      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--gold);">KSh 100</div><div style="font-size:10px;color:rgba(255,255,255,.5);">Entry Fee</div></div>
+      <div style="flex:1;background:rgba(255,255,255,.08);border-radius:var(--r);padding:8px;text-align:center;"><div style="font-size:14px;font-weight:800;color:#FF6B6B;" id="jp-countdown">Loading...</div><div style="font-size:10px;color:rgba(255,255,255,.5);">Closes In</div></div>
     </div>
   </div>
-
-  <!-- Games -->
-  <div style="padding:12px 12px 0;" id="jp-games-list">
-    <div style="text-align:center;padding:30px;"><div class="spinner"></div></div>
-  </div>
-
-  <!-- Submit button -->
+  <div style="padding:12px 12px 0;" id="jp-games-list"><div style="text-align:center;padding:30px;"><div class="spinner"></div></div></div>
   <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;z-index:100;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
       <div style="font-size:12px;color:var(--muted);">Entry fee: <strong style="color:var(--text);">KSh 100</strong></div>
@@ -1002,7 +967,6 @@ button,input,select{font-family:'Inter',sans-serif;}
 <!-- MPESA SHEET -->
 <div class="mpesa-overlay" id="mpesa-sheet">
   <div class="mpesa-sheet">
-    <!-- STEP 0: Enter amount -->
     <div id="mpesa-s0" style="display:none;">
       <div class="mpesa-logo">💰</div>
       <div class="mpesa-title">Deposit via M-Pesa</div>
@@ -1025,7 +989,6 @@ button,input,select{font-family:'Inter',sans-serif;}
       <button class="btn-mpesa-go" onclick="proceedDeposit()">📱 Send M-Pesa Request</button>
       <button class="btn-mpesa-cancel" onclick="closeModal('mpesa-sheet')">Cancel</button>
     </div>
-    <!-- STEP 1: Sending STK -->
     <div id="mpesa-s1" style="display:none;text-align:center;">
       <div class="mpesa-logo">📱</div>
       <div class="mpesa-title">Sending M-Pesa Request...</div>
@@ -1034,7 +997,6 @@ button,input,select{font-family:'Inter',sans-serif;}
       <div class="spinner" style="margin:20px auto;"></div>
       <button class="btn-mpesa-cancel" onclick="closeModal('mpesa-sheet')">Cancel</button>
     </div>
-    <!-- STEP 2: Waiting for PIN -->
     <div id="mpesa-s2" style="display:none;text-align:center;padding:10px 0;">
       <div style="font-size:44px;margin-bottom:12px;">📲</div>
       <div style="font-size:16px;font-weight:800;margin-bottom:8px;">Check Your Phone</div>
@@ -1047,7 +1009,6 @@ button,input,select{font-family:'Inter',sans-serif;}
       <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Waiting for confirmation...</div>
       <button class="btn-mpesa-cancel" onclick="closeModal('mpesa-sheet')">Cancel</button>
     </div>
-    <!-- STEP 3: Confirmed -->
     <div id="mpesa-s3" style="display:none;text-align:center;">
       <div style="font-size:48px;margin-bottom:12px;">✅</div>
       <div style="font-size:18px;font-weight:800;margin-bottom:6px;">Payment Confirmed!</div>
@@ -1061,7 +1022,6 @@ button,input,select{font-family:'Inter',sans-serif;}
   </div>
 </div>
 
-
 <!-- BET SUCCESS -->
 <div class="success-modal" id="bet-success">
   <div class="success-box">
@@ -1069,27 +1029,13 @@ button,input,select{font-family:'Inter',sans-serif;}
     <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Bet Placed!</div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Your bet is confirmed and live.</div>
     <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:12px;text-align:left;">
-      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
-        <span style="color:var(--muted);">Reference</span>
-        <span style="font-weight:800;color:var(--gold);" id="bet-ref">#XO00000</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
-        <span style="color:var(--muted);">Stake</span>
-        <span style="font-weight:700;" id="bet-stake-display">KSh 0</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
-        <span style="color:var(--muted);">Total Odds</span>
-        <span style="font-weight:700;" id="bet-odds-display">0.00</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;">
-        <span style="color:var(--muted);font-weight:700;">Possible Win</span>
-        <span style="font-weight:800;color:#27AE60;font-size:16px;" id="bet-win-display">KSh 0</span>
-      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--muted);">Reference</span><span style="font-weight:800;color:var(--gold);" id="bet-ref">#XO00000</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--muted);">Stake</span><span style="font-weight:700;" id="bet-stake-display">KSh 0</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--muted);">Total Odds</span><span style="font-weight:700;" id="bet-odds-display">0.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;"><span style="color:var(--muted);font-weight:700;">Possible Win</span><span style="font-weight:800;color:#27AE60;font-size:16px;" id="bet-win-display">KSh 0</span></div>
     </div>
     <div id="bet-selections-display" style="background:rgba(39,174,96,.06);border:1px solid rgba(39,174,96,.2);border-radius:var(--r);padding:10px 13px;margin-bottom:12px;text-align:left;font-size:11px;color:var(--muted);line-height:1.8;"></div>
-    <div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:var(--r);padding:9px 13px;margin-bottom:14px;text-align:center;">
-      <div style="font-size:11px;font-weight:600;color:var(--gold);">🏆 Good luck! We'll notify you when results are in.</div>
-    </div>
+    <div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:var(--r);padding:9px 13px;margin-bottom:14px;text-align:center;"><div style="font-size:11px;font-weight:600;color:var(--gold);">🏆 Good luck! We'll notify you when results are in.</div></div>
     <button style="width:100%;padding:12px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:14px;font-weight:800;cursor:pointer;" onclick="closeBetSuccess()">Done ✓</button>
   </div>
 </div>
@@ -1098,127 +1044,17 @@ const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
 const { createClient } = supabase;
 const db = createClient(SUPA_URL, SUPA_KEY);;
-
-let currentUser = null;
-let currentProfile = null;
-let slip = [];
-let slipMode = 'single';
-let bbSel = {};
-let currentSport = 'football';
-let mpesaMode = 'deposit';
-let isDark = true;
-let allMatches = [];
-
-// ── THEME ──
-function toggleTheme() {
-  isDark = !isDark;
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
-}
-
-// ── NAVIGATION ──
-const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets'];
-const BN_MAP = {home:'bn-home',live:'bn-live',slip:'bn-slip',promos:'bn-mybets',account:'bn-account',dashboard:'bn-account',wallet:'bn-account',leaderboard:'bn-mybets',mybets:'bn-mybets'};
-
-function goPage(p) {
-  ALL_PAGES.forEach(n => { const el = document.getElementById('page-'+n); if(el) el.classList.remove('active'); });
-  const t = document.getElementById('page-'+p);
-  if(t) t.classList.add('active');
-  const sn = document.getElementById('sport-nav-wrap');
-  if(sn) sn.style.display = ['home','live'].includes(p) ? 'block' : 'none';
-  document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
-  if(BN_MAP[p]) document.getElementById(BN_MAP[p])?.classList.add('active');
-  window.scrollTo(0,0);
-  if(p === 'live') loadLivePage();
-  if(p === 'dashboard' && currentUser) loadDashboard();
-  if(p === 'wallet' && currentUser) loadWallet();
-}
-
-function setSport(el) {
-  document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
-  el.classList.add('active');
-  const sportText = el.textContent.trim();
-  const sportMap = {
-    '⚽ Football': 'football',
-    '🏀 Basketball': 'basketball',
-    '🎾 Tennis': 'tennis',
-    '🏉 Rugby': 'rugby',
-    '🏏 Cricket': 'cricket',
-    '🥊 Boxing': 'boxing',
-    '🏒 Hockey': 'hockey',
-    '🎮 Esports': 'esports',
-  };
-  currentSport = sportMap[sportText] || 'football';
-  filterMatchesBySport();
-}
-
-function filterMatchesBySport() {
-  const supported = ['football'];
-  if(!supported.includes(currentSport)) {
-    const comingSoon = `
-      <div style="text-align:center;padding:40px 20px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);margin-bottom:10px;">
-        <div style="font-size:40px;margin-bottom:12px;">${getSportEmoji(currentSport)}</div>
-        <div style="font-size:15px;font-weight:800;margin-bottom:6px;">${currentSport.charAt(0).toUpperCase()+currentSport.slice(1)} Coming Soon</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;">We're adding ${currentSport} markets very soon.</div>
-        <button onclick="switchToFootball()" style="background:var(--red);border:none;border-radius:var(--r);color:#fff;padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;">⚽ Back to Football</button>
-      </div>`;
-    const lm = document.getElementById('live-matches'); if(lm) lm.innerHTML = comingSoon;
-    const um = document.getElementById('upcoming-matches'); if(um) um.innerHTML = '';
-    document.getElementById('featured-section').innerHTML = '';
-    return;
-  }
-  // Football — render everything
-  const featured = allMatches.find(m => m.is_featured);
-  if(featured) renderFeatured(featured);
-  else document.getElementById('featured-section').innerHTML = '';
-  // Live section — exclude featured match
-  renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
-  renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
-}
-
-function getSportEmoji(sport) {
-  const map = {basketball:'🏀',tennis:'🎾',rugby:'🏉',cricket:'🏏',boxing:'🥊',hockey:'🏒',esports:'🎮'};
-  return map[sport] || '🏆';
-}
-
-function switchToFootball() {
-  const footballBtn = document.querySelector('.sp');
-  if(footballBtn) {
-    document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
-    footballBtn.classList.add('active');
-    currentSport = 'football';
-    filterMatchesBySport();
-  }
-}
-function setDay(el) { document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); }
-
-// ── LOAD MATCHES ──
-async function loadMatches() {
-  try {
-    const { data, error } = await db.from('matches')
-      .select('*, markets(*), live_events(*)')
-      .order('kick_off', {ascending:true});
-    if(error) throw error;
-    const now = Date.now();
-    const threeHoursAgo = now - 3*60*60*1000;
-    allMatches = (data||[]).filter(m => {
-      const ko = new Date(m.kick_off).getTime();
-      if(m.is_featured) return true; // always show featured
-      if(m.status === 'live') return true;
-      if(m.status === 'upcoming') return ko > now; // only future upcoming
-      if(m.status === 'finished') return ko > threeHoursAgo; // finished within last 3 hours
-      return false;
-    });
-    filterMatchesBySport();
-    updateTicker(allMatches.filter(m=>m.status==='live'));
-  } catch(e) {
-    console.error('Match load error:', e);
-    const msg = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches.</div>';
-    const lm = document.getElementById('live-matches'); if(lm) lm.innerHTML = msg;
-    const um = document.getElementById('upcoming-matches'); if(um) um.innerHTML = msg;
-  }
-}
-
+let currentUser=null,currentProfile=null,slip=[],slipMode='single',bbSel={},currentSport='football',mpesaMode='deposit',isDark=true,allMatches=[];
+function toggleTheme(){isDark=!isDark;document.documentElement.setAttribute('data-theme',isDark?'dark':'light');document.getElementById('theme-btn').textContent=isDark?'🌙':'☀️';}
+const ALL_PAGES=['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets','jackpot'];
+const BN_MAP={home:'bn-home',live:'bn-live',slip:'bn-slip',promos:'bn-mybets',account:'bn-account',dashboard:'bn-account',wallet:'bn-account',leaderboard:'bn-mybets',mybets:'bn-mybets'};
+function goPage(p){ALL_PAGES.forEach(n=>{const el=document.getElementById('page-'+n);if(el)el.classList.remove('active');});const t=document.getElementById('page-'+p);if(t)t.classList.add('active');const sn=document.getElementById('sport-nav-wrap');if(sn)sn.style.display=['home','live'].includes(p)?'block':'none';document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));if(BN_MAP[p])document.getElementById(BN_MAP[p])?.classList.add('active');window.scrollTo(0,0);if(p==='live')loadLivePage();if(p==='dashboard'&&currentUser)loadDashboard();if(p==='wallet'&&currentUser)loadWallet();}
+function setSport(el){document.querySelectorAll('.sp').forEach(s=>s.classList.remove('active'));el.classList.add('active');const sportText=el.textContent.trim();const sportMap={'⚽ Football':'football','🏀 Basketball':'basketball','🎾 Tennis':'tennis','🏉 Rugby':'rugby','🏏 Cricket':'cricket','🥊 Boxing':'boxing','🏒 Hockey':'hockey','🎮 Esports':'esports'};currentSport=sportMap[sportText]||'football';filterMatchesBySport();}
+function filterMatchesBySport(){const supported=['football'];if(!supported.includes(currentSport)){const cs=`<div style="text-align:center;padding:40px 20px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);margin-bottom:10px;"><div style="font-size:40px;margin-bottom:12px;">${getSportEmoji(currentSport)}</div><div style="font-size:15px;font-weight:800;margin-bottom:6px;">${currentSport.charAt(0).toUpperCase()+currentSport.slice(1)} Coming Soon</div><div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;">We're adding ${currentSport} markets very soon.</div><button onclick="switchToFootball()" style="background:var(--red);border:none;border-radius:var(--r);color:#fff;padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;">⚽ Back to Football</button></div>`;const lm=document.getElementById('live-matches');if(lm)lm.innerHTML=cs;const um=document.getElementById('upcoming-matches');if(um)um.innerHTML='';document.getElementById('featured-section').innerHTML='';return;}const featured=allMatches.find(m=>m.is_featured);if(featured)renderFeatured(featured);else document.getElementById('featured-section').innerHTML='';renderMatchList('live-matches',allMatches.filter(m=>m.status==='live'&&!m.is_featured),true);renderMatchList('upcoming-matches',allMatches.filter(m=>m.status==='upcoming'),false);}
+function getSportEmoji(sport){const map={basketball:'🏀',tennis:'🎾',rugby:'🏉',cricket:'🏏',boxing:'🥊',hockey:'🏒',esports:'🎮'};return map[sport]||'🏆';}
+function switchToFootball(){const fb=document.querySelector('.sp');if(fb){document.querySelectorAll('.sp').forEach(s=>s.classList.remove('active'));fb.classList.add('active');currentSport='football';filterMatchesBySport();}}
+function setDay(el){document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+async function loadMatches(){try{const{data,error}=await db.from('matches').select('*,markets(*),live_events(*)').order('kick_off',{ascending:true});if(error)throw error;const now=Date.now(),threeHoursAgo=now-3*60*60*1000;allMatches=(data||[]).filter(m=>{const ko=new Date(m.kick_off).getTime();if(m.is_featured)return true;if(m.status==='live')return true;if(m.status==='upcoming')return ko>now;if(m.status==='finished')return ko>threeHoursAgo;return false;});filterMatchesBySport();updateTicker(allMatches.filter(m=>m.status==='live'));}catch(e){console.error('Match load error:',e);const msg='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches.</div>';const lm=document.getElementById('live-matches');if(lm)lm.innerHTML=msg;const um=document.getElementById('upcoming-matches');if(um)um.innerHTML=msg;}}
 function renderFeatured(m) {
   const evs = m.live_events || [];
   const chips = [
@@ -1229,1287 +1065,26 @@ function renderFeatured(m) {
   ].join('');
 
   const mkts = m.markets || [];
-  const mk12 = mkts.filter(mk=>mk.market_type==='1x2');
-  const mkCS = mkts.filter(mk=>mk.market_type==='correct_score');
-  const mkOU = mkts.filter(mk=>mk.market_type==='over_under');
+  const mk12   = mkts.filter(mk=>mk.market_type==='1x2');
   const mkBTTS = mkts.filter(mk=>mk.market_type==='btts');
-  const h=mk12.find(mk=>mk.selection==='Home Win'), d=mk12.find(mk=>mk.selection==='Draw'), a=mk12.find(mk=>mk.selection==='Away Win');
+  const mkOU   = mkts.filter(mk=>mk.market_type==='over_under');
+  const mkCS   = mkts.filter(mk=>mk.market_type==='correct_score');
+  const mkDC   = mkts.filter(mk=>mk.market_type==='double_chance');
+  const mkHT   = mkts.filter(mk=>mk.market_type==='ht_result');
   const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
   const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
 
-  // Build market sections
-  const oddsSection = (label, items, cols='odds-3') => items.length ? `
-    <div style="margin-bottom:10px;">
-      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">${label}</div>
-      <div class="${cols}">
-        ${items.map(mk=>`<div class="odd-btn${isSel(m.id,mk.market_type,mk.selection)?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','${mk.market_type}','${mn}','${mk.selection}',${mk.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">${mk.selection}</div><div class="odd-val" style="color:#fff;">${mk.odds}</div></div>`).join('')}
-      </div>
-    </div>` : '';
+  const now = Date.now();
+  const koMs = new Date(m.kick_off).getTime();
+  const secsToKO = Math.max(0, Math.floor((koMs - now) / 1000));
+  const isPreMatch = m.status === 'upcoming' && koMs > now;
+  const isLiveMatch = m.status === 'live';
+  const isFT = m.status === 'finished';
 
-  // Live timer
-  const liveTag = m.status==='live'
+  const liveTag = isLiveMatch
     ? `<div class="feat-live"><div class="live-dot"></div>LIVE ${m.minute||0}'</div>`
-    : `<div class="feat-live" style="background:var(--gold);color:#000;">${fmtTime(m.kick_off)}</div>`;
-
-  document.getElementById('featured-section').innerHTML = `
-    <div class="featured-wrap">
-      <div class="feat-badge">⭐ Featured</div>
-      ${liveTag}
-      <div class="feat-bg">
-        <div class="feat-teams">
-          <div class="ft-team"><div class="ft-name">${m.home_team}</div><div class="ft-score">${m.home_score}</div></div>
-          <div class="ft-vs">VS</div>
-          <div class="ft-team"><div class="ft-name">${m.away_team}</div><div class="ft-score">${m.away_score}</div></div>
-        </div>
-        <div class="feat-meta">${m.league_flag||''} ${m.league}</div>
-        ${chips?`<div class="feat-events">${chips}</div>`:''}
-      </div>
-      <div class="feat-bottom">
-        <div class="feat-min">Min bet: <strong>KSh 1000</strong></div>
-        <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')">🔗 Share Match</button>
-      </div>
-      <div style="padding:12px 14px;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.1);">
-        ${oddsSection('Match Result (1X2)', mk12.filter(mk=>['Home Win','Draw','Away Win'].includes(mk.selection)))}
-        ${oddsSection('Both Teams to Score', mkBTTS, 'odds-2')}
-        ${oddsSection('Over / Under Goals', mkOU.filter(mk=>['Over 1.5','Under 1.5','Over 2.5','Under 2.5','Over 3.5','Under 3.5'].includes(mk.selection)))}
-        ${mkCS.length ? `
-        <div style="margin-bottom:6px;">
-          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Correct Score</div>
-          <div class="odds-4">
-            ${mkCS.slice(0,8).map(mk=>`<div class="odd-btn${isSel(m.id,'correct_score',mk.selection)?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','correct_score','${mn}','${mk.selection}',${mk.odds})"><div class="odd-lbl" style="color:rgba(255,255,255,.6);">${mk.selection}</div><div class="odd-val" style="color:#fff;">${mk.odds}</div></div>`).join('')}
-          </div>
-        </div>` : ''}
-      </div>
-    </div>`;
-
-  // Start live minute timer if match is live
-  if(m.status === 'live') startFeaturedTimer(m.id, m.minute||0);
-}
-
-let featuredTimerInterval = null;
-function startFeaturedTimer(matchId, startMinute) {
-  if(featuredTimerInterval) clearInterval(featuredTimerInterval);
-  let minute = startMinute;
-  featuredTimerInterval = setInterval(() => {
-    minute++;
-    if(minute > 90) { clearInterval(featuredTimerInterval); return; }
-    const liveEl = document.querySelector('.feat-live');
-    if(liveEl && liveEl.querySelector('.live-dot')) {
-      liveEl.innerHTML = `<div class="live-dot"></div>LIVE ${minute}'`;
-    }
-  }, 60000); // every 60 seconds
-}
-
-function renderMatchList(cid, matches, isLive) {
-  const el = document.getElementById(cid);
-  if(!el) return;
-  if(!matches||!matches.length) { el.innerHTML=`<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">${isLive?'No live matches right now':'No upcoming matches'}</div>`; return; }
-  const groups = {};
-  matches.forEach(m => { const k=(m.league_flag||'')+' '+m.league; if(!groups[k])groups[k]=[]; groups[k].push(m); });
-  el.innerHTML = Object.entries(groups).map(([lg, ms]) => `<div class="league-hd">${lg}</div>${ms.map(m=>renderCard(m,isLive)).join('')}`).join('');
-}
-
-function renderCard(m, isLive) {
-  const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
-  const mk12 = (m.markets||[]).filter(x=>x.market_type==='1x2');
-  const h=mk12.find(x=>x.selection==='Home Win'), d=mk12.find(x=>x.selection==='Draw'), a=mk12.find(x=>x.selection==='Away Win');
-  const hasMkts = (m.markets||[]).length > 3;
-  const sf = m.home_form||[], af = m.away_form||[];
-  const fd = r => `<div class="fd ${r.toLowerCase()}">${r}</div>`;
-  return `<div class="match-card">
-    <div class="match-main">
-      <div class="match-top">
-        ${isLive?`<span class="match-live-t">${m.minute||0}'</span>`:`<span class="match-time">${fmtTime(m.kick_off)}</span>`}
-        <div class="match-actions-top">
-          ${isLive?`<button class="btn-co" onclick="openCashout('${mn}',340,200)">💰 CO</button>`:''}
-          ${sf.length?`<button class="btn-stats" onclick="togglePanel('st-${m.id}')">📊</button>`:''}
-          ${hasMkts?`<button class="btn-expand" onclick="togglePanel('mm-${m.id}')">More ▾</button>`:''}
-        </div>
-      </div>
-      <div class="teams">
-        <div class="team-row"><span class="team-name">${m.home_team}</span>${isLive?`<span class="team-sc">${m.home_score}</span>`:''}</div>
-        <div class="team-row"><span class="team-name">${m.away_team}</span>${isLive?`<span class="team-sc">${m.away_score}</span>`:''}</div>
-      </div>
-      <div class="odds-section">
-        <div class="odds-mkt-lbl">Match Result (1X2)</div>
-        <div class="odds-3">
-          ${h?`<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl">1 Home</div><div class="odd-val">${h.odds}</div></div>`:`<div class="odd-btn suspended"><div class="odd-lbl">1</div><div class="odd-val">—</div></div>`}
-          ${d?`<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl">X Draw</div><div class="odd-val">${d.odds}</div></div>`:`<div class="odd-btn suspended"><div class="odd-lbl">X</div><div class="odd-val">—</div></div>`}
-          ${a?`<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl">2 Away</div><div class="odd-val">${a.odds}</div></div>`:`<div class="odd-btn suspended"><div class="odd-lbl">2</div><div class="odd-val">—</div></div>`}
-        </div>
-      </div>
-    </div>
-    ${sf.length?`<div class="stats-panel" id="st-${m.id}"><div style="font-size:11px;font-weight:700;margin-bottom:8px;">${mn} — Form Guide</div><div class="form-row"><span class="form-lbl">${m.home_team}:</span><div class="form-dots">${sf.map(fd).join('')}</div></div><div class="form-row"><span class="form-lbl">${m.away_team}:</span><div class="form-dots">${af.map(fd).join('')}</div></div></div>`:''}
-    ${hasMkts?`<div class="more-mkts" id="mm-${m.id}">${renderMoreMkts(m,mn)}</div>`:''}
-  </div>`;
-}
-
-function renderMoreMkts(m, mn) {
-  const mkts = m.markets||[];
-  const typeMap = {double_chance:'Double Chance',btts:'Both Teams to Score',over_under:'Over / Under Goals',ht_result:'Half Time Result',dnb:'Draw No Bet',correct_score:'Correct Score',total_goals:'Total Goals',asian_handicap:'Asian Handicap'};
-  return Object.entries(typeMap).map(([type, label]) => {
-    const group = mkts.filter(x=>x.market_type===type);
-    if(!group.length) return '';
-    const cls = group.length===2?'odds-2':group.length>=4?'odds-4':'odds-3';
-    return `<div class="mkt-group"><div class="mkt-title">${label}</div><div class="${cls}">${group.map(mk=>`<div class="odd-btn${isSel(m.id,type,mk.selection)?' sel':''}" onclick="addOdd(this,'${m.id}','${type}','${mn}','${mk.selection}',${mk.odds})"><div class="odd-lbl">${mk.selection}</div><div class="odd-val">${mk.odds}</div></div>`).join('')}</div></div>`;
-  }).join('');
-}
-
-function updateTicker(live) {
-  const el = document.getElementById('ticker-text');
-  if(!el||!live.length) return;
-  el.innerHTML = live.map(m=>`<span><span class="ticker-hi">${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team}</span> · ${m.league} · ${m.minute||0}'</span>`).join('');
-}
-
-// ── LIVE PAGE ──
-async function loadLivePage() {
-  const live = allMatches.filter(m=>m.status==='live');
-  const el = document.getElementById('live-count'); if(el) el.textContent = `${live.length} live now`;
-  renderMatchList('live-page-matches', live, true);
-  const feat = allMatches.find(m=>m.is_featured);
-  const si = document.getElementById('stream-feat-info');
-  if(si && feat) si.innerHTML = `<div style="font-size:13px;font-weight:700;">${feat.league_flag||''} ${feat.home_team} ${feat.home_score}–${feat.away_score} ${feat.away_team}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;">${feat.league} · ${feat.status==='live'?feat.minute+"' LIVE":fmtTime(feat.kick_off)}</div>`;
-  const sl = document.getElementById('stream-live-list');
-  if(sl) sl.innerHTML = live.map(m=>`<div class="stream-li"><span class="sli-tag sli-live">LIVE</span><span class="sli-name">${m.home_team} vs ${m.away_team}</span><span class="sli-score">${m.home_score}–${m.away_score} · ${m.minute||0}'</span></div>`).join('') +
-    allMatches.filter(m=>m.status==='upcoming').slice(0,3).map(m=>`<div class="stream-li"><span class="sli-tag sli-soon">${fmtTime(m.kick_off)}</span><span class="sli-name">${m.home_team} vs ${m.away_team}</span><span style="font-size:10px;color:var(--muted);">Stream from KO</span></div>`).join('');
-}
-
-// ── REALTIME ──
-function subscribeRealtime() {
-  db.channel('live-updates')
-    .on('postgres_changes',{event:'*',schema:'public',table:'matches'}, () => loadMatches())
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'live_events'}, () => loadMatches())
-    .subscribe();
-}
-
-// ── HELPERS ──
-function fmtTime(iso) {
-  if(!iso) return '—';
-  const d = new Date(iso);
-  const now = new Date();
-  const nairobi = {timeZone:'Africa/Nairobi'};
-  const time = d.toLocaleTimeString('en-KE',{hour:'2-digit',minute:'2-digit',...nairobi});
-  // Compare dates in Nairobi timezone
-  const todayStr = now.toLocaleDateString('en-KE', nairobi);
-  const matchStr = d.toLocaleDateString('en-KE', nairobi);
-  const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
-  const tomorrowStr = tomorrow.toLocaleDateString('en-KE', nairobi);
-  if(matchStr === todayStr) return `Today ${time}`;
-  if(matchStr === tomorrowStr) return `Tomorrow ${time}`;
-  return d.toLocaleDateString('en-KE',{weekday:'short',day:'numeric',month:'short',...nairobi})+' '+time;
-}
-function togglePanel(id) {
-  const el = document.getElementById(id); if(!el) return;
-  el.classList.toggle('open');
-  const btn = document.querySelector(`[onclick*="'${id}'"]`);
-  if(btn&&btn.classList.contains('btn-expand')) btn.textContent = el.classList.contains('open')?'Less ▴':'More ▾';
-}
-function isSel(mid, mtype, sel) { return slip.some(s=>s.matchId===mid&&s.marketType===mtype&&s.selection===sel); }
-function setEl(id,v) { const el=document.getElementById(id); if(el) el.textContent=v; }
-
-// ── BET SLIP ──
-function addOdd(btn, matchId, marketType, matchName, selection, val) {
-  const decodedName = matchName.replace(/&#39;/g,"'");
-  const was = btn.classList.contains('sel');
-  // Remove this market from slip
-  slip = slip.filter(s=>!(s.matchId===matchId&&s.marketType===marketType));
-  // Deselect all buttons for same match+market by looking at slip state
-  document.querySelectorAll('.odd-btn.sel').forEach(b => {
-    const oc = b.getAttribute('onclick')||'';
-    if(oc.includes(`'${matchId}'`) && oc.includes(`'${marketType}'`)) b.classList.remove('sel');
-  });
-  if(!was) {
-    btn.classList.add('sel');
-    slip.push({id:Date.now(),matchId,marketType,matchName:decodedName,selection,val:parseFloat(val)});
-  }
-  if(!slip.some(s=>s.matchId==='featured')) {
-    isFeaturedBet=false;
-    const qsRow = document.getElementById('qs-row');
-    if(qsRow) qsRow.innerHTML = `
-      <div class="qs" onclick="setStake(100)">100</div>
-      <div class="qs" onclick="setStake(500)">500</div>
-      <div class="qs" onclick="setStake(1000)">1K</div>
-      <div class="qs" onclick="setStake(2000)">2K</div>`;
-  }
-  renderSlip();
-}
-
-function renderSlip() {
-  const badge = document.getElementById('slip-badge');
-  const clearBtn = document.getElementById('slip-clear-btn');
-  if(badge) { badge.textContent=slip.length; badge.classList.toggle('show',slip.length>0); }
-  if(clearBtn) clearBtn.style.display = slip.length>0?'block':'none';
-  const body = document.getElementById('slip-body');
-  const foot = document.getElementById('slip-foot');
-  if(!body) return;
-  if(!slip.length) {
-    body.innerHTML='<div class="slip-empty"><div class="se-ico">🎯</div><div class="se-txt">Select odds from any match to build your slip</div></div>';
-    if(foot) foot.style.display='none'; return;
-  }
-
-  // Calculate total odds
-  const totalOdds = slipMode==='acca' ? slip.reduce((a,s)=>a*s.val,1) : (slip.length ? slip[slip.length-1].val : 1);
-
-  // Show acca summary banner if accumulator mode
-  const accaBanner = slipMode==='acca' && slip.length > 1 ? `
-    <div style="background:linear-gradient(110deg,var(--red),#8B0000);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <div style="font-size:10px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">${slip.length} Fold Accumulator</div>
-        <div style="font-size:22px;font-weight:800;color:var(--gold);">${totalOdds.toFixed(2)}x</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:10px;color:rgba(255,255,255,.6);margin-bottom:2px;">Potential Win</div>
-        <div style="font-size:16px;font-weight:800;color:#fff;">KSh ${Math.round((parseFloat(document.getElementById('stake')?.value)||100)*totalOdds).toLocaleString()}</div>
-      </div>
-    </div>` : '';
-
-  body.innerHTML = accaBanner + slip.map((s,i)=>`
-    <div class="slip-item">
-      <div class="si-match">${s.matchName}</div>
-      <div class="si-mkt">${s.marketType.replace(/_/g,' ').toUpperCase()}</div>
-      <div class="si-sel">${s.selection}</div>
-      <div class="si-bot">
-        <div class="si-odd">${parseFloat(s.val).toFixed(2)}</div>
-        <div class="si-rm" onclick="removeItem(${i})">✕</div>
-      </div>
-    </div>`).join('');
-
-  if(foot) foot.style.display='block';
-  calcPayout();
-}
-
-function removeItem(i) {
-  const r=slip[i]; slip.splice(i,1);
-  document.querySelectorAll(`[onclick*="'${r.matchId}','${r.marketType}'"]`).forEach(b=>b.classList.remove('sel'));
-  renderSlip();
-}
-function clearSlip() { slip=[]; document.querySelectorAll('.odd-btn.sel').forEach(b=>b.classList.remove('sel')); renderSlip(); }
-
-function calcPayout() {
-  const stake = parseFloat(document.getElementById('stake')?.value)||0;
-  const odds = slipMode==='single'?(slip.length?slip[slip.length-1].val:1):slip.reduce((a,s)=>a*s.val,1);
-  setEl('tot-odds', odds.toFixed(2));
-  setEl('pot-win', 'KSh '+Math.round(stake*odds).toLocaleString());
-  setEl('sel-ct', slip.length);
-  // Update button text based on balance
-  const btn = document.getElementById('place-bet-btn');
-  if(btn) {
-    const bal = parseFloat(currentProfile?.balance||0);
-    if(!currentUser) btn.textContent = 'Sign In to Bet';
-    else if(bal >= stake) btn.textContent = `Place Bet — KSh ${stake.toLocaleString()}`;
-    else btn.textContent = `Deposit & Bet (Need KSh ${(stake-bal).toLocaleString()} more)`;
-  }
-  // Update balance note
-  const note = document.getElementById('bet-balance-note');
-  if(note) {
-    const bal = parseFloat(currentProfile?.balance||0);
-    note.textContent = `Available balance: KSh ${bal.toLocaleString()}`;
-    note.style.color = bal >= stake ? 'var(--muted)' : 'var(--live)';
-  }
-}
-function setStake(v) {
-  const i=document.getElementById('stake');
-  if(i){ i.value=v; calcPayout(); }
-}
-
-// Validate stake before placing
-// Validate stake before placing
-async function validateAndPlaceBet() {
-  if(!currentUser){ showAuthPrompt('Sign in to place your bet'); return; }
-  const stake=parseFloat(document.getElementById('stake')?.value)||0;
-  const minBet = isFeaturedBet ? 500 : 100;
-  if(stake < minBet){
-    const inp=document.getElementById('stake');
-    if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',1000); }
-    showNotif(`Minimum bet is KSh ${minBet}`, 'warning');
-    return;
-  }
-  const balance = parseFloat(currentProfile?.balance||0);
-  if(balance < stake){
-    // Not enough balance — open deposit
-    showNotif(`Insufficient balance. Please deposit at least KSh ${(stake-balance).toLocaleString()} more.`, 'warning');
-    setTimeout(()=>openMpesa('deposit'), 1500);
-    return;
-  }
-  // Has enough balance — place bet directly, no M-Pesa needed
-  await recordBet();
-  // Show success modal
-  document.getElementById('bet-success').classList.add('open');
-}
-function setSlipTab(el,mode) { slipMode=mode; document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); calcPayout(); }
-
-// ── AUTH ──
-function toggleEye(id,btn) { const i=document.getElementById(id); i.type=i.type==='password'?'text':'password'; btn.textContent=i.type==='password'?'👁️':'🙈'; }
-function updateStrength() {
-  const v=document.getElementById('rpass')?.value||'';
-  const bar=document.getElementById('s-bar'), hint=document.getElementById('s-hint');
-  if(!v){bar.style.width='0%';hint.textContent='';return;}
-  if(v.length<4){bar.style.width='28%';bar.style.background='var(--live)';hint.style.color='var(--live)';hint.textContent='Weak';}
-  else if(v.length<7){bar.style.width='60%';bar.style.background='var(--gold2)';hint.style.color='var(--gold2)';hint.textContent='Fair';}
-  else{bar.style.width='100%';bar.style.background='var(--odds)';hint.style.color='var(--odds)';hint.textContent='Strong';}
-}
-
-async function doRegister() {
-  const first=document.getElementById('rn1')?.value.trim(), last=document.getElementById('rn2')?.value.trim();
-  const phone=document.getElementById('rp')?.value.trim(), pass=document.getElementById('rpass')?.value;
-  const agreed=document.getElementById('rterms')?.checked;
-  const err=document.getElementById('reg-err'); err.style.display='none';
-  if(!first){err.textContent='Please enter your first name.';err.style.display='block';return;}
-  if(!phone||phone.length<6){err.textContent='Please enter a valid phone number.';err.style.display='block';return;}
-  if(!pass||pass.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}
-  if(!agreed){err.textContent='You must agree to the Terms & Conditions.';err.style.display='block';return;}
-  const btn=document.getElementById('reg-btn'); btn.textContent='Creating...'; btn.disabled=true;
-
-  // Get dial code from selected country
-  const sel=document.getElementById('rcountry');
-  const dialCode=(sel?.options[sel.selectedIndex]?.getAttribute('data-code')||'+254').replace('+','');
-  const cleanPhone=phone.replace(/^0/,'').replace(/\s/g,'');
-  const fmt=dialCode+cleanPhone;
-
-  // Use phone as unique identifier
-  const email=`${fmt}@sportybet.app`;
-
-  try {
-    // Check if phone already registered
-    const {data:existing} = await db.from('users').select('id').eq('phone',fmt).maybeSingle();
-    if(existing){err.textContent='This phone number is already registered. Please sign in.';err.style.display='block';btn.textContent='Create Account →';btn.disabled=false;return;}
-
-    const {data,error} = await db.auth.signUp({
-      email,
-      password:pass,
-      options:{ emailRedirectTo: null, data:{ phone:fmt, full_name:first+' '+last } }
-    });
-    if(error) throw error;
-
-    const userId = data?.user?.id;
-    if(userId) {
-      // Small delay to ensure auth session is fully established
-      await new Promise(r => setTimeout(r, 500));
-      const {error:insertErr} = await db.from('users').insert({
-        id:userId,
-        phone:fmt,
-        full_name:first+' '+last,
-        balance:0,
-        vip_points:500,
-        vip_tier:'Bronze',
-        promo_code:document.getElementById('rpromo')?.value||null,
-      });
-      if(insertErr) console.error('Profile insert error:',insertErr);
-    }
-    btn.textContent='Create Account →'; btn.disabled=false;
-    currentUser=data.user; await loadProfile(); updateAuthUI();
-    resumePendingActions() || goPage('dashboard');
-  } catch(e) {
-    btn.textContent='Create Account →'; btn.disabled=false;
-    // Give friendly error messages
-    if(e.message?.includes('rate limit')) err.textContent='Too many attempts. Please wait 1 minute and try again.';
-    else if(e.message?.includes('already registered')) err.textContent='Phone already registered. Please sign in instead.';
-    else err.textContent=e.message||'Registration failed. Please try again.';
-    err.style.display='block';
-  }
-}
-
-async function doLogin() {
-  const phone=document.getElementById('lp')?.value.trim(), pass=document.getElementById('lpass')?.value;
-  const err=document.getElementById('login-err'); err.style.display='none';
-  if(!phone||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
-  const btn=document.getElementById('login-btn'); btn.textContent='Signing in...'; btn.disabled=true;
-  // Try to find user's phone in DB to get their exact format
-  const cleanPhone=phone.replace(/^0/,'').replace(/\s/g,'');
-  // Try common dial codes
-  let fmt='254'+cleanPhone;
-  try {
-    const {data:udata} = await db.from('users').select('phone').like('phone','%'+cleanPhone).maybeSingle();
-    if(udata?.phone) fmt=udata.phone;
-  } catch(_){}
-  const email=`${fmt}@sportybet.app`;
-  try {
-    const {data,error} = await db.auth.signInWithPassword({email,password:pass});
-    if(error) throw error;
-    btn.textContent='Sign In'; btn.disabled=false;
-    currentUser=data.user; await loadProfile(); updateAuthUI();
-    resumePendingActions() || goPage('dashboard');
-  } catch(e) { btn.textContent='Sign In'; btn.disabled=false; err.textContent='Incorrect phone or password.'; err.style.display='block'; }
-}
-
-async function doLogout() { await db.auth.signOut(); currentUser=null; currentProfile=null; updateAuthUI(); goPage('home'); }
-
-async function loadProfile() {
-  if(!currentUser) return;
-  try {
-    const {data, error} = await db.from('users').select('*').eq('id',currentUser.id).single();
-    if(error) throw error;
-    currentProfile = data;
-    updateProfileUI();
-    updateAuthUI();
-  } catch(e) {
-    console.error('Profile error:',e);
-    // Profile may not exist yet — try once more after delay
-    setTimeout(async () => {
-      try {
-        const {data} = await db.from('users').select('*').eq('id',currentUser.id).single();
-        if(data) { currentProfile=data; updateProfileUI(); updateAuthUI(); }
-      } catch(_) {}
-    }, 2000);
-  }
-}
-
-function updateAuthUI() {
-  const g=document.getElementById('hdr-guest'), u=document.getElementById('hdr-user');
-  if(!g||!u) return;
-  if(currentUser) {
-    g.style.display='none';
-    u.style.display='flex';
-    if(currentProfile) setEl('hdr-bal', parseFloat(currentProfile.balance||0).toLocaleString());
-  } else {
-    g.style.display='flex';
-    u.style.display='none';
-  }
-}
-
-function updateProfileUI() {
-  if(!currentProfile) return;
-  const name=(currentProfile.full_name||'Champion').split(' ')[0];
-  const bal=parseFloat(currentProfile.balance||0), pts=currentProfile.vip_points||0;
-  setEl('dash-name',name+' 👋');
-  setEl('dash-bal-display','KSh '+bal.toLocaleString());
-  setEl('dash-vip',pts.toLocaleString());
-  setEl('wallet-bal-display','KSh '+bal.toLocaleString());
-  setEl('hdr-bal',bal.toLocaleString());
-  setEl('acc-bal-row','KSh '+bal.toLocaleString()+' →');
-  setEl('acc-vip-tier','⭐ '+(currentProfile.vip_tier||'Bronze')+' Tier');
-  setEl('acc-vip-pts',pts.toLocaleString());
-  const tiers={Bronze:1000,Silver:2500,Gold:4000,Platinum:10000,Diamond:99999};
-  const next=Object.entries(tiers).find(([,v])=>pts<v);
-  if(next){setEl('acc-vip-next',(next[1]-pts).toLocaleString()+' pts to '+next[0]);const bar=document.getElementById('acc-vip-bar');if(bar)bar.style.width=Math.min(100,(pts/next[1])*100)+'%';}
-}
-
-// ── DASHBOARD ──
-async function loadDashboard() {
-  if(!currentUser) return;
-  await loadProfile();
-  try {
-    const {data:bets} = await db.from('bets').select('*,bet_selections(*)').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(5);
-    setEl('dash-active-bets',(bets||[]).filter(b=>b.status==='pending').length);
-    const c=document.getElementById('recent-bets');
-    if(!c) return;
-    if(!bets||!bets.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No bets placed yet. Start betting!</div>';return;}
-    const sc={won:'s-won',lost:'s-lost',pending:'s-pending'};
-    c.innerHTML=bets.map(b=>{
-      const sel=b.bet_selections?.[0];
-      const pc=b.status==='won'?'var(--odds)':b.status==='lost'?'var(--live)':'var(--gold)';
-      const pt=b.status==='won'?'+KSh '+(b.actual_win-b.stake).toLocaleString():b.status==='lost'?'-KSh '+b.stake.toLocaleString():'KSh '+parseFloat(b.potential_win).toLocaleString();
-      return `<div class="bet-item"><div class="bi-info"><div class="bi-match">${sel?.match_name||'Bet'}</div><div class="bi-pick">${sel?.selection||''} · Odds ${b.total_odds} · KSh ${b.stake}</div></div><div class="bi-right"><div class="status ${sc[b.status]||'s-pending'}">${b.status.toUpperCase()}</div><div class="bi-profit" style="color:${pc};">${pt}</div></div></div>`;
-    }).join('');
-  } catch(e){console.error('Dashboard error:',e);}
-}
-
-// ── WALLET ──
-async function loadWallet() {
-  if(!currentUser) return;
-  await loadProfile();
-  try {
-    const {data:txs} = await db.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20);
-    const c=document.getElementById('tx-history');
-    if(!c) return;
-    if(!txs||!txs.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No transactions yet</div>';return;}
-    c.innerHTML=txs.map(t=>{
-      const failed = t.status==='failed' || t.status==='cancelled' ||
-        (t.description||'').toLowerCase().includes('cancel') ||
-        (t.description||'').toLowerCase().includes('error') ||
-        (t.description||'').toLowerCase().includes('failed');
-      const pos = ['deposit','win','bonus','refund'].includes(t.type) && !failed;
-      const col = failed?'var(--muted)':pos?'#27AE60':t.type==='withdrawal'?'var(--gold)':'var(--live)';
-      const sign = failed?'':pos?'+':'-';
-      const dt=new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'});
-      const desc = failed?`❌ ${t.description||'Failed'}`:t.description||t.type.charAt(0).toUpperCase()+t.type.slice(1);
-      return `<div class="tx-item"><div><div class="tx-desc">${desc}</div><div class="tx-date">${dt}</div></div><div style="font-size:13px;font-weight:800;color:${col};">${sign}KSh ${parseFloat(t.amount).toLocaleString()}</div></div>`;
-    }).join('');
-  } catch(e){console.error('Wallet error:',e);}
-}
-
-function setWalletTab(mode) {
-  document.getElementById('tw-dep').classList.toggle('active',mode==='deposit');
-  document.getElementById('tw-wit').classList.toggle('active',mode==='withdraw');
-  setEl('wf-lbl',mode==='deposit'?'Deposit Amount (KSh)':'Withdrawal Amount (KSh)');
-  const btn=document.getElementById('wf-btn');
-  if(mode==='deposit'){btn.textContent='📱 Pay via M-Pesa — Send STK Push';btn.onclick=()=>openMpesa('deposit');}
-  else{btn.textContent='📤 Withdraw to M-Pesa';btn.onclick=handleWithdraw;}
-}
-function setWAmt(v){const i=document.getElementById('wf-amt');if(i)i.value=v;}
-async function handleWithdraw(){
-  if(!currentUser){goPage('login');return;}
-  const amt=parseFloat(document.getElementById('wf-amt')?.value);
-  if(!amt||amt<100){showNotif('Minimum withdrawal is KSh 100', 'warning');return;}
-  if(!currentProfile||currentProfile.balance<amt){showNotif('Insufficient balance for this withdrawal', 'error');return;}
-  showNotif(`Withdrawal of KSh ${amt} initiated. You will receive M-Pesa within 30 seconds.`, 'success');
-}
-
-// ── MPESA FLOW ──
-function setMpesaAmt(v) {
-  const i = document.getElementById('mpesa-amt-input');
-  if(i) i.value = v;
-}
-
-async function openMpesa(mode) {
-  if(!currentUser){ sessionStorage.setItem('pendingAction',mode); goPage('login'); return; }
-  mpesaMode = mode;
-
-  // Reset all steps
-  ['mpesa-s0','mpesa-s1','mpesa-s2','mpesa-s3'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.style.display='none';
-  });
-  document.getElementById('mpesa-sheet').classList.add('open');
-
-  if(mode === 'deposit') {
-    // Show amount input screen first
-    const inp = document.getElementById('mpesa-amt-input');
-    if(inp) inp.value = '';
-    document.getElementById('mpesa-s0').style.display = 'block';
-  } else {
-    // For bets — get amount from stake, auto-trigger STK
-    let amt = parseFloat(document.getElementById('stake')?.value)||100;
-    const min = isFeaturedBet ? 500 : 100;
-    if(amt < min){ amt=min; const i=document.getElementById('stake'); if(i){i.value=min;calcPayout();} }
-    setEl('mpesa-amount','KSh '+parseInt(amt).toLocaleString());
-    setEl('mpesa-amount2','KSh '+parseInt(amt).toLocaleString());
-    setEl('mpesa-confirmed-amt','KSh '+parseInt(amt).toLocaleString());
-    document.getElementById('mpesa-s1').style.display = 'block';
-    await mpesaConfirm(amt);
-  }
-}
-
-async function proceedDeposit() {
-  const amt = parseFloat(document.getElementById('mpesa-amt-input')?.value);
-  if(!amt || amt < 100) {
-    const inp = document.getElementById('mpesa-amt-input');
-    if(inp) { inp.style.border='1.5px solid var(--live)'; setTimeout(()=>inp.style.border='',1500); }
-    return;
-  }
-  setEl('mpesa-amount','KSh '+parseInt(amt).toLocaleString());
-  setEl('mpesa-amount2','KSh '+parseInt(amt).toLocaleString());
-  setEl('mpesa-confirmed-amt','KSh '+parseInt(amt).toLocaleString());
-  document.getElementById('mpesa-s0').style.display='none';
-  document.getElementById('mpesa-s1').style.display='block';
-  await mpesaConfirm(amt);
-}
-
-async function mpesaConfirm(amt) {
-  if(!currentUser || !currentProfile) return;
-  if(!amt) {
-    const amtText = document.getElementById('mpesa-amount')?.textContent || 'KSh 100';
-    amt = parseFloat(amtText.replace('KSh ','').replace(/,/g,''));
-  }
-  const phone = currentProfile.phone;
-
-  try {
-    const res = await fetch('https://nmcdwmmfdrazmufodirq.supabase.co/functions/v1/mpesa-stk', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPA_KEY}`,
-      },
-      body: JSON.stringify({
-        amount: amt,
-        phone: phone,
-        user_id: currentUser.id,
-        type: mpesaMode,
-      })
-    });
-
-    // Handle non-JSON responses
-    const text = await res.text();
-    let data;
-    try { data = JSON.parse(text); }
-    catch(e) { throw new Error('Server error: ' + text.substring(0,100)); }
-
-    if(!data.success) {
-      closeModal('mpesa-sheet');
-      showNotif('M-Pesa Error: ' + (data.error || 'STK push failed. Please try again.'), 'error');
-      return;
-    }
-
-    // STK sent — move to waiting screen
-    document.getElementById('mpesa-s1').style.display='none';
-    document.getElementById('mpesa-s2').style.display='block';
-
-    // Poll every 3 seconds up to 60 seconds
-    const txId = data.tx_id;
-    let attempts = 0;
-    const poll = setInterval(async () => {
-      attempts++;
-      try {
-        const { data: tx } = await db.from('transactions').select('status,balance_after,mpesa_code').eq('id', txId).single();
-        if(tx?.status === 'completed') {
-          clearInterval(poll);
-          document.getElementById('mpesa-s2').style.display='none';
-          document.getElementById('mpesa-s3').style.display='block';
-          setEl('mpesa-ref', tx.mpesa_code || 'CONFIRMED');
-          if(tx.balance_after) { currentProfile.balance = tx.balance_after; updateProfileUI(); }
-          if(mpesaMode === 'bet') await recordBet();
-        } else if(tx?.status === 'failed') {
-          clearInterval(poll);
-          closeModal('mpesa-sheet');
-          showNotif('Payment was cancelled or failed. Please try again.', 'error');
-        } else if(attempts >= 20) {
-          clearInterval(poll);
-          closeModal('mpesa-sheet');
-          showNotif('No response yet. If you entered your PIN, your balance will update shortly.', 'warning');
-        }
-      } catch(e) { console.error('Poll error:', e); }
-    }, 3000);
-
-  } catch(e) {
-    closeModal('mpesa-sheet');
-    showNotif('Connection error. Please check your internet and try again.', 'error');
-  }
-}
-
-async function recordDeposit() {
-  if(!currentUser||!currentProfile) return;
-  const amt=parseFloat(document.getElementById('mpesa-amount').textContent.replace('KSh ','').replace(/,/g,''));
-  const ref=document.getElementById('mpesa-ref').textContent;
-  try {
-    // Save deposit as PENDING — admin must confirm M-Pesa before crediting
-    await db.from('transactions').insert({
-      user_id:currentUser.id,
-      type:'deposit',
-      amount:amt,
-      balance_before:currentProfile.balance,
-      balance_after:currentProfile.balance, // not yet credited
-      status:'pending', // pending until admin confirms
-      mpesa_code:ref,
-      mpesa_phone:currentProfile.phone,
-      description:`M-Pesa Deposit — Awaiting confirmation`,
-      reference:ref,
-    });
-    // Show pending message instead of instant credit
-    document.getElementById('mpesa-s3-title').textContent = 'Payment Submitted!';
-    document.getElementById('mpesa-s3-sub').textContent = 'Your deposit is being verified. Balance will update within 5 minutes once M-Pesa payment is confirmed.';
-  } catch(e){console.error('Deposit error:',e);}
-}
-
-async function recordBet() {
-  if(!currentUser||!currentProfile||!slip.length) return;
-  const stake=parseFloat(document.getElementById('stake')?.value)||100;
-  const totalOdds=slipMode==='acca'?slip.reduce((a,s)=>a*s.val,1):slip[slip.length-1].val;
-  const potWin=Math.round(stake*totalOdds);
-  const ref='#XO'+Math.floor(Math.random()*90000+10000);
-  try {
-    const {data:bet}=await db.from('bets').insert({
-      user_id:currentUser.id,
-      bet_type:slipMode==='acca'?'accumulator':'single',
-      stake,total_odds:parseFloat(totalOdds.toFixed(2)),
-      potential_win:potWin,status:'pending',reference:ref
-    }).select().single();
-
-    if(bet) {
-      await db.from('bet_selections').insert(slip.map(s=>({
-        bet_id:bet.id,match_name:s.matchName,
-        market_type:s.marketType,selection:s.selection,
-        odds:s.val,status:'pending'
-      })));
-      const newBal=(currentProfile.balance||0)-stake;
-      const newVip=(currentProfile.vip_points||0)+Math.floor(stake/10);
-      await db.from('users').update({balance:newBal,vip_points:newVip}).eq('id',currentUser.id);
-      await db.from('transactions').insert({
-        user_id:currentUser.id,type:'bet',amount:stake,
-        balance_before:currentProfile.balance,balance_after:newBal,
-        status:'completed',description:'Bet placed: '+ref
-      });
-      currentProfile.balance=newBal;
-      currentProfile.vip_points=newVip;
-      updateProfileUI();
-    }
-
-    // Populate bet success modal
-    setEl('bet-ref', ref);
-    setEl('bet-stake-display', 'KSh '+stake.toLocaleString());
-    setEl('bet-odds-display', parseFloat(totalOdds.toFixed(2)).toString()+'x');
-    setEl('bet-win-display', 'KSh '+potWin.toLocaleString());
-
-    // Show selections
-    const selDisplay = document.getElementById('bet-selections-display');
-    if(selDisplay) {
-      selDisplay.innerHTML = slip.map(s =>
-        `<div style="padding:2px 0;">✓ <strong style="color:var(--text);">${s.matchName}</strong> — ${s.selection} @ ${parseFloat(s.val.toString()).toFixed(2)}</div>`
-      ).join('');
-    }
-
-  } catch(e){console.error('Bet error:',e);}
-}
-
-function mpesaDone() {
-  closeModal('mpesa-sheet');
-  if(mpesaMode==='bet') {
-    setTimeout(()=>{ document.getElementById('bet-success').classList.add('open'); }, 200);
-  } else {
-    // Reload profile to get updated balance
-    loadProfile().then(()=>{ updateAuthUI(); calcPayout(); });
-    goPage('wallet');
-  }
-}
-function closeBetSuccess() { document.getElementById('bet-success').classList.remove('open'); clearSlip(); goPage('home'); }
-
-// ── WIN NOTIFICATION ──
-function showWinNotification(amount, matchName, ref) {
-  const old = document.getElementById('win-modal');
-  if(old) old.remove();
-  const el = document.createElement('div');
-  el.id = 'win-modal';
-  el.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
-  el.innerHTML = `
-    <div style="background:var(--surface);border:2px solid var(--gold);border-radius:14px;padding:28px 20px;width:100%;max-width:340px;text-align:center;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red));"></div>
-      <div style="font-size:52px;margin-bottom:10px;">🏆</div>
-      <div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Congratulations!</div>
-      <div style="font-size:22px;font-weight:800;margin-bottom:4px;">You Won!</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">${matchName}</div>
-      <div style="background:linear-gradient(135deg,rgba(240,192,64,.15),rgba(240,192,64,.05));border:1px solid rgba(240,192,64,.3);border-radius:var(--r);padding:14px;margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Winnings credited to your wallet</div>
-        <div style="font-size:32px;font-weight:800;color:var(--gold);">KSh ${parseFloat(amount).toLocaleString()}</div>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Ref: ${ref}</div>
-      <button onclick="document.getElementById('win-modal').remove();goPage('wallet');" style="width:100%;padding:13px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;">💰 View My Wallet</button>
-      <button onclick="document.getElementById('win-modal').remove();" style="width:100%;padding:10px;border-radius:var(--r);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;">Continue Betting</button>
-    </div>
-  `;
-  document.body.appendChild(el);
-}
-
-// ── NOTIFICATIONS (replace browser alerts) ──
-function showNotif(msg, type='info') {
-  // Remove existing
-  const old = document.getElementById('app-notif');
-  if(old) old.remove();
-
-  const colors = {
-    info: {bg:'var(--surface)',border:'var(--border)',text:'var(--text)',icon:'ℹ️'},
-    error: {bg:'rgba(232,0,45,.08)',border:'rgba(232,0,45,.3)',text:'var(--live)',icon:'❌'},
-    success: {bg:'rgba(39,174,96,.08)',border:'rgba(39,174,96,.3)',text:'#27AE60',icon:'✅'},
-    warning: {bg:'rgba(240,192,64,.08)',border:'rgba(240,192,64,.3)',text:'var(--gold)',icon:'⚠️'},
-  };
-  const c = colors[type] || colors.info;
-
-  const el = document.createElement('div');
-  el.id = 'app-notif';
-  el.style.cssText = `position:fixed;top:70px;left:50%;transform:translateX(-50%);width:calc(100% - 20px);max-width:460px;z-index:9999;background:${c.bg};border:1.5px solid ${c.border};border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:fadeUp .2s ease;`;
-  el.innerHTML = `
-    <div style="font-size:20px;flex-shrink:0;">${c.icon}</div>
-    <div style="flex:1;font-size:13px;font-weight:600;color:${c.text};line-height:1.5;">${msg}</div>
-    <div onclick="this.parentElement.remove()" style="font-size:18px;color:var(--muted);cursor:pointer;flex-shrink:0;margin-left:4px;">✕</div>
-  `;
-  document.body.appendChild(el);
-
-  // Auto dismiss after 4 seconds
-  setTimeout(() => { if(el.parentElement) el.remove(); }, 4000);
-}
-// ── CASHOUT ──
-let currentCashoutBetId = null;
-let currentCashoutAmt = 0;
-
-function openCashout(matchOrRef, cashAmt, stake, betId) {
-  currentCashoutBetId = betId || null;
-  currentCashoutAmt = parseFloat(cashAmt);
-  setEl('co-amt','KSh '+currentCashoutAmt.toLocaleString());
-  setEl('co-detail',`Stake: KSh ${parseFloat(stake).toLocaleString()} · You receive: KSh ${currentCashoutAmt.toLocaleString()}`);
-  // Always reset button state when opening
-  const btn = document.querySelector('#co-modal .modal-go');
-  if(btn) { btn.disabled = false; btn.textContent = 'Cash Out Now'; }
-  document.getElementById('co-modal').classList.add('open');
-}
-
-async function processCashout() {
-  const btn = document.querySelector('#co-modal .modal-go');
-  if(btn) { btn.disabled=true; btn.textContent='Processing...'; }
-  if(!currentUser||!currentProfile) { closeModal('co-modal'); return; }
-
-  const betId = currentCashoutBetId;
-  const amt = currentCashoutAmt;
-
-  // Clear IMMEDIATELY — prevents any second call
-  currentCashoutBetId = null;
-  currentCashoutAmt = 0;
-  closeModal('co-modal');
-
-  // Must have a valid bet ID and amount
-  if(!betId || !amt) { showNotif('Invalid cashout.','error'); return; }
-
-  try {
-    // Atomically update ONLY if status is still pending — returns updated rows
-    const {data:updated, error:updateErr} = await db.from('bets')
-      .update({status:'cashed_out', actual_win:amt, cashout_amount:amt})
-      .eq('id', betId)
-      .eq('status','pending')
-      .select('id');
-
-    if(updateErr) throw updateErr;
-
-    // If 0 rows updated — already cashed out or settled — DO NOT credit balance
-    if(!updated || updated.length === 0) {
-      showNotif('This bet was already settled. No changes made.', 'error');
-      return;
-    }
-
-    // Only reach here if bet was successfully marked cashed_out
-    const newBal = (currentProfile.balance||0) + amt;
-    await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
-    await db.from('transactions').insert({
-      user_id:currentUser.id, type:'win', amount:amt,
-      balance_before:currentProfile.balance, balance_after:newBal,
-      status:'completed', description:`Cash out — KSh ${amt.toLocaleString()}`
-    });
-    currentProfile.balance = newBal;
-    updateProfileUI();
-    showNotif(`✅ KSh ${amt.toLocaleString()} cashed out! Bet is now closed.`, 'success');
-    setTimeout(loadMyBets, 500);
-  } catch(e) {
-    showNotif('Cash out failed: '+e.message,'error');
-  }
-}
-
-// ── MODALS ──
-function closeModal(id) { const el=document.getElementById(id); if(el)el.classList.remove('open'); }
-window.addEventListener('click', e => {
-  if(e.target.classList.contains('modal-bg')||e.target.classList.contains('mpesa-overlay'))
-    document.querySelectorAll('.modal-bg.open,.mpesa-overlay.open,.success-modal.open').forEach(m=>m.classList.remove('open'));
-});
-
-// ── FAQ ──
-function toggleFaq(el) { const a=el.nextElementSibling, i=el.querySelector('.faq-ico'), o=a.classList.toggle('open'); i.textContent=o?'−':'+'; }
-
-// ── BUILDER ──
-function setBBMatch(el) { document.querySelectorAll('.bb-m').forEach(m=>m.classList.remove('active')); el.classList.add('active'); bbSel={}; document.querySelectorAll('.bb-opt').forEach(o=>o.classList.remove('sel')); setEl('bb-ov','—'); setEl('bb-sel-count','0 selections'); }
-function bbPick(btn,mkt,val) {
-  const was=btn.classList.contains('sel');
-  btn.closest('.bb-opts').querySelectorAll('.bb-opt').forEach(b=>b.classList.remove('sel'));
-  if(!was){btn.classList.add('sel');bbSel[mkt]=val;}else{delete bbSel[mkt];}
-  const k=Object.keys(bbSel), c=k.length?Object.values(bbSel).reduce((a,v)=>a*v,1):null;
-  setEl('bb-ov',c?c.toFixed(2)+'x':'—'); setEl('bb-sel-count',`${k.length} selection${k.length!==1?'s':''}`);
-}
-function bbAddToSlip() {
-  const k=Object.keys(bbSel); if(!k.length){showNotif('Select at least one market first.', 'warning');return;}
-  const c=Object.values(bbSel).reduce((a,v)=>a*v,1);
-  const mn=document.querySelector('.bb-m.active')?.textContent.replace('⚽ ','').trim()||'Builder Match';
-  slip.push({id:Date.now(),matchId:'builder',marketType:'builder',matchName:mn,selection:k.join(' + '),val:c});
-  renderSlip(); goPage('slip');
-}
-
-// ── DIAL CODE ──
-function updateDialCode(sel) {
-  const opt = sel.options[sel.selectedIndex];
-  const code = opt.getAttribute('data-code') || '+';
-  const flag = opt.getAttribute('data-flag') || '🌍';
-  const display = document.getElementById('dial-code-display');
-  if(display) display.textContent = flag + ' ' + code;
-  // update placeholder
-  const phoneInput = document.getElementById('rp');
-  if(phoneInput) {
-    const placeholders = {'+254':'7XX XXX XXX','+234':'8XX XXX XXXX','+233':'5X XXX XXXX','+255':'7XX XXX XXX','+256':'7XX XXX XXX','+27':'8X XXX XXXX','+44':'7XXX XXXXXX','+1':'(XXX) XXX-XXXX'};
-    phoneInput.placeholder = placeholders[code] || 'Enter phone number';
-  }
-}
-
-// ── GRAND PRIZE WINNERS ──
-const WINNERS_DATA = [
-  {amount:'KES 43,092.00', ago:'1 min ago', masked:'*********0'},
-  {amount:'KES 135,000.00', ago:'3 min ago', masked:'*********5'},
-  {amount:'KES 45,675.00', ago:'20 min ago', masked:'*********8'},
-  {amount:'KES 83,119.40', ago:'28 min ago', masked:'*********5'},
-  {amount:'KES 38,950.00', ago:'32 min ago', masked:'*********1'},
-  {amount:'KES 261,183.90', ago:'56 min ago', masked:'*********0'},
-  {amount:'KES 38,250.00', ago:'57 min ago', masked:'*********2'},
-  {amount:'KES 86,919.61', ago:'1 hr ago', masked:'*********8'},
-  {amount:'KES 418,039.69', ago:'1 hr ago', masked:'*********1'},
-  {amount:'KES 48,750.00', ago:'1 hr ago', masked:'*********7'},
-];
-
-function renderWinners() {
-  const el = document.getElementById('winners-scroll');
-  if(!el) return;
-  // duplicate list for seamless loop
-  const rows = [...WINNERS_DATA, ...WINNERS_DATA].map(w => `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--border);">
-      <div style="display:flex;align-items:center;gap:9px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🏆</div>
-        <div>
-          <div style="font-size:13px;font-weight:800;color:var(--gold);">${w.amount}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:1px;">Sports Betting · ${w.masked}</div>
-        </div>
-      </div>
-      <div style="font-size:10px;color:var(--muted);text-align:right;flex-shrink:0;">${w.ago}</div>
-    </div>
-  `).join('');
-  el.innerHTML = rows;
-}
-
-// ── FEATURED BET FLAG ──
-let isFeaturedBet = false;
-
-// ── SHARE FEATURED MATCH ──
-function shareFeatured(url, matchName) {
-  if(navigator.share) {
-    navigator.share({ title: matchName + ' — SportyBet', text: '🔥 Bet on ' + matchName + ' now on SportyBet!', url });
-  } else {
-    navigator.clipboard.writeText(url).then(() => {
-      // Show a nice toast instead of alert
-      showShareToast();
-    }).catch(() => {
-      prompt('Copy this link:', url);
-    });
-  }
-}
-
-function showShareToast() {
-  let t = document.getElementById('share-toast');
-  if(!t) {
-    t = document.createElement('div');
-    t.id = 'share-toast';
-    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1A1A1A;border:1px solid var(--gold);border-radius:6px;padding:10px 18px;font-size:12px;font-weight:700;color:var(--gold);z-index:999;white-space:nowrap;';
-    t.textContent = '🔗 Link copied to clipboard!';
-    document.body.appendChild(t);
-  }
-  t.style.display = 'block';
-  setTimeout(() => { t.style.display = 'none'; }, 2500);
-}
-
-// ── FEATURED ODD (min 500, requires auth) ──
-function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
-  if(!currentUser) {
-    sessionStorage.setItem('pendingFeaturedBet', JSON.stringify({matchId,marketType,matchName,selection,val}));
-    sessionStorage.setItem('afterAuthPage', 'home');
-    showAuthPrompt('Sign in to place your bet on ' + matchName);
-    return;
-  }
-  isFeaturedBet = true;
-  addOdd(btn, matchId, marketType, matchName, selection, val);
-  // Force min 500 stake
-  const stakeEl = document.getElementById('stake');
-  if(stakeEl && parseFloat(stakeEl.value) < 500) { stakeEl.value = 500; calcPayout(); }
-  // Update quick stake buttons for featured (min 500)
-  const qsRow = document.getElementById('qs-row');
-  if(qsRow) qsRow.innerHTML = `
-    <div class="qs" onclick="setStake(500)">500</div>
-    <div class="qs" onclick="setStake(1000)">1K</div>
-    <div class="qs" onclick="setStake(2000)">2K</div>
-    <div class="qs" onclick="setStake(5000)">5K</div>`;
-  goPage('slip');
-}
-
-// ── AUTH PROMPT (inline banner) ──
-function showAuthPrompt(msg) {
-  let overlay = document.getElementById('auth-prompt-overlay');
-  if(!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'auth-prompt-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:400;display:flex;align-items:flex-end;justify-content:center;';
-    overlay.innerHTML = `
-      <div style="background:var(--surface);border-radius:16px 16px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;text-align:center;">
-        <div style="font-size:32px;margin-bottom:10px;">🔐</div>
-        <div style="font-size:16px;font-weight:800;margin-bottom:6px;" id="auth-prompt-msg">Sign in to continue</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Create a free account or sign in to place bets and make deposits.</div>
-        <button onclick="closeAuthPrompt();goPage('register');" style="width:100%;padding:14px;border-radius:6px;background:var(--gold);border:none;color:#000;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;">Join Free — Takes 60 Seconds</button>
-        <button onclick="closeAuthPrompt();goPage('login');" style="width:100%;padding:12px;border-radius:6px;background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;">I already have an account</button>
-        <div style="font-size:11px;color:var(--muted);cursor:pointer;" onclick="closeAuthPrompt()">✕ Maybe later</div>
-      </div>`;
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', e => { if(e.target === overlay) closeAuthPrompt(); });
-  }
-  const msgEl = document.getElementById('auth-prompt-msg');
-  if(msgEl) msgEl.textContent = msg || 'Sign in to continue';
-  overlay.style.display = 'flex';
-}
-
-function closeAuthPrompt() {
-  const o = document.getElementById('auth-prompt-overlay');
-  if(o) o.style.display = 'none';
-}
-
-// ── DEEP LINK: open specific match from URL, gate with auth ──
-function checkDeepLink() {
-  const params = new URLSearchParams(window.location.search);
-  const matchId = params.get('match');
-  if(!matchId) return;
-
-  // Show the match to everyone — but gate betting/deposit behind auth
-  if(allMatches.length) {
-    const m = allMatches.find(x => x.id === matchId);
-    if(m) {
-      // Scroll to featured section
-      setTimeout(() => {
-        document.getElementById('featured-section')?.scrollIntoView({behavior:'smooth', block:'start'});
-      }, 600);
-      // If not logged in, show auth prompt after a short delay
-      if(!currentUser) {
-        setTimeout(() => {
-          showAuthPrompt('Sign in to bet on ' + m.home_team + ' vs ' + m.away_team);
-        }, 1800);
-      }
-    }
-  }
-}
-
-// ── AFTER LOGIN: resume pending actions ──
-function resumePendingActions() {
-  const pendingBet = sessionStorage.getItem('pendingFeaturedBet');
-  if(pendingBet) {
-    try {
-      const b = JSON.parse(pendingBet);
-      sessionStorage.removeItem('pendingFeaturedBet');
-      isFeaturedBet = true;
-      // Re-add the odd to slip
-      slip.push({id:Date.now(),matchId:b.matchId,marketType:b.marketType,matchName:b.matchName,selection:b.selection,val:parseFloat(b.val)});
-      const stakeEl=document.getElementById('stake'); if(stakeEl){stakeEl.value=500;calcPayout();}
-      renderSlip();
-      goPage('slip');
-    } catch(e){}
-  }
-}
-
-// ── MY BETS ──
-let myBetsFilter = 'pending';
-function setMyBetsTab(el, filter) {
-  myBetsFilter = filter;
-  document.querySelectorAll('#page-mybets .stab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  loadMyBets();
-}
-
-async function loadMyBets() {
-  if(!currentUser) { goPage('login'); return; }
-  const el = document.getElementById('mybets-list');
-  if(!el) return;
-  el.innerHTML = '<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
-  try {
-    let q = db.from('bets').select('*,bet_selections(*)').eq('user_id',currentUser.id).order('created_at',{ascending:false});
-    if(myBetsFilter !== 'all') q = q.eq('status', myBetsFilter);
-    const {data:bets} = await q;
-    if(!bets||!bets.length) {
-      el.innerHTML = `<div style="text-align:center;padding:40px 20px;"><div style="font-size:36px;margin-bottom:10px;">🎯</div><div style="font-size:13px;color:var(--muted);">No ${myBetsFilter === 'all' ? '' : myBetsFilter} bets yet</div></div>`;
-      return;
-    }
-    const statusColors = {won:'#27AE60',lost:'var(--live)',pending:'var(--gold)',void:'var(--muted)',cashed_out:'#2F80ED'};
-    const statusBg = {won:'rgba(39,174,96,.12)',lost:'var(--live-bg)',pending:'rgba(240,192,64,.1)',void:'rgba(255,255,255,.05)',cashed_out:'rgba(47,128,237,.1)'};
-    const statusLabel = {won:'WON',lost:'LOST',pending:'ACTIVE',void:'VOID',cashed_out:'CASHED OUT'};
-    el.innerHTML = bets.map(b => {
-      const sels = b.bet_selections || [];
-      const statusCol = statusColors[b.status] || 'var(--muted)';
-      const statusBgCol = statusBg[b.status] || 'rgba(255,255,255,.05)';
-      const label = statusLabel[b.status] || b.status.toUpperCase();
-      const profit = b.status==='won' ? `+KSh ${parseFloat(b.actual_win||b.potential_win).toLocaleString()}` 
-        : b.status==='lost' ? `-KSh ${parseFloat(b.stake).toLocaleString()}` 
-        : b.status==='cashed_out' ? `Cashed: KSh ${parseFloat(b.cashout_amount||b.actual_win||0).toLocaleString()}`
-        : `Possible: KSh ${parseFloat(b.potential_win).toLocaleString()}`;
-      return `
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
-          <div style="padding:12px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">${b.bet_type} · ${b.reference||''}</div>
-              <div style="font-size:12px;color:var(--muted);margin-top:2px;">${new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'})}</div>
-            </div>
-            <div style="background:${statusBgCol};border-radius:4px;padding:4px 10px;font-size:11px;font-weight:800;color:${statusCol};">${label}</div>
-          </div>
-          ${sels.map(s=>`
-            <div style="padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-              <div>
-                <div style="font-size:12px;font-weight:600;">${s.match_name||''}</div>
-                <div style="font-size:11px;color:var(--muted);margin-top:1px;">${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:#27AE60;font-weight:700;">${s.selection||''}</span></div>
-              </div>
-              <div style="font-size:14px;font-weight:800;color:var(--gold);">${parseFloat(s.odds||0).toFixed(2)}</div>
-            </div>`).join('')}
-          <div style="padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:var(--card);">
-            <div style="font-size:12px;color:var(--muted);">Stake: <strong style="color:var(--text);">KSh ${parseFloat(b.stake).toLocaleString()}</strong> · Odds: <strong style="color:var(--gold);">${parseFloat(b.total_odds).toFixed(2)}</strong></div>
-            <div style="font-size:13px;font-weight:800;color:${statusCol};">${profit}</div>
-          </div>
-          ${b.status==='pending'?`<div style="padding:8px 13px;background:rgba(39,174,96,.08);border-top:1px solid rgba(39,174,96,.2);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#27AE60;">💰 Cash Out Available</span><button onclick="openCashout('${b.reference}',${Math.round(b.potential_win*0.75)},${b.stake},'${b.id}')" style="background:#27AE60;border:none;border-radius:4px;color:#fff;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;">Cash Out</button></div>`:''}
-          ${b.status==='cashed_out'?`<div style="padding:8px 13px;background:rgba(47,128,237,.08);border-top:1px solid rgba(47,128,237,.2);text-align:center;font-size:11px;color:#2F80ED;font-weight:600;">✅ Bet cashed out — KSh ${parseFloat(b.cashout_amount||b.actual_win||0).toLocaleString()} credited</div>`:''}
-        </div>`;
-    }).join('');
-  } catch(e) { console.error('My bets error:',e); }
-}
-
-// Load my bets when page opens
-const _origGoPage = goPage;
-goPage = function(p) {
-  _origGoPage(p);
-  if(p==='mybets') loadMyBets();
-  if(p==='jackpot') initJackpot();
-};
-// ── JACKPOT ──
-let jpPicks = {}; // matchId -> selection
-const JP_CLOSE = new Date('2026-08-20T21:00:00+03:00'); // Wed 21:00 EAT — update weekly
-const JP_TOTAL = 17;
-
-function initJackpot() {
-  loadJackpotGames();
-  updateJackpotCountdown();
-  setInterval(updateJackpotCountdown, 60000);
-}
-
-function updateJackpotCountdown() {
-  const el = document.getElementById('jp-countdown');
-  if(!el) return;
-  const diff = JP_CLOSE - Date.now();
-  if(diff <= 0) { el.textContent = 'Closed'; return; }
-  const h = Math.floor(diff/3600000);
-  const m = Math.floor((diff%3600000)/60000);
-  el.textContent = h > 24 ? `${Math.floor(h/24)}d ${h%24}h` : `${h}h ${m}m`;
-}
-
-async function loadJackpotGames() {
-  const el = document.getElementById('jp-games-list');
-  if(!el) return;
-  // Use upcoming matches from allMatches, take up to 17
-  const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
-  if(!games.length) {
-    el.innerHTML = '<div style="text-align:center;padding:30px;font-size:13px;color:var(--muted);">No upcoming matches available.<br/>Check back later or sync matches.</div>';
-    return;
-  }
-  renderJackpotGames(games);
-}
-
-function renderJackpotGames(games) {
-  const el = document.getElementById('jp-games-list');
-  if(!el) return;
-  el.innerHTML = games.map((m,i) => {
-    const mkts = (m.markets||[]).filter(x=>x.market_type==='1x2');
-    const h = mkts.find(x=>x.selection==='Home Win');
-    const d = mkts.find(x=>x.selection==='Draw');
-    const a = mkts.find(x=>x.selection==='Away Win');
-    const pick = jpPicks[m.id];
-    return `
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
-      <div style="padding:8px 12px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-        <div style="font-size:10px;font-weight:700;color:var(--muted);">MATCH ${i+1} · ${m.league_flag||'⚽'} ${m.league}</div>
-        <div style="font-size:10px;color:var(--muted);">${fmtTime(m.kick_off)}</div>
-      </div>
-      <div style="padding:10px 12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <div style="font-size:13px;font-weight:700;flex:1;">${m.home_team}</div>
-          <div style="font-size:11px;color:var(--muted);padding:0 8px;">vs</div>
-          <div style="font-size:13px;font-weight:700;flex:1;text-align:right;">${m.away_team}</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">
-          <button onclick="jpPick('${m.id}','1','${i}')" id="jp-${m.id}-1" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='1'?'var(--gold)':'var(--border)'};background:${pick==='1'?'var(--gold)':'var(--card)'};color:${pick==='1'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
-            <div style="font-size:9px;color:${pick==='1'?'rgba(0,0,0,.6)':'var(--muted)'};">1 Home</div>
-            <div>${h?h.odds:'—'}</div>
-          </button>
-          <button onclick="jpPick('${m.id}','X','${i}')" id="jp-${m.id}-X" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='X'?'var(--gold)':'var(--border)'};background:${pick==='X'?'var(--gold)':'var(--card)'};color:${pick==='X'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
-            <div style="font-size:9px;color:${pick==='X'?'rgba(0,0,0,.6)':'var(--muted)'};">X Draw</div>
-            <div>${d?d.odds:'—'}</div>
-          </button>
-          <button onclick="jpPick('${m.id}','2','${i}')" id="jp-${m.id}-2" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='2'?'var(--gold)':'var(--border)'};background:${pick==='2'?'var(--gold)':'var(--card)'};color:${pick==='2'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
-            <div style="font-size:9px;color:${pick==='2'?'rgba(0,0,0,.6)':'var(--muted)'};">2 Away</div>
-            <div>${a?a.odds:'—'}</div>
-          </button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  updateJpCount();
-}
-
-function jpPick(matchId, sel, idx) {
-  jpPicks[matchId] = sel;
-  // Update button styles for this match
-  ['1','X','2'].forEach(s => {
-    const btn = document.getElementById(`jp-${matchId}-${s}`);
-    if(!btn) return;
-    const active = s === sel;
-    btn.style.background = active ? 'var(--gold)' : 'var(--card)';
-    btn.style.borderColor = active ? 'var(--gold)' : 'var(--border)';
-    btn.style.color = active ? '#000' : 'var(--text)';
-  });
-  updateJpCount();
-}
-
-function updateJpCount() {
-  const count = Object.keys(jpPicks).length;
-  const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
-  const total = games.length;
-  const txt = `${count}/${total}`;
-  setEl('jp-selected', txt);
-  setEl('jp-sel-count', txt);
-  const btn = document.getElementById('jp-submit-btn');
-  if(btn) {
-    const done = count >= total;
-    btn.disabled = !done;
-    btn.style.opacity = done ? '1' : '.5';
-    btn.textContent = done ? `Enter Jackpot — KSh 100` : `Pick All ${total} Matches to Enter`;
-  }
-}
-
-async function submitJackpot() {
-  if(!currentUser) { showNotif('Sign in to enter the jackpot','warning'); goPage('login'); return; }
-  if(!currentProfile || currentProfile.balance < 100) {
-    showNotif('Insufficient balance. Deposit at least KSh 100 first.','error');
-    return;
-  }
-  const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
-  if(Object.keys(jpPicks).length < games.length) {
-    showNotif('Please pick a result for all matches','warning'); return;
-  }
-  try {
-    const newBal = currentProfile.balance - 100;
-    await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
-    await db.from('transactions').insert({
-      user_id:currentUser.id, type:'bet', amount:100,
-      balance_before:currentProfile.balance, balance_after:newBal,
-      status:'completed', description:'Jackpot entry — Midweek Jackpot'
-    });
-    currentProfile.balance = newBal;
-    updateProfileUI();
-    jpPicks = {};
-    showNotif('🏆 Jackpot entry confirmed! Good luck!','success');
-    goPage('home');
-  } catch(e) { showNotif('Entry failed: '+e.message,'error'); }
-}
-async function checkForWins() {
-  if(!currentUser) return;
-  try {
-    const { data: wonBets } = await db.from('bets')
-      .select('*,bet_selections(*)')
-      .eq('user_id', currentUser.id)
-      .eq('status', 'won')
-      .limit(3);
-    if(wonBets && wonBets.length > 0) {
-      const bet = wonBets[0];
-      const matchName = bet.bet_selections?.[0]?.match_name || 'Your bet';
-      // Only show if won in last 10 minutes
-      const wonAt = new Date(bet.updated_at||bet.created_at);
-      const minsAgo = (Date.now() - wonAt.getTime()) / 60000;
-      if(minsAgo < 10) showWinNotification(bet.actual_win||bet.potential_win, matchName, bet.reference);
-    }
-  } catch(e) { console.error('Win check error:', e); }
-}
-
-async function init() {
-  const {data:{session}} = await db.auth.getSession();
-  if(session?.user){
-    currentUser=session.user;
-    await loadProfile();
-    updateAuthUI();
-    setTimeout(checkForWins, 2000);
-  }
-  await loadMatches();
-  subscribeRealtime();
-  renderWinners();
-  checkDeepLink();
-
-  // Auto refresh matches every 5 minutes
-  setInterval(async () => {
-    await loadMatches();
-  }, 5 * 60 * 1000);
-
-  // Refresh when user comes back to tab
-  document.addEventListener('visibilitychange', async () => {
-    if(document.visibilityState === 'visible') {
-      await loadMatches();
-      if(currentUser) await loadProfile().then(updateAuthUI);
-    }
-  });
-}
-init();
-</script>
-</body>
-</html>
+    : isPreMatch
+      ? `<div class="feat-live" style="background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);">🕐 ${fmtTime(m.kick_off)}</div>`
+      : isFT
+        ? `<div class="feat-live" style="background:var(--muted);color:#fff;">FT</div>`
+ 
