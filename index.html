@@ -2435,13 +2435,30 @@
         const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
         const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
         const kickoffTime = new Date(m.kick_off).getTime();
-        const isLive = m.status === 'live';
+        const isFinished = m.status === 'finished' || m.status === 'ft' || m.status === 'FT' || m.status === 'ended';
+        const isLive = m.status === 'live' && !isFinished;
+        const hs = parseInt(m.home_score)||0, as_ = parseInt(m.away_score)||0;
+        let resultLabel = '';
+        if (isFinished) {
+            if (hs > as_) resultLabel = m.home_team + ' won';
+            else if (as_ > hs) resultLabel = m.away_team + ' won';
+            else resultLabel = 'Draw';
+        }
+        let statusBadge;
+        if (isFinished) statusBadge = 'FT';
+        else if (isLive) statusBadge = '🔴 LIVE';
+        else statusBadge = getCountdown(kickoffTime);
+
+        let metaLine;
+        if (isFinished) metaLine = `${m.league_flag||''} ${m.league} · ${hs}–${as_} · ${resultLabel}`;
+        else if (isLive) metaLine = `${m.league_flag||''} ${m.league} · ⏱️ ${m.minute||0}'`;
+        else metaLine = `${m.league_flag||''} ${m.league} · ${fmtTime(m.kick_off)}`;
 
         document.getElementById('featured-section').innerHTML = `
             <div class="featured-wrap">
                 <div class="feat-header">
                     <div class="feat-badge"><i class="fas fa-star"></i> Featured Match</div>
-                    <div class="feat-countdown" id="feat-countdown">${isLive ? '🔴 LIVE' : getCountdown(kickoffTime)}</div>
+                    <div class="feat-countdown" id="feat-countdown" style="${isFinished ? 'background:#374151;color:#fff;' : (isLive ? 'background:#E21B2D;color:#fff;' : '')}">${statusBadge}</div>
                 </div>
                 <div class="feat-body">
                     <div class="feat-teams">
@@ -2457,7 +2474,7 @@
                             <div class="ft-score">${m.away_score}</div>
                         </div>
                     </div>
-                    <div class="feat-meta">${m.league_flag||''} ${m.league} · ${isLive ? `⏱️ ${m.minute||0}'` : fmtTime(m.kick_off)}</div>
+                    <div class="feat-meta">${metaLine}</div>
                     ${chips ? `<div class="feat-events">${chips}</div>` : ''}
                     <div class="feat-odds-section">
                         <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
@@ -2485,7 +2502,8 @@
             </div>
         `;
 
-        if(!isLive) startCountdown(kickoffTime);
+        if(!isLive && !isFinished) startCountdown(kickoffTime);
+        else if(isFinished && countdownInterval) clearInterval(countdownInterval);
     }
 
     function getCountdown(kickoffTime) {
@@ -2505,10 +2523,17 @@
         countdownInterval = setInterval(() => {
             const el = document.getElementById('feat-countdown');
             if(!el) { clearInterval(countdownInterval); return; }
+            // Never overwrite FT / Finished
+            const t = (el.textContent || '').trim();
+            if(t === 'FT' || t.indexOf('FT') === 0 || t === 'Finished') {
+                clearInterval(countdownInterval);
+                return;
+            }
             const now = Date.now();
             const diff = kickoffTime - now;
             if(diff <= 0) {
-                el.textContent = '🔴 LIVE';
+                // Only show LIVE if not already finished
+                if(t !== 'FT' && t.indexOf('FT') !== 0) el.textContent = '🔴 LIVE';
                 clearInterval(countdownInterval);
                 return;
             }
