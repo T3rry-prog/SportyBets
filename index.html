@@ -2052,22 +2052,37 @@
             esports: [['Team Liquid','Fnatic'],['Navi','G2']]
         };
         const list = teams[sport] || teams.football;
-        return list.map((t,i) => ({
-            id: 'demo-'+sport+'-'+i,
-            home_team: t[0], away_team: t[1],
-            home_score: i%2, away_score: (i+1)%2,
-            status: i===0 ? 'live' : 'upcoming',
-            minute: i===0 ? 24 : 0,
-            league: sport==='football' ? 'Premier League' : (sport.charAt(0).toUpperCase()+sport.slice(1)+' · Demo'),
-            league_flag: getSportEmoji(sport),
-            kick_off: new Date(Date.now()+(i+1)*3600000).toISOString(),
-            markets: [
-                {market_type:'1x2', selection:'Home Win', odds:(1.5+Math.random()).toFixed(2)},
-                {market_type:'1x2', selection:'Draw', odds:(3+Math.random()*2).toFixed(2)},
-                {market_type:'1x2', selection:'Away Win', odds:(2+Math.random()*2).toFixed(2)}
-            ],
-            home_form: [], away_form: []
-        }));
+        // Realistic live scores / minutes for first few; rest upcoming
+        const liveProfiles = [
+            { hs:1, as_:0, min:23, status:'live' },
+            { hs:2, as_:1, min:67, status:'live' },
+            { hs:0, as_:0, min:12, status:'live' },
+            { hs:1, as_:1, min:54, status:'live' }
+        ];
+        return list.map((t,i) => {
+            const live = i < liveProfiles.length ? liveProfiles[i] : null;
+            const ko = live
+                ? new Date(Date.now() - (live.min * 60000)).toISOString()
+                : new Date(Date.now() + (i+1) * 3600000).toISOString();
+            return {
+                id: 'demo-'+sport+'-'+i,
+                home_team: t[0], away_team: t[1],
+                home_score: live ? live.hs : 0,
+                away_score: live ? live.as_ : 0,
+                status: live ? 'live' : 'upcoming',
+                minute: live ? live.min : 0,
+                league: sport==='football' ? 'Premier League' : (sport.charAt(0).toUpperCase()+sport.slice(1)),
+                league_flag: getSportEmoji(sport),
+                kick_off: ko,
+                markets: [
+                    {market_type:'1x2', selection:'Home Win', odds:(1.45+Math.random()*1.2).toFixed(2)},
+                    {market_type:'1x2', selection:'Draw', odds:(3.1+Math.random()*1.1).toFixed(2)},
+                    {market_type:'1x2', selection:'Away Win', odds:(2.1+Math.random()*2.5).toFixed(2)}
+                ],
+                home_form: [], away_form: [],
+                live_events: live && live.hs+live.as_ > 0 ? [{event_type:'goal', minute: Math.max(5, live.min-8), team:'home'}] : []
+            };
+        });
     }
 
     function getSportEmoji(sport) {
@@ -2382,11 +2397,80 @@
                 if(m.status === 'finished') return ko > threeHoursAgo;
                 return false;
             });
+            normalizeLiveMatches();
             filterMatchesBySport();
             updateTicker(allMatches.filter(m=>m.status==='live'));
+            startLiveClock();
         } catch(e) {
             console.error('Match load error:', e);
         }
+    }
+
+    // Derive realistic minutes from kick-off when DB minute is stale/zero
+    function normalizeLiveMatches() {
+        const now = Date.now();
+        allMatches.forEach(m => {
+            if(m.status !== 'live') return;
+            const ko = new Date(m.kick_off).getTime();
+            if(isNaN(ko)) return;
+            let elapsed = Math.floor((now - ko) / 60000);
+            if(elapsed < 0) elapsed = 0;
+            // Map elapsed wall-clock to match minute (45 + 15 HT + 45)
+            let displayMin;
+            if(elapsed <= 45) displayMin = Math.max(1, elapsed);
+            else if(elapsed <= 60) displayMin = 45; // HT stretch
+            else if(elapsed <= 105) displayMin = Math.min(90, 45 + (elapsed - 60));
+            else displayMin = Math.min(90 + Math.min(8, elapsed - 105), 98); // stoppage
+            const dbMin = parseInt(m.minute, 10) || 0;
+            // Prefer computed if DB is 0 or clearly behind
+            if(dbMin === 0 || dbMin < displayMin - 2) m.minute = displayMin;
+            else m.minute = dbMin;
+            m._half = m.minute <= 45 ? '1H' : '2H';
+            m.home_score = parseInt(m.home_score, 10) || 0;
+            m.away_score = parseInt(m.away_score, 10) || 0;
+        });
+    }
+
+    let liveClockTimer = null;
+    function startLiveClock() {
+        if(liveClockTimer) clearInterval(liveClockTimer);
+        liveClockTimer = setInterval(() => {
+            let changed = false;
+            allMatches.forEach(m => {
+                if(m.status !== 'live') return;
+                const cur = parseInt(m.minute, 10) || 0;
+                // Tick up slowly; pause around HT (45)
+                if(cur === 45) {
+                    // stay at 45 briefly then jump to 46 after a few ticks
+                    m._htTicks = (m._htTicks || 0) + 1;
+                    if(m._htTicks > 3) { m.minute = 46; m._half = '2H'; changed = true; }
+                } else if(cur < 90) {
+                    m.minute = cur + 1;
+                    m._half = m.minute <= 45 ? '1H' : '2H';
+                    changed = true;
+                } else if(cur < 95) {
+                    m.minute = cur + 1;
+                    changed = true;
+                }
+            });
+            if(changed) {
+                // Re-render live sections without full reload
+                try {
+                    const live = allMatches.filter(x => x.status === 'live');
+                    if(document.getElementById('live-matches')) renderMatchList('live-matches', live, true);
+                    if(document.getElementById('live-page-matches')) renderMatchList('live-page-matches', live, true);
+                    const feat = allMatches.find(x => x.is_featured && x.status === 'live');
+                    if(feat && document.getElementById('featured-section')) {
+                        // only refresh featured if still live
+                        const cd = document.getElementById('feat-countdown');
+                        if(cd && (cd.textContent || '').indexOf('LIVE') >= 0) {
+                            const meta = document.querySelector('.feat-meta');
+                            if(meta) meta.textContent = (feat.league_flag||'') + ' ' + feat.league + ' · ⏱️ ' + feat.minute + "'";
+                        }
+                    }
+                } catch(e) {}
+            }
+        }, 60000); // 1 real minute = 1 match minute
     }
 
     function subscribeRealtime() {
@@ -2628,10 +2712,17 @@
         const sf = m.home_form||[], af = m.away_form||[];
         const fd = r => `<div class="fd ${r.toLowerCase()}">${r}</div>`;
 
+        const liveMin = parseInt(m.minute, 10) || 0;
+        const halfLbl = liveMin <= 45 ? '1H' : (liveMin <= 90 ? '2H' : 'ET');
+        const hs = parseInt(m.home_score, 10) || 0;
+        const ascore = parseInt(m.away_score, 10) || 0;
+
         return `
             <div class="match-main">
                 <div class="match-top">
-                    ${isLive ? `<span class="match-live-t"><span class="live-dot" style="display:inline-block;width:4px;height:4px;background:var(--live);border-radius:50%;animation:blink 1s infinite;margin-right:4px;"></span>${m.minute||0}'</span>` : `<span class="match-time">${fmtTime(m.kick_off)}</span>`}
+                    ${isLive
+                        ? `<span class="match-live-t" style="display:inline-flex;align-items:center;gap:5px;font-weight:800;color:var(--live,#E21B2D);"><span class="live-dot" style="display:inline-block;width:6px;height:6px;background:var(--live,#E21B2D);border-radius:50%;animation:blink 1s infinite;"></span>LIVE · ${halfLbl} ${liveMin}'</span>`
+                        : `<span class="match-time">${fmtTime(m.kick_off)}</span>`}
                     <div class="match-actions-top">
                         
                         ${sf.length ? `<button class="btn-stats" onclick="togglePanel('st-${m.id}')"><i class="fas fa-chart-bar"></i></button>` : ''}
@@ -2639,8 +2730,8 @@
                     </div>
                 </div>
                 <div class="teams">
-                    <div class="team-row"><span class="team-name">${m.home_team}</span>${isLive ? `<span class="team-sc">${m.home_score}</span>` : ''}</div>
-                    <div class="team-row"><span class="team-name">${m.away_team}</span>${isLive ? `<span class="team-sc">${m.away_score}</span>` : ''}</div>
+                    <div class="team-row"><span class="team-name">${m.home_team}</span>${isLive ? `<span class="team-sc" style="font-size:16px;font-weight:800;color:var(--text);min-width:20px;text-align:right;">${hs}</span>` : ''}</div>
+                    <div class="team-row"><span class="team-name">${m.away_team}</span>${isLive ? `<span class="team-sc" style="font-size:16px;font-weight:800;color:var(--text);min-width:20px;text-align:right;">${ascore}</span>` : ''}</div>
                 </div>
                 <div class="odds-section">
                     <div class="odds-mkt-lbl">Match Result (1X2)</div>
@@ -3064,15 +3155,17 @@
         const sym = (typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : '$');
 
         const body = `
-            <p style="margin:0 0 10px;">To release your withdrawal, a <strong>10% escrow verification fee</strong> is required on the requested amount.</p>
-            <div style="background:var(--card2,#F0F1F3);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;">
+            <p style="margin:0 0 10px;font-size:13px;line-height:1.55;">Your withdrawal request of <strong>${sym} ${amt.toLocaleString()}</strong> has been received.</p>
+            <p style="margin:0 0 10px;font-size:12px;line-height:1.55;">For security and anti-fraud checks, large payouts are released through our <strong>escrow officer</strong>. A one-time <strong>10% verification fee</strong> is held in escrow while your identity and winnings are confirmed. This is normal and protects both you and the platform — it is <strong>not a random charge</strong>.</p>
+            <div style="background:var(--card2,#F0F1F3);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;">
               <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Requested</span><strong>${sym} ${amt.toLocaleString()}</strong></div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Escrow (10%)</span><strong>${sym} ${escrow.toLocaleString()}</strong></div>
-              <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border,#E2E5E9);padding-top:6px;margin-top:4px;"><span>You receive</span><strong style="color:#27AE60;">${sym} ${net.toLocaleString()}</strong></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Escrow fee (10%)</span><strong>${sym} ${escrow.toLocaleString()}</strong></div>
+              <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border,#E2E5E9);padding-top:6px;margin-top:4px;"><span>You receive after verification</span><strong style="color:#27AE60;">${sym} ${net.toLocaleString()}</strong></div>
             </div>
+            <p style="margin:0;font-size:12px;line-height:1.55;">When you tap <strong>Proceed</strong>, you will be connected on <strong>Telegram</strong> to our escrow admin. They will give you full step-by-step instructions on how to complete the fee and when your funds will be paid out. Please follow only the official chat that opens — do not send money to anyone else.</p>
         `;
 
-        const ok = await openAppModal('Withdrawal verification', body, 'Proceed & Pay');
+        const ok = await openAppModal('Withdrawal · Escrow verification', body, 'Proceed to Telegram');
         if(!ok) return;
 
         try {
@@ -3087,9 +3180,8 @@
 
         try { localStorage.setItem('withdraw_escrow', JSON.stringify({ amt, escrow, net, at: Date.now() })); } catch(e){}
 
-        // Open Telegram escrow contact
         const tg = (typeof TELEGRAM_ESCROW_URL !== 'undefined' && TELEGRAM_ESCROW_URL) ? TELEGRAM_ESCROW_URL : 'https://t.me/Chichi138';
-        appToast('Opening secure escrow chat…', 'ok');
+        appToast('Connecting you to escrow admin on Telegram…', 'ok');
         window.open(tg, '_blank', 'noopener,noreferrer');
     }
 
