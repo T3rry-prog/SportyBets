@@ -197,7 +197,130 @@
         .sp.active { background: var(--primary); color: #fff; border-color: var(--primary); }
         .sp .soon-tag { background: var(--gold); color: #000; font-size: 7px; font-weight: 800; padding: 1px 6px; border-radius: 10px; margin-left: 2px; }
 
+        /* ===== TICKER ===== */
+        .ticker {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            height: 32px;
+            overflow: hidden;
+        }
+        .ticker-lbl {
+            background: var(--primary);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 0 12px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .ticker-body { overflow: hidden; flex: 1; }
+        .ticker-inner {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 40s linear infinite;
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .ticker-hi { color: var(--text); font-weight: 600; }
 
+        /* ===== CONTENT ===== */
+        .content { padding: 16px 16px 80px; }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #8A0D1A 100%);
+            border-radius: var(--r);
+            padding: 24px 20px 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .hero-glow {
+            position: absolute;
+            right: -60px;
+            top: -60px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(240,192,64,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero h1 { font-size: 26px; font-weight: 900; line-height: 1.15; margin-bottom: 8px; color: #fff; }
+        .hero h1 span { color: var(--gold); }
+        .hero p { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 16px; }
+
+        .hero-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .btn-hero {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: var(--r);
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(240,192,64,0.3); }
+        .btn-hero2 {
+            background: transparent;
+            border: 1.5px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.8);
+            border-radius: var(--r);
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-hero2:hover { background: rgba(255,255,255,0.1); }
+
+        .hero-footer {
+            display: flex;
+            gap: 16px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .hf-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.55);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+
+        .bonus-strip {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+        .bonus-strip:hover { border-color: var(--gold); }
+        .bs-text { font-size: 12px; font-weight: 600; color: var(--text); }
+        .bs-btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .bs-btn:hover { transform: scale(1.05); }
 
         /* ===== SECTION HEADER ===== */
         .sec-hd {
@@ -3097,4 +3220,4 @@
 </script>
 
 </body>
-</html>
+        </html>
