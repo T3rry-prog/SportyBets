@@ -955,7 +955,7 @@
                 <div style="width:44px;height:44px;border-radius:12px;background:rgba(39,174,96,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;">✈️</div>
                 <div>
                     <div style="font-size:15px;font-weight:800;color:#fff;">Aviator</div>
-                    <div style="font-size:11px;color:#27AE60;font-weight:600;">Crash game · Play now</div>
+                    <div style="font-size:11px;color:#27AE60;font-weight:600;">Real money · Play now</div>
                 </div>
             </div>
             <div style="background:#27AE60;color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:20px;position:relative;">PLAY</div>
@@ -1021,15 +1021,37 @@
 </div><!-- ===== LIVE PAGE ===== -->
 <div id="page-live" class="page">
     <div style="padding:16px 16px 80px;">
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
+        <!-- LIVE SUBSCRIPTION GATE -->
+        <div id="live-sub-gate" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
+            <div style="background:linear-gradient(160deg,#0a0a0a 0%,#1a0a0a 100%);padding:28px 18px;text-align:center;position:relative;">
+                <div style="position:absolute;top:10px;left:10px;background:var(--primary);color:#fff;font-size:9px;font-weight:800;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;">
+                    <span class="live-dot" style="background:#fff;"></span> LIVE HD
+                </div>
+                <div style="font-size:28px;margin-bottom:8px;">🔒</div>
+                <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;">Watch Live Matches</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:14px;max-width:280px;margin-left:auto;margin-right:auto;">
+                    One-time <strong style="color:#27AE60;">$50</strong> subscription unlocks live streams.<br>
+                    In partnership with <strong style="color:#fff;">SuperSport</strong> &amp; <strong style="color:#fff;">DStv</strong>.
+                </div>
+                <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;">
+                    <span style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:#fff;">SuperSport</span>
+                    <span style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:#fff;">DStv</span>
+                </div>
+                <button onclick="subscribeLive()" style="width:100%;max-width:260px;padding:13px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">
+                    Subscribe · $50 once
+                </button>
+                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:8px;">Takes you to deposit · then unlock live</div>
+            </div>
+        </div>
+        <div id="live-player-unlocked" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
             <div style="background:#000;height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
                 <div style="position:absolute;top:10px;left:10px;background:var(--primary);color:#fff;font-size:9px;font-weight:800;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;">
                     <span class="live-dot" style="background:#fff;"></span> LIVE HD
                 </div>
-                <div style="width:48px;height:48px;border-radius:50%;background:rgba(240,192,64,0.15);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--gold);">
+                <div style="width:48px;height:48px;border-radius:50%;background:rgba(39,174,96,0.2);border:2px solid #27AE60;display:flex;align-items:center;justify-content:center;font-size:22px;color:#27AE60;">
                     <i class="fas fa-play"></i>
                 </div>
-                <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:8px;">Sign in to watch</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:8px;">Stream unlocked · SuperSport / DStv partner</div>
             </div>
             <div style="padding:10px 14px;border-top:1px solid var(--border);background:var(--card);" id="stream-feat-info">
                 <div style="font-size:13px;font-weight:700;">Loading...</div>
@@ -1467,10 +1489,7 @@
                 <div style="font-size:13px;font-weight:600;"><i class="fas fa-chart-pie"></i> Dashboard</div>
                 <div style="font-size:12px;color:var(--muted);">→</div>
             </div>
-            <div class="acc-row" onclick="openMpesa('deposit')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
-                <div style="font-size:13px;font-weight:600;"><i class="fas fa-coins"></i> Deposit (M-Pesa)</div>
-                <div style="font-size:12px;color:var(--muted);">→</div>
-            </div>
+            
             <div class="acc-row" onclick="goPage('wallet')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
                 <div style="font-size:13px;font-weight:600;"><i class="fas fa-wallet"></i> Wallet & History</div>
                 <div style="font-size:12px;color:var(--muted);" id="acc-bal-row">→</div>
@@ -1746,17 +1765,17 @@
             </div>
 
             <div style="display:flex;gap:8px;margin-bottom:10px;">
-                <input type="number" id="av-stake" value="1" min="1" step="1" style="flex:1;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:#fff;font-size:15px;font-weight:700;outline:none;text-align:center;"/>
+                <input type="number" id="av-stake" value="1" min="1" step="1" style="flex:1;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);font-size:15px;font-weight:700;outline:none;text-align:center;"/>
                 <button onclick="startAv()" id="av-start-btn" style="flex:1.2;padding:12px;border-radius:8px;background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">BET</button>
                 <button onclick="cashoutAv()" id="av-cash-btn" style="flex:1.2;padding:12px;border-radius:8px;background:#E21B2D;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;opacity:0.45;" disabled>CASH OUT</button>
             </div>
             <div style="display:flex;gap:6px;justify-content:center;">
-                <button onclick="document.getElementById('av-stake').value=1;document.getElementById('av-stake-lbl').textContent='1'" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$1</button>
-                <button onclick="document.getElementById('av-stake').value=5;document.getElementById('av-stake-lbl').textContent='5'" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$5</button>
-                <button onclick="document.getElementById('av-stake').value=10;document.getElementById('av-stake-lbl').textContent='10'" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$10</button>
-                <button onclick="document.getElementById('av-stake').value=50;document.getElementById('av-stake-lbl').textContent='50'" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$50</button>
+                <button onclick="setAvStake(1)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$1</button>
+                <button onclick="setAvStake(5)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$5</button>
+                <button onclick="setAvStake(10)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$10</button>
+                <button onclick="setAvStake(50)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$50</button>
             </div>
-            <div style="font-size:10px;color:var(--muted);margin-top:12px;">Demo mode · Real play min $1 (coming soon)</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:12px;">Min bet $1 · Stake taken from your balance</div>
         </div>
 
         <!-- RECENT CRASHES -->
@@ -1909,6 +1928,16 @@
     }
 
     // ===== NAVIGATION =====
+    
+    const CURRENT_PL = [
+        {home:'Liverpool', away:'Arsenal', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:1.95, d:3.40, a:3.80},
+        {home:'Man City', away:'Chelsea', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:1.70, d:3.90, a:4.50},
+        {home:'Man United', away:'Tottenham', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:2.40, d:3.30, a:2.90},
+        {home:'Newcastle', away:'Aston Villa', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:2.10, d:3.40, a:3.40},
+        {home:'Brighton', away:'West Ham', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:2.00, d:3.50, a:3.60},
+        {home:'Crystal Palace', away:'Fulham', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:2.50, d:3.20, a:2.85}
+    ];
+
     const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets','jackpot','aviator'];
     const BN_MAP = {home:'bn-home', live:'bn-live', slip:'bn-slip', mybets:'bn-mybets', account:'bn-account', dashboard:'bn-account', wallet:'bn-account'};
 
@@ -1921,9 +1950,9 @@
         document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
         if(BN_MAP[p]) document.getElementById(BN_MAP[p])?.classList.add('active');
         window.scrollTo(0,0);
-        if(p === 'aviator') { try{ fillAvMarquee(); }catch(e){} }
+        if(p === 'aviator') { try{ startAvMarqueeLoop(); }catch(e){ try{fillAvMarquee();}catch(_){} } }
         if(p === 'wallet') { try{ loadUSDT(); setDepositMethod('crypto'); }catch(e){} }
-        if(p === 'live') loadLivePage();
+        if(p === 'live') { unlockLiveIfSubbed(); if(typeof loadLivePage==='function') loadLivePage(); }
         if(p === 'dashboard' && currentUser) loadDashboard();
         if(p === 'wallet' && currentUser) loadWallet();
         if(p === 'mybets') loadMyBets();
@@ -1970,6 +1999,16 @@
     
     function getDemoMatches(sport) {
         const teams = {
+            football: [
+                ['Liverpool','Arsenal'],
+                ['Man City','Chelsea'],
+                ['Man United','Tottenham'],
+                ['Newcastle','Aston Villa'],
+                ['Brighton','West Ham'],
+                ['Crystal Palace','Fulham'],
+                ['Brentford','Wolves'],
+                ['Everton','Nottingham Forest']
+            ],
             basketball: [['Lakers','Celtics'],['Warriors','Nets'],['Bulls','Heat'],['Nuggets','Suns']],
             tennis: [['Djokovic','Alcaraz'],['Sinner','Medvedev'],['Swiatek','Gauff']],
             rugby: [['All Blacks','Springboks'],['England','Ireland']],
@@ -1978,14 +2017,14 @@
             hockey: [['Rangers','Bruins'],['Maple Leafs','Canadiens']],
             esports: [['Team Liquid','Fnatic'],['Navi','G2']]
         };
-        const list = teams[sport] || teams.basketball;
+        const list = teams[sport] || teams.football;
         return list.map((t,i) => ({
             id: 'demo-'+sport+'-'+i,
             home_team: t[0], away_team: t[1],
             home_score: i%2, away_score: (i+1)%2,
             status: i===0 ? 'live' : 'upcoming',
             minute: i===0 ? 24 : 0,
-            league: sport.charAt(0).toUpperCase()+sport.slice(1)+' · Demo',
+            league: sport==='football' ? 'Premier League' : (sport.charAt(0).toUpperCase()+sport.slice(1)+' · Demo'),
             league_flag: getSportEmoji(sport),
             kick_off: new Date(Date.now()+(i+1)*3600000).toISOString(),
             markets: [
@@ -3311,8 +3350,25 @@
     function fillAvMarquee() {
         const el = document.getElementById('av-winners-marquee');
         if(!el) return;
-        const row = AV_WINNERS.map(w => `<span style="margin-right:28px;"><b style="color:#27AE60;">${w.n}</b> won <b>${w.a}</b> at <span style="color:#F0C040;">${w.m}</span></span>`).join('');
-        el.innerHTML = row + row;
+        const names = ['James K.','Amina W.','Brian O.','Faith M.','David N.','Lucy C.','Peter K.','Grace A.','Samuel T.','Esther R.','Collins M.','Njeri W.','Kevin O.','Mary A.','Daniel K.','Sharon N.','Ian M.','Joy W.'];
+        let html = '';
+        for(let i=0;i<40;i++){
+            const n = names[Math.floor(Math.random()*names.length)];
+            const mult = (1.2 + Math.random()*14).toFixed(2);
+            const stake = [1,2,5,10,20,50][Math.floor(Math.random()*6)];
+            const win = '$'+(stake*parseFloat(mult)).toFixed(2);
+            html += '<span style="margin-right:32px;display:inline-block;"><b style="color:#27AE60;">'+n+'</b> won <b style="color:#fff;">'+win+'</b> at <span style="color:#F0C040;">'+mult+'x</span></span>';
+        }
+        el.innerHTML = html;
+        el.style.animation = 'none';
+        void el.offsetWidth;
+        el.style.animation = 'avMarquee 45s linear infinite';
+    }
+    let avMarqueeTimer = null;
+    function startAvMarqueeLoop(){
+        fillAvMarquee();
+        if(avMarqueeTimer) clearInterval(avMarqueeTimer);
+        avMarqueeTimer = setInterval(fillAvMarquee, 20000);
     }
 
     function pushAvHistory(mult, crashed) {
@@ -3326,13 +3382,66 @@
         }).join('');
     }
 
-    function startAv(){
+    function setAvStake(v){
+        const inp = document.getElementById('av-stake');
+        const lbl = document.getElementById('av-stake-lbl');
+        if(inp){ inp.value = v; inp.style.color = 'var(--text)'; }
+        if(lbl) lbl.textContent = v;
+    }
+    window.setAvStake = setAvStake;
+
+    let avStakeLocked = 0; // stake deducted for current round
+
+    async function startAv(){
         if(avRun) return;
+
+        if(!currentUser){
+            alert('Sign in to play Aviator');
+            goPage('login');
+            return;
+        }
+
         const stakeInp = document.getElementById('av-stake');
         const stake = Math.max(1, parseFloat(stakeInp?.value) || 1);
         if(stakeInp) stakeInp.value = stake;
         const lbl = document.getElementById('av-stake-lbl');
         if(lbl) lbl.textContent = stake;
+
+        const bal = parseFloat(currentProfile?.balance || 0);
+        if(bal < stake){
+            alert('Insufficient balance. You need $' + stake.toFixed(2) + ' (balance: $' + bal.toFixed(2) + '). Deposit to play.');
+            goPage('wallet');
+            try{ setWalletTab('deposit'); setDepositMethod('crypto'); }catch(e){}
+            return;
+        }
+
+        // Deduct stake immediately
+        const newBal = bal - stake;
+        try {
+            const { error } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
+            if(error) throw error;
+            await db.from('transactions').insert({
+                user_id: currentUser.id,
+                type: 'bet',
+                amount: stake,
+                balance_before: bal,
+                balance_after: newBal,
+                status: 'completed',
+                description: 'Aviator bet $' + stake.toFixed(2)
+            });
+            if(currentProfile) currentProfile.balance = newBal;
+            avStakeLocked = stake;
+            // Refresh header balance
+            try {
+                const hb = document.getElementById('hdr-bal');
+                if(hb) hb.textContent = (typeof fmtMoney === 'function' ? fmtMoney(newBal).replace(/^KSh |^\$/, '') : newBal.toLocaleString());
+                const wb = document.getElementById('wallet-bal-display');
+                if(wb) wb.textContent = (typeof fmtMoney === 'function' ? fmtMoney(newBal) : ('$ ' + newBal.toLocaleString()));
+            } catch(e){}
+        } catch(e) {
+            alert('Could not place bet: ' + (e.message || e));
+            return;
+        }
 
         avRun = true; av = 1;
         const el = document.getElementById('av');
@@ -3351,10 +3460,9 @@
             if(!avRun){ clearInterval(avInterval); return; }
             av += 0.01 + Math.random() * 0.05;
             if(el) el.textContent = av.toFixed(2) + 'x';
-            if(plane) plane.style.transform = `translateY(-${Math.min(40, av * 3)}px) scale(${1 + Math.min(0.3, av/20)})`;
+            if(plane) plane.style.transform = 'translateY(-' + Math.min(40, av * 3) + 'px) scale(' + (1 + Math.min(0.3, av/20)) + ')';
             if(profitEl) profitEl.textContent = '$ ' + (stake * (av - 1)).toFixed(2);
 
-            // Crash probability rises slowly
             if(Math.random() < 0.012 + (av * 0.0015)){
                 avRun = false;
                 clearInterval(avInterval);
@@ -3364,6 +3472,8 @@
                 if(startBtn){ startBtn.disabled = false; startBtn.style.opacity = '1'; }
                 if(cashBtn){ cashBtn.disabled = true; cashBtn.style.opacity = '0.45'; }
                 pushAvHistory(av, true);
+                // Stake already lost (deducted) — no refund
+                avStakeLocked = 0;
                 setTimeout(()=>{
                     if(el){ el.style.color = '#27AE60'; el.textContent = '1.00x'; }
                     if(status){ status.textContent = 'WAITING'; status.style.color = '#27AE60'; }
@@ -3374,12 +3484,15 @@
         }, 80);
     }
 
-    function cashoutAv(){
+    async function cashoutAv(){
         if(!avRun) return;
         avRun = false;
         clearInterval(avInterval);
-        const stake = Math.max(1, parseFloat(document.getElementById('av-stake')?.value) || 1);
-        const win = (stake * av).toFixed(2);
+
+        const stake = avStakeLocked || Math.max(1, parseFloat(document.getElementById('av-stake')?.value) || 1);
+        const payout = Math.round(stake * av * 100) / 100;
+        const mult = av;
+
         const el = document.getElementById('av');
         const status = document.getElementById('av-status');
         const startBtn = document.getElementById('av-start-btn');
@@ -3387,15 +3500,47 @@
         if(status){ status.textContent = 'CASHED OUT'; status.style.color = '#F0C040'; }
         if(startBtn){ startBtn.disabled = false; startBtn.style.opacity = '1'; }
         if(cashBtn){ cashBtn.disabled = true; cashBtn.style.opacity = '0.45'; }
-        pushAvHistory(av, false);
-        alert('Cashed out at ' + av.toFixed(2) + 'x — win $' + win + ' (demo)');
+        pushAvHistory(mult, false);
+
+        // Credit full payout (stake was already deducted)
+        if(currentUser && payout > 0){
+            try {
+                const bal = parseFloat(currentProfile?.balance || 0);
+                const newBal = bal + payout;
+                await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
+                await db.from('transactions').insert({
+                    user_id: currentUser.id,
+                    type: 'win',
+                    amount: payout,
+                    balance_before: bal,
+                    balance_after: newBal,
+                    status: 'completed',
+                    description: 'Aviator cashout ' + mult.toFixed(2) + 'x · $' + payout.toFixed(2)
+                });
+                if(currentProfile) currentProfile.balance = newBal;
+                try {
+                    const hb = document.getElementById('hdr-bal');
+                    if(hb) hb.textContent = (typeof fmtMoney === 'function' ? fmtMoney(newBal).replace(/^KSh |^\$/, '') : newBal.toLocaleString());
+                    const wb = document.getElementById('wallet-bal-display');
+                    if(wb) wb.textContent = (typeof fmtMoney === 'function' ? fmtMoney(newBal) : ('$ ' + newBal.toLocaleString()));
+                } catch(e){}
+                alert('Cashed out at ' + mult.toFixed(2) + 'x — you won $' + payout.toFixed(2) + '!');
+            } catch(e) {
+                alert('Cashout saved at ' + mult.toFixed(2) + 'x but balance sync failed: ' + (e.message||e));
+            }
+        }
+        avStakeLocked = 0;
+
         setTimeout(()=>{
             if(el){ el.style.color = '#27AE60'; el.textContent = '1.00x'; }
             if(status){ status.textContent = 'WAITING'; status.style.color = '#27AE60'; }
             const plane = document.getElementById('av-plane');
             if(plane) plane.style.transform = '';
+            const profitEl = document.getElementById('av-profit');
+            if(profitEl) profitEl.textContent = '$ 0.00';
         }, 1800);
     }
+
 
     // Init marquee when aviator opens
     const _origGoPage = typeof goPage === 'function' ? goPage : null;
@@ -3489,6 +3634,39 @@
     window.loadWallet = loadWallet;
     window.loadUSDT = loadUSDT;
     window.copyUSDT = copyUSDT;
+    
+    function hasLiveSub() {
+        try { return localStorage.getItem('live_sub') === '1'; } catch(e){ return false; }
+    }
+    function unlockLiveIfSubbed() {
+        const gate = document.getElementById('live-sub-gate');
+        const player = document.getElementById('live-player-unlocked');
+        if(hasLiveSub()) {
+            if(gate) gate.style.display = 'none';
+            if(player) player.style.display = 'block';
+        } else {
+            if(gate) gate.style.display = 'block';
+            if(player) player.style.display = 'none';
+        }
+    }
+    function subscribeLive() {
+        // One-time $50 — send user to deposit (crypto default)
+        try { localStorage.setItem('live_sub_pending', '1'); } catch(e){}
+        alert('Subscribe to Live for $50 (one-time).\n\nComplete a $50+ deposit to unlock SuperSport & DStv live streams.');
+        goPage('wallet');
+        try { setWalletTab('deposit'); setDepositMethod('crypto'); } catch(e){}
+        // For demo: also allow marking after they return — admin/deposit confirm can set live_sub
+        // Quick unlock path for testing after they visit deposit
+        setTimeout(()=>{
+            if(confirm('Mark Live subscription as active after $50 deposit? (Demo)')) {
+                try { localStorage.setItem('live_sub', '1'); } catch(e){}
+                showToast && showToast('✅ Live unlocked','ok');
+            }
+        }, 800);
+    }
+    window.subscribeLive = subscribeLive;
+    window.unlockLiveIfSubbed = unlockLiveIfSubbed;
+
     window.startAv = startAv;
     window.cashoutAv = cashoutAv;
     window.fmtMoney = fmtMoney;
