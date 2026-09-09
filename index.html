@@ -976,12 +976,20 @@
         <!-- FEATURED -->
         <div id="featured-section"></div>
 
-        <!-- LIVE SECTION -->
-        <div class="sec-hd">
-            <div class="sec-title"><span class="live-pill"><span class="live-dot"></span>LIVE</span> In-Play</div>
-            <div class="sec-link" onclick="goPage('live')">All Live →</div>
+        <!-- Live matches only on Live page — compact entry on home -->
+        <div onclick="goPage('live')" style="margin-bottom:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span class="live-pill"><span class="live-dot"></span>LIVE</span>
+                <div>
+                    <div style="font-size:13px;font-weight:800;">In-Play Matches</div>
+                    <div style="font-size:11px;color:var(--muted);">View all live games</div>
+                </div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:var(--primary);">Open →</div>
         </div>
-        <div id="live-matches"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+        <div id="live-matches" style="display:none;"></div>
+
+<div class="loading-dot"></div><div class="loading-dot"></div></div></div>
 
         <!-- UPCOMING -->
         <div class="sec-hd"><div class="sec-title">Upcoming Matches</div><div class="sec-link">View All →</div></div>
@@ -2055,9 +2063,7 @@
         // Realistic live scores / minutes for first few; rest upcoming
         const liveProfiles = [
             { hs:1, as_:0, min:23, status:'live' },
-            { hs:2, as_:1, min:67, status:'live' },
-            { hs:0, as_:0, min:12, status:'live' },
-            { hs:1, as_:1, min:54, status:'live' }
+            { hs:2, as_:1, min:67, status:'live' }
         ];
         return list.map((t,i) => {
             const live = i < liveProfiles.length ? liveProfiles[i] : null;
@@ -2411,27 +2417,42 @@
         const now = Date.now();
         allMatches.forEach(m => {
             if(m.status !== 'live') return;
-            const ko = new Date(m.kick_off).getTime();
-            if(isNaN(ko)) return;
-            let elapsed = Math.floor((now - ko) / 60000);
-            if(elapsed < 0) elapsed = 0;
-            // Map elapsed wall-clock to match minute (45 + 15 HT + 45)
-            let displayMin;
-            if(elapsed <= 45) displayMin = Math.max(1, elapsed);
-            else if(elapsed <= 60) displayMin = 45; // HT stretch
-            else if(elapsed <= 105) displayMin = Math.min(90, 45 + (elapsed - 60));
-            else displayMin = Math.min(90 + Math.min(8, elapsed - 105), 98); // stoppage
-            const dbMin = parseInt(m.minute, 10) || 0;
-            // Prefer computed if DB is 0 or clearly behind
-            if(dbMin === 0 || dbMin < displayMin - 2) m.minute = displayMin;
-            else m.minute = dbMin;
-            m._half = m.minute <= 45 ? '1H' : '2H';
             m.home_score = parseInt(m.home_score, 10) || 0;
             m.away_score = parseInt(m.away_score, 10) || 0;
+            let dbMin = parseInt(m.minute, 10);
+            if(isNaN(dbMin) || dbMin < 0) dbMin = 0;
+
+            // If admin/DB already has a sensible minute (1–93), trust it
+            if(dbMin >= 1 && dbMin <= 93) {
+                m.minute = dbMin;
+                m._half = dbMin <= 45 ? '1H' : '2H';
+                return;
+            }
+
+            // Only estimate from kick-off when minute is missing AND KO is recent
+            const ko = new Date(m.kick_off).getTime();
+            if(isNaN(ko)) {
+                m.minute = 1;
+                m._half = '1H';
+                return;
+            }
+            const elapsed = Math.floor((now - ko) / 60000);
+            if(elapsed < 0 || elapsed > 110) {
+                // Stale live match — keep low minute, admin should finish it
+                m.minute = dbMin > 0 ? Math.min(dbMin, 90) : 1;
+                m._half = m.minute <= 45 ? '1H' : '2H';
+                return;
+            }
+            let displayMin;
+            if(elapsed <= 45) displayMin = Math.max(1, elapsed);
+            else if(elapsed <= 60) displayMin = 45;
+            else if(elapsed <= 105) displayMin = Math.min(90, 45 + (elapsed - 60));
+            else displayMin = Math.min(93, 90 + (elapsed - 105)); // max 93' stoppage
+            m.minute = displayMin;
+            m._half = displayMin <= 45 ? '1H' : '2H';
         });
     }
 
-    let liveClockTimer = null;
     function startLiveClock() {
         if(liveClockTimer) clearInterval(liveClockTimer);
         liveClockTimer = setInterval(() => {
@@ -2448,10 +2469,11 @@
                     m.minute = cur + 1;
                     m._half = m.minute <= 45 ? '1H' : '2H';
                     changed = true;
-                } else if(cur < 95) {
+                } else if(cur < 93) {
                     m.minute = cur + 1;
                     changed = true;
                 }
+                // stop at 93' — full time should be set in admin
             });
             if(changed) {
                 // Re-render live sections without full reload
@@ -2571,6 +2593,7 @@
                         </div>
                     </div>
                     <div class="feat-meta">${metaLine}</div>
+                    ${isLive ? `<div style="margin:10px 0 6px;"><button type="button" onclick="goPage('live')" style="width:100%;padding:11px;border-radius:8px;border:none;background:#E21B2D;color:#fff;font-size:13px;font-weight:800;cursor:pointer;">● Watch match live</button></div>` : ''}
                     ${chips ? `<div class="feat-events">${chips}</div>` : ''}
                     <div class="feat-odds-section">
                         <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
