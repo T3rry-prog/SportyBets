@@ -909,7 +909,17 @@
         }
         .loading-dot:nth-child(2) { animation-delay: .2s; }
         .loading-dot:nth-child(3) { animation-delay: .4s; }
-    </style>
+    @keyframes avMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        #av-winners-marquee {
+            display: inline-block !important;
+            white-space: nowrap !important;
+            animation: avMarquee 35s linear infinite !important;
+            will-change: transform;
+        }
+</style>
 </head>
 <body><!-- ===== HEADER ===== -->
 <div class="header">
@@ -997,7 +1007,7 @@
         <!-- PROMOS -->
         <div class="sec-hd" style="margin-bottom:0;"><div class="sec-title"><i class="fas fa-gift"></i> Promotions</div><div class="sec-link" onclick="goPage('promos')">All →</div></div>
         <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:16px;">
-            <div class="promo-item"><div class="promo-ico">💰</div><div><div class="promo-t">100% First Deposit Bonus</div><div class="promo-s">Up to $50 matched instantly</div></div><button class="promo-cta" onclick="goPage('register')">Claim</button></div>
+            <div class="promo-item"><div class="promo-ico">💰</div><div><div class="promo-t">200% First Deposit Bonus</div><div class="promo-s">Deposit $50 → get $150 total credit</div></div><button class="promo-cta" onclick="goPage('register')">Claim</button></div>
             <div class="promo-item"><div class="promo-ico">⚡</div><div><div class="promo-t">Accumulator Boost +50%</div><div class="promo-s">Extra on winning accas of 5+</div></div><button class="promo-cta">Opt In</button></div>
             <div class="promo-item" style="border-bottom:none;"><div class="promo-ico">🔄</div><div><div class="promo-t">Friday Cash Back</div><div class="promo-s">10% back on losses every Friday</div></div><button class="promo-cta">More</button></div>
         </div>
@@ -1190,7 +1200,7 @@
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
             <div class="promo-item" style="border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;">
                 <div style="font-size:24px;flex-shrink:0;">💰</div>
-                <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">100% First Deposit Bonus</div><div style="font-size:11px;color:var(--muted);">Up to $50 matched. Min $10.</div></div>
+                <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">200% First Deposit Bonus</div><div style="font-size:11px;color:var(--muted);">200% bonus · Deposit $50 get $150</div></div>
                 <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;" onclick="goPage('register')">Claim</button>
             </div>
             <div class="promo-item" style="border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;">
@@ -1398,6 +1408,14 @@
         </div>
         <!-- DEPOSIT: Crypto primary · M-Pesa optional (Kenya) -->
         <div id="deposit-methods" style="margin-bottom:10px;">
+            <div style="background:linear-gradient(90deg,#1a3a1a,#0d2818);border:1px solid #27AE60;border-radius:var(--r);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+                <div style="font-size:22px;">🎁</div>
+                <div>
+                    <div style="font-size:13px;font-weight:800;color:#fff;">200% First Deposit Bonus</div>
+                    <div style="font-size:11px;color:#A5D6A7;line-height:1.4;">Deposit $50 → play with $150. New users only.</div>
+                </div>
+            </div>
+
             <div id="dep-crypto-panel" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                     <span style="font-size:18px;">₮</span>
@@ -1411,10 +1429,11 @@
                     <div id="usdtAddress" style="font-size:12px;font-weight:600;word-break:break-all;color:var(--text);font-family:monospace;line-height:1.45;">Loading...</div>
                 </div>
                 <button onclick="copyUSDT()" style="width:100%;padding:13px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">📋 Copy Address</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin-bottom:10px;">Credited after 1 network confirmation</div>
-                <div style="border-top:1px solid var(--border);padding-top:10px;text-align:center;">
-                    <button type="button" id="dm-mpesa" onclick="setDepositMethod('mpesa')" style="background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline;">
-                        Kenya only? Pay with M-Pesa instead
+                <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin-bottom:12px;">Credited after 1 network confirmation</div>
+                <div style="border-top:1px solid var(--border);padding-top:12px;">
+                    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;text-align:center;">Or pay with</div>
+                    <button type="button" id="dm-mpesa" onclick="setDepositMethod('mpesa')" style="width:100%;padding:12px;border-radius:var(--r);border:1.5px solid #27AE60;background:rgba(39,174,96,0.08);color:#1B5E20;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                        📱 M-Pesa <span style="font-size:11px;font-weight:600;opacity:0.85;">(Kenya)</span>
                     </button>
                 </div>
             </div>
@@ -1785,6 +1804,9 @@
         </div>
     </div>
 </div>
+
+<div id="app-toast" style="display:none;position:fixed;left:50%;bottom:80px;transform:translateX(-50%);z-index:9999;max-width:90%;width:320px;background:#1A1D24;color:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 8px 28px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);font-size:13px;font-weight:600;line-height:1.45;text-align:center;"></div>
+
 <div class="bottom-nav">
     <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ico"><i class="fas fa-home"></i></div>Home</div>
     <div class="bn-item" id="bn-live" onclick="goPage('live')"><div class="bn-ico"><i class="fas fa-tv"></i></div>Live</div>
@@ -3350,25 +3372,27 @@
     function fillAvMarquee() {
         const el = document.getElementById('av-winners-marquee');
         if(!el) return;
-        const names = ['James K.','Amina W.','Brian O.','Faith M.','David N.','Lucy C.','Peter K.','Grace A.','Samuel T.','Esther R.','Collins M.','Njeri W.','Kevin O.','Mary A.','Daniel K.','Sharon N.','Ian M.','Joy W.'];
-        let html = '';
-        for(let i=0;i<40;i++){
+        const names = ['James K.','Amina W.','Brian O.','Faith M.','David N.','Lucy C.','Peter K.','Grace A.','Samuel T.','Esther R.','Collins M.','Njeri W.','Kevin O.','Mary A.','Daniel K.','Sharon N.','Ian M.','Joy W.','Victor O.','Anne M.'];
+        let items = [];
+        for(let i=0;i<24;i++){
             const n = names[Math.floor(Math.random()*names.length)];
             const mult = (1.2 + Math.random()*14).toFixed(2);
             const stake = [1,2,5,10,20,50][Math.floor(Math.random()*6)];
             const win = '$'+(stake*parseFloat(mult)).toFixed(2);
-            html += '<span style="margin-right:32px;display:inline-block;"><b style="color:#27AE60;">'+n+'</b> won <b style="color:#fff;">'+win+'</b> at <span style="color:#F0C040;">'+mult+'x</span></span>';
+            items.push('<span style="margin-right:28px;display:inline-block;"><b style="color:#27AE60;">'+n+'</b> won <b style="color:#fff;">'+win+'</b> at <span style="color:#F0C040;">'+mult+'x</span></span>');
         }
-        el.innerHTML = html;
+        // Duplicate strip so -50% translate loops seamlessly
+        const strip = items.join('');
+        el.innerHTML = strip + strip;
         el.style.animation = 'none';
         void el.offsetWidth;
-        el.style.animation = 'avMarquee 45s linear infinite';
+        el.style.animation = 'avMarquee 35s linear infinite';
     }
     let avMarqueeTimer = null;
     function startAvMarqueeLoop(){
         fillAvMarquee();
         if(avMarqueeTimer) clearInterval(avMarqueeTimer);
-        avMarqueeTimer = setInterval(fillAvMarquee, 20000);
+        avMarqueeTimer = setInterval(fillAvMarquee, 35000);
     }
 
     function pushAvHistory(mult, crashed) {
@@ -3396,7 +3420,7 @@
         if(avRun) return;
 
         if(!currentUser){
-            alert('Sign in to play Aviator');
+            appToast('Sign in to play Aviator', 'err');
             goPage('login');
             return;
         }
@@ -3409,7 +3433,7 @@
 
         const bal = parseFloat(currentProfile?.balance || 0);
         if(bal < stake){
-            alert('Insufficient balance. You need $' + stake.toFixed(2) + ' (balance: $' + bal.toFixed(2) + '). Deposit to play.');
+            appToast('Balance too low — need $' + stake.toFixed(2) + ' · Yours: $' + bal.toFixed(2) + '. Opening deposit…', 'err');
             goPage('wallet');
             try{ setWalletTab('deposit'); setDepositMethod('crypto'); }catch(e){}
             return;
@@ -3439,7 +3463,7 @@
                 if(wb) wb.textContent = (typeof fmtMoney === 'function' ? fmtMoney(newBal) : ('$ ' + newBal.toLocaleString()));
             } catch(e){}
         } catch(e) {
-            alert('Could not place bet: ' + (e.message || e));
+            appToast('Could not place bet: ' + (e.message || e), 'err');
             return;
         }
 
@@ -3524,9 +3548,9 @@
                     const wb = document.getElementById('wallet-bal-display');
                     if(wb) wb.textContent = (typeof fmtMoney === 'function' ? fmtMoney(newBal) : ('$ ' + newBal.toLocaleString()));
                 } catch(e){}
-                alert('Cashed out at ' + mult.toFixed(2) + 'x — you won $' + payout.toFixed(2) + '!');
+                appToast('Cashed out @ ' + mult.toFixed(2) + 'x — +$' + payout.toFixed(2), 'ok');
             } catch(e) {
-                alert('Cashout saved at ' + mult.toFixed(2) + 'x but balance sync failed: ' + (e.message||e));
+                appToast('Cashout OK but sync failed: ' + (e.message||e), 'err');
             }
         }
         avStakeLocked = 0;
@@ -3666,6 +3690,19 @@
     }
     window.subscribeLive = subscribeLive;
     window.unlockLiveIfSubbed = unlockLiveIfSubbed;
+
+    
+    function appToast(msg, type){
+        const el = document.getElementById('app-toast');
+        if(!el){ alert(msg); return; }
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.style.borderColor = type==='err' ? '#E21B2D' : type==='ok' ? '#27AE60' : 'rgba(255,255,255,0.1)';
+        el.style.background = type==='err' ? '#2A1215' : type==='ok' ? '#122A1A' : '#1A1D24';
+        clearTimeout(el._t);
+        el._t = setTimeout(()=>{ el.style.display='none'; }, 3200);
+    }
+    window.appToast = appToast;
 
     window.startAv = startAv;
     window.cashoutAv = cashoutAv;
