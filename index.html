@@ -933,6 +933,7 @@
 <!-- ===== SPORT NAV ===== -->
 <div class="sport-nav-wrap" id="sport-nav-wrap">
     <div class="sport-nav">
+        <div class="sp" onclick="goPage('aviator')" style="background:rgba(39,174,96,0.15);border:1px solid #27AE60;color:#27AE60;font-weight:800;">✈️ Aviator</div>
         <div class="sp active" onclick="setSport(this)">⚽ Football</div>
         <div class="sp" onclick="setSport(this)">🏀 Basketball</div>
         <div class="sp" onclick="setSport(this)">🎾 Tennis</div>
@@ -947,6 +948,20 @@
 <!-- ===== HOME PAGE ===== -->
 <div id="page-home" class="page active">
     <div class="content">
+        <!-- AVIATOR — prominent top placement -->
+        <div onclick="goPage('aviator')" style="background:linear-gradient(135deg,#0B0F14 0%,#1a2332 50%,#0d2818 100%);border:1px solid #1e3a2f;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-10px;top:-10px;font-size:64px;opacity:0.12;">✈️</div>
+            <div style="display:flex;align-items:center;gap:12px;position:relative;">
+                <div style="width:44px;height:44px;border-radius:12px;background:rgba(39,174,96,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;">✈️</div>
+                <div>
+                    <div style="font-size:15px;font-weight:800;color:#fff;">Aviator</div>
+                    <div style="font-size:11px;color:#27AE60;font-weight:600;">Crash game · Play now</div>
+                </div>
+            </div>
+            <div style="background:#27AE60;color:#fff;font-size:12px;font-weight:800;padding:8px 14px;border-radius:20px;position:relative;">PLAY</div>
+        </div>
+
+
 
         <!-- FEATURED -->
         <div id="featured-section"></div>
@@ -979,18 +994,7 @@
         </div>
 
         
-        <!-- AVIATOR -->
-        <div onclick="goPage('aviator')" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-            <div style="display:flex;align-items:center;gap:12px;">
-                <div style="font-size:22px;">✈️</div>
-                <div>
-                    <div style="font-size:13px;font-weight:700;">Aviator</div>
-                    <div style="font-size:11px;color:var(--muted);">Crash game · Demo</div>
-                </div>
-            </div>
-            <div style="font-size:12px;font-weight:700;color:var(--primary);">Play →</div>
-        </div>
-<!-- PROMOS -->
+        <!-- PROMOS -->
         <div class="sec-hd" style="margin-bottom:0;"><div class="sec-title"><i class="fas fa-gift"></i> Promotions</div><div class="sec-link" onclick="goPage('promos')">All →</div></div>
         <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:16px;">
             <div class="promo-item"><div class="promo-ico">💰</div><div><div class="promo-t">100% First Deposit Bonus</div><div class="promo-s">Up to $50 matched instantly</div></div><button class="promo-cta" onclick="goPage('register')">Claim</button></div>
@@ -1370,40 +1374,36 @@
             <div class="tw-tab active" id="tw-dep" onclick="setWalletTab('deposit')" style="flex:1;text-align:center;padding:11px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;border-bottom:2px solid var(--gold);">Deposit</div>
             <div class="tw-tab" id="tw-wit" onclick="setWalletTab('withdraw')" style="flex:1;text-align:center;padding:11px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;">Withdraw</div>
         </div>
-        <!-- DEPOSIT METHOD PICKER -->
+        <!-- DEPOSIT: Crypto primary · M-Pesa optional (Kenya) -->
         <div id="deposit-methods" style="margin-bottom:10px;">
-            <div style="display:flex;gap:8px;margin-bottom:10px;">
-                <button type="button" id="dm-crypto" onclick="setDepositMethod('crypto')" style="flex:1;padding:12px 8px;border-radius:var(--r);border:2px solid var(--primary);background:rgba(226,27,45,0.08);color:var(--text);font-size:12px;font-weight:800;cursor:pointer;">
-                    ₮ USDT Crypto
-                    <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:2px;">Default · Min $50</div>
-                </button>
-                <button type="button" id="dm-mpesa" onclick="setDepositMethod('mpesa')" style="flex:1;padding:12px 8px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;">
-                    📱 M-Pesa
-                    <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:2px;">Kenya · Instant</div>
-                </button>
-            </div>
-
-            <!-- CRYPTO (DEFAULT) -->
             <div id="dep-crypto-panel" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                     <span style="font-size:18px;">₮</span>
                     <div>
-                        <div style="font-size:13px;font-weight:800;">USDT (TRC20)</div>
-                        <div style="font-size:11px;color:var(--muted);">Send only on TRON network · Min $50</div>
+                        <div style="font-size:13px;font-weight:800;">Deposit with USDT (TRC20)</div>
+                        <div style="font-size:11px;color:var(--muted);">TRON network only · Minimum $50</div>
                     </div>
                 </div>
                 <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:10px;">
                     <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Deposit Address</div>
                     <div id="usdtAddress" style="font-size:12px;font-weight:600;word-break:break-all;color:var(--text);font-family:monospace;line-height:1.45;">Loading...</div>
                 </div>
-                <button onclick="copyUSDT()" style="width:100%;padding:13px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;">📋 Copy Address</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;">Funds credited after 1 network confirmation.<br>Other payment methods coming soon.</div>
+                <button onclick="copyUSDT()" style="width:100%;padding:13px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">📋 Copy Address</button>
+                <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin-bottom:10px;">Credited after 1 network confirmation</div>
+                <div style="border-top:1px solid var(--border);padding-top:10px;text-align:center;">
+                    <button type="button" id="dm-mpesa" onclick="setDepositMethod('mpesa')" style="background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline;">
+                        Kenya only? Pay with M-Pesa instead
+                    </button>
+                </div>
             </div>
 
-            <!-- MPESA (HIDDEN BY DEFAULT) -->
             <div id="dep-mpesa-panel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <div style="font-size:13px;font-weight:800;">📱 M-Pesa Deposit</div>
+                    <button type="button" id="dm-crypto" onclick="setDepositMethod('crypto')" style="background:none;border:none;color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;">← Back to USDT</button>
+                </div>
                 <div style="margin-bottom:13px;">
-                    <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Deposit Amount ($)</label>
+                    <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount ($)</label>
                     <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;">
                         <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
                         <input type="number" id="wf-amt" placeholder="Enter amount" min="10" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
@@ -1415,8 +1415,8 @@
                     <div class="qs" onclick="setWAmt(100)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">100</div>
                     <div class="qs" onclick="setWAmt(500)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">500</div>
                 </div>
-                <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesa('deposit')"><i class="fas fa-mobile-alt"></i> Pay via M-Pesa — STK Push</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Instant credit</div>
+                <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesa('deposit')"><i class="fas fa-mobile-alt"></i> Send M-Pesa STK Push</button>
+                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only</div>
             </div>
         </div>
 
@@ -2061,19 +2061,13 @@
     }
 
     function setDepositMethod(method) {
-        const cryptoBtn = document.getElementById('dm-crypto');
-        const mpesaBtn = document.getElementById('dm-mpesa');
         const cryptoPanel = document.getElementById('dep-crypto-panel');
         const mpesaPanel = document.getElementById('dep-mpesa-panel');
         if(method === 'crypto') {
-            if(cryptoBtn){ cryptoBtn.style.border = '2px solid var(--primary)'; cryptoBtn.style.background = 'rgba(226,27,45,0.08)'; cryptoBtn.style.color = 'var(--text)'; }
-            if(mpesaBtn){ mpesaBtn.style.border = '1.5px solid var(--border)'; mpesaBtn.style.background = 'var(--surface)'; mpesaBtn.style.color = 'var(--muted)'; }
             if(cryptoPanel) cryptoPanel.style.display = 'block';
             if(mpesaPanel) mpesaPanel.style.display = 'none';
             loadUSDT();
         } else {
-            if(mpesaBtn){ mpesaBtn.style.border = '2px solid var(--primary)'; mpesaBtn.style.background = 'rgba(226,27,45,0.08)'; mpesaBtn.style.color = 'var(--text)'; }
-            if(cryptoBtn){ cryptoBtn.style.border = '1.5px solid var(--border)'; cryptoBtn.style.background = 'var(--surface)'; cryptoBtn.style.color = 'var(--muted)'; }
             if(cryptoPanel) cryptoPanel.style.display = 'none';
             if(mpesaPanel) mpesaPanel.style.display = 'block';
         }
