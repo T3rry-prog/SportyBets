@@ -976,14 +976,9 @@
         <!-- FEATURED -->
         <div id="featured-section"></div>
 
-        <!-- LIVE SECTION -->
-        <div class="sec-hd">
-            <div class="sec-title"><span class="live-pill"><span class="live-dot"></span>LIVE</span> In-Play</div>
-            <div class="sec-link" onclick="goPage('live')">All Live →</div>
-        </div>
-        <div id="live-matches"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+        <div id="live-matches" style="display:none;"></div>
 
-        <!-- UPCOMING -->
+<!-- UPCOMING -->
         <div class="sec-hd"><div class="sec-title">Upcoming Matches</div><div class="sec-link">View All →</div></div>
         <div class="day-tabs">
             <div class="dtab active" onclick="setDay(this)">Today</div>
@@ -1976,21 +1971,34 @@
     const BN_MAP = {home:'bn-home', live:'bn-live', slip:'bn-slip', mybets:'bn-mybets', account:'bn-account', dashboard:'bn-account', wallet:'bn-account'};
 
     function goPage(p) {
-        ALL_PAGES.forEach(n => { const el = document.getElementById('page-'+n); if(el) el.classList.remove('active'); });
+        if(!p) return;
+        ALL_PAGES.forEach(n => {
+            const el = document.getElementById('page-'+n);
+            if(el) {
+                el.classList.remove('active');
+                el.style.display = 'none';
+            }
+        });
         const t = document.getElementById('page-'+p);
-        if(t) t.classList.add('active');
+        if(t) {
+            t.classList.add('active');
+            t.style.display = 'block';
+        }
         const sn = document.getElementById('sport-nav-wrap');
-        if(sn) sn.style.display = ['home','live'].includes(p) ? 'block' : 'none';
+        if(sn) sn.style.display = (p === 'home' || p === 'live') ? 'block' : 'none';
         document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
-        if(BN_MAP[p]) document.getElementById(BN_MAP[p])?.classList.add('active');
+        if(BN_MAP[p]) {
+            const bn = document.getElementById(BN_MAP[p]);
+            if(bn) bn.classList.add('active');
+        }
         window.scrollTo(0,0);
-        if(p === 'aviator') { try{ startAvMarqueeLoop(); }catch(e){ try{fillAvMarquee();}catch(_){} } }
-        if(p === 'wallet') { try{ loadUSDT(); setDepositMethod('crypto'); }catch(e){} }
-        if(p === 'live') { unlockLiveIfSubbed(); if(typeof loadLivePage==='function') loadLivePage(); }
-        if(p === 'dashboard' && currentUser) loadDashboard();
-        if(p === 'wallet' && currentUser) loadWallet();
-        if(p === 'mybets') loadMyBets();
-        if(p === 'jackpot') initJackpot();
+        if(p === 'aviator') { try{ startAvMarqueeLoop(); }catch(e){} }
+        if(p === 'wallet') { try{ loadUSDT(); setDepositMethod('crypto'); }catch(e){} if(currentUser) try{ loadWallet(); }catch(e){} }
+        if(p === 'live') { try{ unlockLiveIfSubbed(); }catch(e){} try{ loadLivePage(); }catch(e){} }
+        if(p === 'dashboard' && currentUser) try{ loadDashboard(); }catch(e){}
+        if(p === 'mybets') try{ loadMyBets(); }catch(e){}
+        if(p === 'slip') try{ renderSlip(); }catch(e){}
+        if(p === 'jackpot') try{ initJackpot(); }catch(e){}
     }
 
     function setSport(el) {
@@ -2053,24 +2061,17 @@
         };
         const list = teams[sport] || teams.football;
         // Realistic live scores / minutes for first few; rest upcoming
-        const liveProfiles = [
-            { hs:1, as_:0, min:23, status:'live' },
-            { hs:2, as_:1, min:67, status:'live' },
-            { hs:0, as_:0, min:12, status:'live' },
-            { hs:1, as_:1, min:54, status:'live' }
-        ];
+        // No fake live matches — only upcoming demos
         return list.map((t,i) => {
-            const live = i < liveProfiles.length ? liveProfiles[i] : null;
-            const ko = live
-                ? new Date(Date.now() - (live.min * 60000)).toISOString()
-                : new Date(Date.now() + (i+1) * 3600000).toISOString();
+            const live = null;
+            const ko = new Date(Date.now() + (i+1) * 3600000).toISOString();
             return {
                 id: 'demo-'+sport+'-'+i,
                 home_team: t[0], away_team: t[1],
-                home_score: live ? live.hs : 0,
-                away_score: live ? live.as_ : 0,
-                status: live ? 'live' : 'upcoming',
-                minute: live ? live.min : 0,
+                home_score: 0,
+                away_score: 0,
+                status: 'upcoming',
+                minute: 0,
                 league: sport==='football' ? 'Premier League' : (sport.charAt(0).toUpperCase()+sport.slice(1)),
                 league_flag: getSportEmoji(sport),
                 kick_off: ko,
@@ -2411,27 +2412,42 @@
         const now = Date.now();
         allMatches.forEach(m => {
             if(m.status !== 'live') return;
-            const ko = new Date(m.kick_off).getTime();
-            if(isNaN(ko)) return;
-            let elapsed = Math.floor((now - ko) / 60000);
-            if(elapsed < 0) elapsed = 0;
-            // Map elapsed wall-clock to match minute (45 + 15 HT + 45)
-            let displayMin;
-            if(elapsed <= 45) displayMin = Math.max(1, elapsed);
-            else if(elapsed <= 60) displayMin = 45; // HT stretch
-            else if(elapsed <= 105) displayMin = Math.min(90, 45 + (elapsed - 60));
-            else displayMin = Math.min(90 + Math.min(8, elapsed - 105), 98); // stoppage
-            const dbMin = parseInt(m.minute, 10) || 0;
-            // Prefer computed if DB is 0 or clearly behind
-            if(dbMin === 0 || dbMin < displayMin - 2) m.minute = displayMin;
-            else m.minute = dbMin;
-            m._half = m.minute <= 45 ? '1H' : '2H';
             m.home_score = parseInt(m.home_score, 10) || 0;
             m.away_score = parseInt(m.away_score, 10) || 0;
+            let dbMin = parseInt(m.minute, 10);
+            if(isNaN(dbMin) || dbMin < 0) dbMin = 0;
+
+            // If admin/DB already has a sensible minute (1–93), trust it
+            if(dbMin >= 1 && dbMin <= 93) {
+                m.minute = dbMin;
+                m._half = dbMin <= 45 ? '1H' : '2H';
+                return;
+            }
+
+            // Only estimate from kick-off when minute is missing AND KO is recent
+            const ko = new Date(m.kick_off).getTime();
+            if(isNaN(ko)) {
+                m.minute = 1;
+                m._half = '1H';
+                return;
+            }
+            const elapsed = Math.floor((now - ko) / 60000);
+            if(elapsed < 0 || elapsed > 110) {
+                // Stale live match — keep low minute, admin should finish it
+                m.minute = dbMin > 0 ? Math.min(dbMin, 90) : 1;
+                m._half = m.minute <= 45 ? '1H' : '2H';
+                return;
+            }
+            let displayMin;
+            if(elapsed <= 45) displayMin = Math.max(1, elapsed);
+            else if(elapsed <= 60) displayMin = 45;
+            else if(elapsed <= 105) displayMin = Math.min(90, 45 + (elapsed - 60));
+            else displayMin = Math.min(93, 90 + (elapsed - 105)); // max 93' stoppage
+            m.minute = displayMin;
+            m._half = displayMin <= 45 ? '1H' : '2H';
         });
     }
 
-    let liveClockTimer = null;
     function startLiveClock() {
         if(liveClockTimer) clearInterval(liveClockTimer);
         liveClockTimer = setInterval(() => {
@@ -2448,17 +2464,23 @@
                     m.minute = cur + 1;
                     m._half = m.minute <= 45 ? '1H' : '2H';
                     changed = true;
-                } else if(cur < 95) {
+                } else if(cur < 93) {
                     m.minute = cur + 1;
                     changed = true;
                 }
+                // stop at 93' — full time should be set in admin
             });
             if(changed) {
                 // Re-render live sections without full reload
                 try {
                     const live = allMatches.filter(x => x.status === 'live');
                     if(document.getElementById('live-matches')) renderMatchList('live-matches', live, true);
-                    if(document.getElementById('live-page-matches')) renderMatchList('live-page-matches', live, true);
+                    if(document.getElementById('live-page-matches')) if(!live.length) {
+            const el = document.getElementById('live-page-matches');
+            if(el) el.innerHTML = '<div style="padding:28px 16px;text-align:center;color:var(--muted);font-size:13px;">No live matches right now.<br><span style="font-size:11px;">Check back when games are in play.</span></div>';
+        } else {
+            renderMatchList('live-page-matches', live, true);
+        }
                     const feat = allMatches.find(x => x.is_featured && x.status === 'live');
                     if(feat && document.getElementById('featured-section')) {
                         // only refresh featured if still live
@@ -2571,6 +2593,7 @@
                         </div>
                     </div>
                     <div class="feat-meta">${metaLine}</div>
+                    ${isLive ? `<div style="margin:10px 0 6px;"><button type="button" onclick="goPage('live')" style="width:100%;padding:11px;border-radius:8px;border:none;background:#E21B2D;color:#fff;font-size:13px;font-weight:800;cursor:pointer;">● Watch match live</button></div>` : ''}
                     ${chips ? `<div class="feat-events">${chips}</div>` : ''}
                     <div class="feat-odds-section">
                         <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
@@ -3265,7 +3288,12 @@
     async function loadLivePage() {
         const live = allMatches.filter(m=>m.status==='live');
         const el = document.getElementById('live-count'); if(el) el.textContent = `${live.length} live now`;
-        renderMatchList('live-page-matches', live, true);
+        if(!live.length) {
+            const el = document.getElementById('live-page-matches');
+            if(el) el.innerHTML = '<div style="padding:28px 16px;text-align:center;color:var(--muted);font-size:13px;">No live matches right now.<br><span style="font-size:11px;">Check back when games are in play.</span></div>';
+        } else {
+            renderMatchList('live-page-matches', live, true);
+        }
         const feat = allMatches.find(m=>m.is_featured);
         const si = document.getElementById('stream-feat-info');
         if(si && feat) si.innerHTML = `<div style="font-size:13px;font-weight:700;">${feat.league_flag||''} ${feat.home_team} ${feat.home_score}--${feat.away_score} ${feat.away_team}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;">${feat.league} · ${feat.status==='live'?feat.minute+"' LIVE":fmtTime(feat.kick_off)}</div>`;
@@ -3900,4 +3928,4 @@
 </script>
 
 </body>
-    </html>
+        </html>
