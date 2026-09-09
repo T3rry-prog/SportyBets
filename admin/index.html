@@ -885,23 +885,31 @@ async function deleteMatch(id, name) {
 
 // ── SELECT MATCH ──
 async function selectMatch(id, home, away, hs, as_, status, minute, isFeatured) {
-  selectedMatch = { id, home, away, hs, as_: parseInt(as_), status, minute };
+  // Always store scores as numbers so +/- works correctly
+  selectedMatch = {
+    id,
+    home,
+    away,
+    hs: parseInt(hs) || 0,
+    as_: parseInt(as_) || 0,
+    status: status || 'upcoming',
+    minute: parseInt(minute) || 0
+  };
   document.getElementById('feat-editor').style.display = 'block';
   document.getElementById('feat-events-section').style.display = 'block';
   document.getElementById('feat-editor-title').textContent = `${home} vs ${away}`;
   document.getElementById('fe-home-name').textContent = home;
   document.getElementById('fe-away-name').textContent = away;
-  document.getElementById('fe-home-score').textContent = hs;
-  document.getElementById('fe-away-score').textContent = as_;
-  document.getElementById('fe-minute').value = minute;
-  document.getElementById('quick-match-name').textContent = `${home} vs ${away}`;
-  setStatus(status);
-  // highlight selected pill
+  document.getElementById('fe-home-score').textContent = selectedMatch.hs;
+  document.getElementById('fe-away-score').textContent = selectedMatch.as_;
+  document.getElementById('fe-minute').value = selectedMatch.minute;
+  const qn = document.getElementById('quick-match-name');
+  if(qn) qn.textContent = `${home} vs ${away}`;
+  setStatus(selectedMatch.status);
+  // highlight selected pill (safe if no click event)
   document.querySelectorAll('.match-pill').forEach(p => p.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  // Load events for this match
+  try { if(typeof event !== 'undefined' && event?.currentTarget) event.currentTarget.classList.add('active'); } catch(_){}
   await loadEvents(id);
-  // set featured
   if(!isFeatured) {
     if(confirm(`Set ${home} vs ${away} as the Featured Match?`)) {
       await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
@@ -921,26 +929,43 @@ function bumpMinute(delta) {
 
 // ── ADJUST SCORE ──
 async function adjustScore(team, delta) {
-  if(!selectedMatch) { showToast('Select a match first','err'); return; }
-  if(team==='home') {
-    selectedMatch.hs = Math.max(0, (selectedMatch.hs||0) + delta);
-    document.getElementById('fe-home-score').textContent = selectedMatch.hs;
-  } else {
-    selectedMatch.as_ = Math.max(0, (selectedMatch.as_||0) + delta);
-    document.getElementById('fe-away-score').textContent = selectedMatch.as_;
+  if(!selectedMatch || !selectedMatch.id) {
+    showToast('Select a match first','err');
+    return;
   }
-  // Save instantly to Supabase
+  // Force numbers (fixes string concat bug e.g. "0"+1 → "01")
+  let homeScore = parseInt(selectedMatch.hs, 10);
+  let awayScore = parseInt(selectedMatch.as_, 10);
+  if(isNaN(homeScore)) homeScore = 0;
+  if(isNaN(awayScore)) awayScore = 0;
+
+  if(team === 'home') {
+    homeScore = Math.max(0, homeScore + delta);
+  } else {
+    awayScore = Math.max(0, awayScore + delta);
+  }
+  selectedMatch.hs = homeScore;
+  selectedMatch.as_ = awayScore;
+
+  document.getElementById('fe-home-score').textContent = homeScore;
+  document.getElementById('fe-away-score').textContent = awayScore;
+
   try {
-    const minute = parseInt(document.getElementById('fe-minute').value)||selectedMatch.minute||0;
-    await db.from('matches').update({
-      home_score: selectedMatch.hs,
-      away_score: selectedMatch.as_,
-      status: currentStatus,
+    const minute = parseInt(document.getElementById('fe-minute').value, 10) || selectedMatch.minute || 0;
+    const { error } = await db.from('matches').update({
+      home_score: homeScore,
+      away_score: awayScore,
+      status: currentStatus || selectedMatch.status || 'live',
       minute: minute,
     }).eq('id', selectedMatch.id);
-    showToast(`✅ ${team==='home'?selectedMatch.home:selectedMatch.away} ${delta>0?'+1 goal':'goal removed'}!`,'ok');
+    if(error) throw error;
+    showToast(`✅ ${team==='home'?selectedMatch.home:selectedMatch.away} ${delta>0?'+1':'−1'} → ${homeScore}–${awayScore}`,'ok');
+    // Soft-refresh list without clearing selection
     loadMatchSelector();
-  } catch(e) { showToast('Save error: '+e.message,'err'); }
+  } catch(e) {
+    showToast('Save error: '+e.message,'err');
+    console.error('adjustScore error', e);
+  }
 }
 
 // ── SET STATUS ──
@@ -966,13 +991,17 @@ function setStatus(s) {
 
 // ── SAVE SCORE ──
 async function saveScore() {
-  if(!selectedMatch) { showToast('Select a match first','err'); return; }
-  const minute = parseInt(document.getElementById('fe-minute').value)||0;
+  if(!selectedMatch || !selectedMatch.id) { showToast('Select a match first','err'); return; }
+  const minute = parseInt(document.getElementById('fe-minute').value, 10) || 0;
+  const homeScore = parseInt(selectedMatch.hs, 10) || 0;
+  const awayScore = parseInt(selectedMatch.as_, 10) || 0;
+  selectedMatch.hs = homeScore;
+  selectedMatch.as_ = awayScore;
   try {
     const { error } = await db.from('matches').update({
-      home_score: selectedMatch.hs,
-      away_score: selectedMatch.as_,
-      status: currentStatus,
+      home_score: homeScore,
+      away_score: awayScore,
+      status: currentStatus || selectedMatch.status || 'upcoming',
       minute: minute,
     }).eq('id', selectedMatch.id);
     if(error) throw error;
@@ -1413,4 +1442,3 @@ async function updateVIP() {
 </script>
 </body>
 </html>
-
