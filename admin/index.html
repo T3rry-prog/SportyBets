@@ -276,6 +276,37 @@ body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;font-size
           <button class="btn-primary" onclick="saveScore()">💾 Save Score & Status</button>
         </div>
 
+        <!-- AUTO MATCH ENGINE (does not replace manual controls) -->
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">⏱ Auto Match Engine</div>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+            <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
+              <div style="font-size:10px;color:var(--muted);margin-bottom:2px;">STATUS</div>
+              <div id="matchStatus" style="font-size:13px;font-weight:800;color:var(--gold);">IDLE</div>
+            </div>
+            <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
+              <div style="font-size:10px;color:var(--muted);margin-bottom:2px;">MINUTE</div>
+              <div id="matchMinute" style="font-size:18px;font-weight:800;color:var(--gold);">0'</div>
+            </div>
+            <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
+              <div style="font-size:10px;color:var(--muted);margin-bottom:2px;">HALF</div>
+              <div id="matchHalf" style="font-size:13px;font-weight:800;color:#fff;">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <button class="btn-gold" style="margin:0;" onclick="startMatch()">▶ Start Match</button>
+            <button class="btn-outline" style="margin:0;" onclick="pauseMatchEngine()">⏸ Pause</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn-outline" style="margin:0;" onclick="resumeMatchEngine()">▶ Resume</button>
+            <button class="btn-outline" style="margin:0;border-color:var(--red);color:var(--red);" onclick="stopMatchEngine()">⏹ Stop</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;">
+            Flow: 1st half 0–45 → +2' extra → 15' break → 2nd half 45–90 → +4' extra → FT<br>
+            Sim speed: 1 sec = 1 match minute (testing). Manual score/events still work.
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -370,14 +401,26 @@ body{background:#0D0505;color:#F5EEEE;font-family:system-ui,sans-serif;font-size
   <!-- TAB: DEPOSITS -->
   <div id="tab-deposits" style="display:none;animation:fadeUp .2s ease;">
     <div class="adm-section">
-      <div class="adm-section-hd">💰 Pending Deposits — Confirm M-Pesa</div>
+      <div class="adm-section-hd">💰 Pending Deposits</div>
       <div class="adm-panel" id="deposits-list">
         <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
       </div>
     </div>
     <div class="adm-section" style="margin-top:10px;">
-      <div class="adm-section-hd">✅ Recently Confirmed</div>
+      <div class="adm-section-hd">✅ Recently Confirmed Deposits</div>
       <div class="adm-panel" id="confirmed-list">
+        <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
+      </div>
+    </div>
+    <div class="adm-section" style="margin-top:10px;">
+      <div class="adm-section-hd">💸 Pending Withdrawals</div>
+      <div class="adm-panel" id="withdrawals-list">
+        <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
+      </div>
+    </div>
+    <div class="adm-section" style="margin-top:10px;">
+      <div class="adm-section-hd">✅ Recent Withdrawals</div>
+      <div class="adm-panel" id="confirmed-withdrawals-list">
         <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
       </div>
     </div>
@@ -522,9 +565,10 @@ async function loadDeposits() {
         <div style="padding:12px 0;border-bottom:1px solid var(--border);">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
             <div>
-              <div style="font-size:13px;font-weight:700;">KSh ${parseFloat(t.amount).toLocaleString()}</div>
+              <div style="font-size:13px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()}</div>
               <div style="font-size:11px;color:var(--muted);margin-top:2px;">${t.users?.full_name||'User'} · ${t.users?.phone||''}</div>
               <div style="font-size:10px;color:var(--muted);margin-top:2px;">Ref: ${t.mpesa_code||t.reference||'—'} · ${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
+              <div style="font-size:10px;color:var(--muted);">${(t.description||'').includes('USDT')||(t.description||'').includes('crypto')?'₮ USDT':'📱 M-Pesa'}</div>
             </div>
             <div style="display:flex;gap:5px;">
               <button onclick="confirmDeposit('${t.id}','${t.user_id}',${t.amount})" style="background:#27AE60;border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:800;padding:7px 12px;cursor:pointer;">✅ Confirm</button>
@@ -547,30 +591,80 @@ async function loadDeposits() {
       cel.innerHTML = confirmed.map(t => `
         <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <div>
-            <div style="font-size:12px;font-weight:700;color:#27AE60;">✅ KSh ${parseFloat(t.amount).toLocaleString()}</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;">${t.users?.full_name||'User'} · ${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
+            <div style="font-size:12px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()} · ${t.users?.full_name||'User'}</div>
+            <div style="font-size:10px;color:var(--muted);">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
           </div>
-          <div style="font-size:10px;color:var(--muted);">${t.mpesa_code||'—'}</div>
+          <div style="font-size:11px;font-weight:700;color:#27AE60;">✓ Done</div>
         </div>`).join('');
+    }
+
+    // Pending withdrawals
+    const { data: pendW } = await db.from('transactions')
+      .select('*,users(phone,full_name)')
+      .eq('type','withdrawal').eq('status','pending')
+      .order('created_at',{ascending:false}).limit(20);
+
+    const wel = document.getElementById('withdrawals-list');
+    if(wel) {
+      if(!pendW||!pendW.length) {
+        wel.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px;">No pending withdrawals</div>';
+      } else {
+        wel.innerHTML = pendW.map(t => `
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div style="font-size:13px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()}</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px;">${t.users?.full_name||'User'} · ${t.users?.phone||''}</div>
+                <div style="font-size:10px;color:var(--muted);margin-top:2px;">${t.description||'Withdrawal'} · ${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
+              </div>
+              <div style="display:flex;gap:5px;">
+                <button onclick="approveWithdraw('${t.id}','${t.user_id}',${t.amount})" style="background:#27AE60;border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:800;padding:7px 12px;cursor:pointer;">✅ Pay</button>
+                <button onclick="rejectWithdraw('${t.id}','${t.user_id}',${t.amount})" style="background:var(--red2);border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:700;padding:7px 10px;cursor:pointer;">✕</button>
+              </div>
+            </div>
+          </div>`).join('');
+      }
+    }
+
+    // Confirmed withdrawals
+    const { data: confW } = await db.from('transactions')
+      .select('*,users(phone,full_name)')
+      .eq('type','withdrawal').eq('status','completed')
+      .order('created_at',{ascending:false}).limit(10);
+
+    const cwel = document.getElementById('confirmed-withdrawals-list');
+    if(cwel) {
+      if(!confW||!confW.length) {
+        cwel.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px;">No completed withdrawals yet</div>';
+      } else {
+        cwel.innerHTML = confW.map(t => `
+          <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:12px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()} · ${t.users?.full_name||'User'}</div>
+              <div style="font-size:10px;color:var(--muted);">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:#27AE60;">✓ Paid</div>
+          </div>`).join('');
+      }
     }
   } catch(e) { showToast('Error loading deposits: '+e.message,'err'); }
 }
 
 async function confirmDeposit(txId, userId, amount) {
-  if(!confirm(`Confirm deposit of KSh ${parseFloat(amount).toLocaleString()}? This will credit the user's balance.`)) return;
+  if(!confirm(`Confirm deposit of $ ${parseFloat(amount).toLocaleString()}? This will credit the user's balance.`)) return;
   try {
-    // Get current balance
     const { data: user } = await db.from('users').select('balance').eq('id',userId).single();
-    const newBal = (user?.balance||0) + parseFloat(amount);
-    // Update balance
+    const current = parseFloat(user?.balance||0);
+    const amt = parseFloat(amount);
+    const newBal = current + amt;
     await db.from('users').update({balance:newBal}).eq('id',userId);
-    // Mark transaction complete
     await db.from('transactions').update({
       status:'completed',
-      balance_after:newBal,
-      description:'M-Pesa Deposit — Confirmed by admin'
+      balance_before: current,
+      balance_after: newBal,
+      description:'Deposit confirmed by admin'
     }).eq('id',txId);
-    showToast('✅ Deposit confirmed — KSh '+parseFloat(amount).toLocaleString()+' credited','ok');
+    showToast('✅ Deposit confirmed — $ '+amt.toLocaleString()+' credited','ok');
     loadDeposits();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -580,6 +674,48 @@ async function rejectDeposit(txId) {
   try {
     await db.from('transactions').update({status:'failed',description:'Deposit rejected by admin'}).eq('id',txId);
     showToast('Deposit rejected','ok');
+    loadDeposits();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function approveWithdraw(txId, userId, amount) {
+  if(!confirm(`Approve withdrawal of $ ${parseFloat(amount).toLocaleString()}? Balance will be deducted if not already.`)) return;
+  try {
+    const { data: user } = await db.from('users').select('balance').eq('id',userId).single();
+    const current = parseFloat(user?.balance||0);
+    const amt = parseFloat(amount);
+    // Only deduct if balance still has the amount (in case frontend already held it)
+    let newBal = current;
+    if(current >= amt) {
+      newBal = current - amt;
+      await db.from('users').update({balance:newBal}).eq('id',userId);
+    }
+    await db.from('transactions').update({
+      status:'completed',
+      balance_before: current,
+      balance_after: newBal,
+      description:'Withdrawal paid by admin'
+    }).eq('id',txId);
+    showToast('✅ Withdrawal approved — $ '+amt.toLocaleString(),'ok');
+    loadDeposits();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function rejectWithdraw(txId, userId, amount) {
+  if(!confirm('Reject this withdrawal? Funds will be returned to user balance if deducted.')) return;
+  try {
+    const { data: user } = await db.from('users').select('balance').eq('id',userId).single();
+    const current = parseFloat(user?.balance||0);
+    const amt = parseFloat(amount);
+    // Refund
+    const newBal = current + amt;
+    await db.from('users').update({balance:newBal}).eq('id',userId);
+    await db.from('transactions').update({
+      status:'failed',
+      balance_after: newBal,
+      description:'Withdrawal rejected — refunded by admin'
+    }).eq('id',txId);
+    showToast('Withdrawal rejected — balance refunded','ok');
     loadDeposits();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -955,6 +1091,172 @@ async function setFeatured(id) {
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
+
+// ── AUTO MATCH ENGINE (additive — manual controls still work) ──
+let matchState = {
+  status: 'idle', // idle | live | extra1 | break | extra2 | finished
+  minute: 0,
+  half: 1,
+  timer: null,
+  paused: false
+};
+
+function startMatch() {
+  if(!selectedMatch) { showToast('Select a match first','err'); return; }
+  if(matchState.timer) clearInterval(matchState.timer);
+  matchState.status = 'live';
+  matchState.minute = 0;
+  matchState.half = 1;
+  matchState.paused = false;
+  // Set DB status to live
+  currentStatus = 'live';
+  setStatus('live');
+  document.getElementById('fe-minute').value = 0;
+  runMatchTimer();
+  updateMatchUI();
+  showToast('▶ Match started — 1st half','ok');
+}
+
+function runMatchTimer() {
+  if(matchState.timer) clearInterval(matchState.timer);
+  matchState.timer = setInterval(async () => {
+    if(matchState.paused) return;
+    matchState.minute++;
+    updateMatchUI();
+
+    // Sync to UI + DB every tick
+    document.getElementById('fe-minute').value = matchState.minute;
+    if(selectedMatch) {
+      selectedMatch.minute = matchState.minute;
+      try {
+        await db.from('matches').update({
+          minute: matchState.minute,
+          status: matchState.status === 'break' ? 'live' : (matchState.status === 'finished' ? 'finished' : 'live')
+        }).eq('id', selectedMatch.id);
+      } catch(e) {}
+    }
+
+    // FIRST HALF: 0 → 45, then +2 extra
+    if(matchState.half === 1) {
+      if(matchState.minute === 45 && matchState.status === 'live') {
+        matchState.status = 'extra1';
+        updateMatchUI();
+        showToast('⏱ 1st half extra time (+2)','ok');
+      }
+      if(matchState.minute >= 47 && matchState.status === 'extra1') {
+        startBreak();
+      }
+    }
+
+    // SECOND HALF: continues from 45 conceptually but we track half-minute 0-45 then +4
+    // For simplicity second half minutes shown as 45+
+    if(matchState.half === 2) {
+      if(matchState.minute === 45 && matchState.status === 'live') {
+        matchState.status = 'extra2';
+        updateMatchUI();
+        showToast('⏱ 2nd half extra time (+4)','ok');
+      }
+      if(matchState.minute >= 49 && matchState.status === 'extra2') {
+        finishMatch();
+      }
+    }
+  }, 1000); // 1 sec = 1 match minute (testing)
+}
+
+function startBreak() {
+  clearInterval(matchState.timer);
+  matchState.status = 'break';
+  updateMatchUI();
+  showToast('⏸ Half-time break (15 min sim)','ok');
+  let breakTime = 0;
+  matchState.timer = setInterval(() => {
+    if(matchState.paused) return;
+    breakTime++;
+    document.getElementById('matchMinute').textContent = 'HT ' + breakTime + "'";
+    if(breakTime >= 15) {
+      clearInterval(matchState.timer);
+      matchState.half = 2;
+      matchState.minute = 0;
+      matchState.status = 'live';
+      document.getElementById('fe-half').value = '2';
+      runMatchTimer();
+      updateMatchUI();
+      showToast('▶ 2nd half started','ok');
+    }
+  }, 1000);
+}
+
+async function finishMatch() {
+  clearInterval(matchState.timer);
+  matchState.timer = null;
+  matchState.status = 'finished';
+  currentStatus = 'finished';
+  setStatus('finished');
+  updateMatchUI();
+  if(selectedMatch) {
+    try {
+      await db.from('matches').update({
+        status: 'finished',
+        minute: 90 + 4
+      }).eq('id', selectedMatch.id);
+      selectedMatch.status = 'finished';
+    } catch(e) {}
+  }
+  showToast('✅ Full time — match finished','ok');
+  loadMatchSelector();
+}
+
+function pauseMatchEngine() {
+  matchState.paused = true;
+  updateMatchUI();
+  showToast('⏸ Engine paused','ok');
+}
+
+function resumeMatchEngine() {
+  if(matchState.status === 'idle' || matchState.status === 'finished') {
+    showToast('Start a match first','err'); return;
+  }
+  matchState.paused = false;
+  updateMatchUI();
+  showToast('▶ Engine resumed','ok');
+}
+
+function stopMatchEngine() {
+  if(matchState.timer) clearInterval(matchState.timer);
+  matchState.timer = null;
+  matchState.status = 'idle';
+  matchState.minute = 0;
+  matchState.half = 1;
+  matchState.paused = false;
+  updateMatchUI();
+  showToast('⏹ Engine stopped','ok');
+}
+
+function updateMatchUI() {
+  const st = document.getElementById('matchStatus');
+  const mn = document.getElementById('matchMinute');
+  const hf = document.getElementById('matchHalf');
+  if(!st) return;
+  const labels = {
+    idle: 'IDLE',
+    live: matchState.paused ? 'PAUSED' : 'LIVE',
+    extra1: '1H EXTRA',
+    break: 'BREAK',
+    extra2: '2H EXTRA',
+    finished: 'FINISHED'
+  };
+  st.textContent = labels[matchState.status] || matchState.status.toUpperCase();
+  st.style.color = matchState.status === 'finished' ? 'var(--green)' :
+                   matchState.status === 'break' ? 'var(--gold)' :
+                   matchState.status === 'idle' ? 'var(--muted)' : 'var(--red)';
+  if(matchState.status !== 'break') {
+    const displayMin = matchState.half === 2 ? (45 + matchState.minute) : matchState.minute;
+    mn.textContent = displayMin + "'";
+  }
+  hf.textContent = matchState.half === 1 ? '1st' : matchState.half === 2 ? '2nd' : '—';
+}
+
+
 // ── TOAST ──
 function showToast(msg, type='ok') {
   const el = document.getElementById('toast');
@@ -1111,3 +1413,4 @@ async function updateVIP() {
 </script>
 </body>
 </html>
+
