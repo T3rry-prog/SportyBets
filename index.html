@@ -49,7 +49,6 @@
             --gold: #F0C040;
             --gold2: #E8A020;
             --odds: #FFFFFF;
-            --odds-bg: rgba(255,255,255,.1);
             --live: #FF3333;
             --live-bg: rgba(255,51,51,.08);
             --blue: #2F80ED;
@@ -909,19 +908,9 @@
         }
         .loading-dot:nth-child(2) { animation-delay: .2s; }
         .loading-dot:nth-child(3) { animation-delay: .4s; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            .content { padding: 12px 12px 80px; }
-            .hero h1 { font-size: 22px; }
-            .ft-score { font-size: 28px; }
-            .ft-team .ft-emoji { font-size: 24px; }
-        }
     </style>
 </head>
-<body>
-
-<!-- ===== HEADER ===== -->
+<body><!-- ===== HEADER ===== -->
 <div class="header">
     <div class="logo" onclick="goPage('home')">
         <div class="logo-main">Sporty<span>Bet</span></div>
@@ -1056,39 +1045,763 @@
         </div>
 
     </div>
+</div><!-- ===== LIVE PAGE ===== -->
+<div id="page-live" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
+            <div style="background:#000;height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+                <div style="position:absolute;top:10px;left:10px;background:var(--primary);color:#fff;font-size:9px;font-weight:800;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;">
+                    <span class="live-dot" style="background:#fff;"></span> LIVE HD
+                </div>
+                <div style="width:48px;height:48px;border-radius:50%;background:rgba(240,192,64,0.15);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--gold);">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:8px;">Sign in to watch</div>
+            </div>
+            <div style="padding:10px 14px;border-top:1px solid var(--border);background:var(--card);" id="stream-feat-info">
+                <div style="font-size:13px;font-weight:700;">Loading...</div>
+            </div>
+            <div id="stream-live-list"></div>
+        </div>
+        <div class="sec-hd">
+            <div class="sec-title"><span class="live-pill"><span class="live-dot"></span>LIVE</span> All In-Play</div>
+            <div class="sec-link" id="live-count">Loading...</div>
+        </div>
+        <div id="live-page-matches"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+    </div>
 </div>
 
-<!-- ===== OTHER PAGES (SIMPLIFIED PLACEHOLDERS) ===== -->
-<div id="page-live" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-tv" style="font-size:40px;display:block;margin-bottom:12px;"></i>Live matches loading...</div></div>
-<div id="page-slip" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-ticket-alt" style="font-size:40px;display:block;margin-bottom:12px;"></i>Your bet slip</div></div>
-<div id="page-builder" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-layer-group" style="font-size:40px;display:block;margin-bottom:12px;"></i>Bet Builder</div></div>
-<div id="page-leaderboard" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-trophy" style="font-size:40px;display:block;margin-bottom:12px;"></i>Leaderboard</div></div>
-<div id="page-promos" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-gift" style="font-size:40px;display:block;margin-bottom:12px;"></i>Promotions</div></div>
-<div id="page-whatsapp" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fab fa-whatsapp" style="font-size:40px;display:block;margin-bottom:12px;"></i>WhatsApp Betting</div></div>
-<div id="page-login" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-sign-in-alt" style="font-size:40px;display:block;margin-bottom:12px;"></i>Sign In</div></div>
-<div id="page-register" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-user-plus" style="font-size:40px;display:block;margin-bottom:12px;"></i>Create Account</div></div>
-<div id="page-dashboard" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-chart-pie" style="font-size:40px;display:block;margin-bottom:12px;"></i>Dashboard</div></div>
-<div id="page-wallet" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-wallet" style="font-size:40px;display:block;margin-bottom:12px;"></i>Wallet</div></div>
-<div id="page-account" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-cog" style="font-size:40px;display:block;margin-bottom:12px;"></i>Account</div></div>
-<div id="page-faq" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-question-circle" style="font-size:40px;display:block;margin-bottom:12px;"></i>FAQ</div></div>
-<div id="page-contact" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-headset" style="font-size:40px;display:block;margin-bottom:12px;"></i>Contact Us</div></div>
-<div id="page-terms" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-file-contract" style="font-size:40px;display:block;margin-bottom:12px;"></i>Terms</div></div>
-<div id="page-privacy" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-shield-alt" style="font-size:40px;display:block;margin-bottom:12px;"></i>Privacy</div></div>
-<div id="page-responsible" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-heart" style="font-size:40px;display:block;margin-bottom:12px;"></i>Responsible Gambling</div></div>
-<div id="page-howitworks" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-play-circle" style="font-size:40px;display:block;margin-bottom:12px;"></i>How It Works</div></div>
-<div id="page-mybets" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-list" style="font-size:40px;display:block;margin-bottom:12px;"></i>My Bets</div></div>
-<div id="page-jackpot" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-trophy" style="font-size:40px;display:block;margin-bottom:12px;"></i>Jackpot</div></div>
+<!-- ===== BET SLIP PAGE ===== -->
+<div id="page-slip" class="page">
+    <div class="slip-wrap" style="padding:16px 16px 80px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-size:18px;font-weight:800;"><i class="fas fa-ticket-alt"></i> Bet Slip</div>
+            <div style="font-size:12px;color:var(--muted);cursor:pointer;display:none;" id="slip-clear-btn" onclick="clearSlip()">Clear all</div>
+        </div>
+        <div class="slip-tabs" style="display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
+            <div class="stab" style="flex:1;text-align:center;padding:10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--border);border-bottom:2px solid transparent;transition:all 0.1s;" onclick="setSlipTab(this,'single')">Single</div>
+            <div class="stab active" style="flex:1;text-align:center;padding:10px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;border-bottom-color:var(--gold);" onclick="setSlipTab(this,'acca')">Accumulator</div>
+        </div>
+        <div id="slip-body"><div class="slip-empty" style="text-align:center;padding:50px 20px;"><div style="font-size:44px;margin-bottom:12px;">🎯</div><div style="font-size:13px;color:var(--muted);line-height:1.6;">Select odds from any match to build your slip</div></div></div>
+        <div id="slip-foot" style="display:none;">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-top:6px;">
+                <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:13px;"><span style="color:var(--muted);">Selections</span><span style="font-weight:700;" id="sel-ct">0</span></div>
+                <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:13px;"><span style="color:var(--muted);">Total Odds</span><span style="font-weight:700;" id="tot-odds">1.00</span></div>
+                <div style="height:1px;background:var(--border);margin:9px 0;"></div>
+                <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Stake (KSh)</div>
+                <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;">
+                    <div style="padding:12px;font-size:13px;font-weight:700;color:var(--gold);background:var(--primary);border-right:1px solid var(--border);">KSh</div>
+                    <input class="stake-in" id="stake" type="number" value="100" min="50" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;" id="qs-row">
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1K</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2K</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;">
+                    <span style="font-size:13px;color:var(--muted);">Potential Win</span>
+                    <span style="font-size:19px;font-weight:800;color:#27AE60;" id="pot-win">KSh 100</span>
+                </div>
+                <button class="btn-place" id="place-bet-btn" onclick="validateAndPlaceBet()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;margin-bottom:8px;cursor:pointer;">Place Bet</button>
+                <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:7px;" id="bet-balance-note">Balance: KSh 0</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!-- ===== BOTTOM NAV ===== -->
+<!-- ===== BET BUILDER PAGE ===== -->
+<div id="page-builder" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
+            <div style="background:var(--primary);padding:14px 15px;border-bottom:1px solid var(--border);">
+                <div style="font-size:16px;font-weight:800;color:#fff;"><i class="fas fa-layer-group"></i> Bet Builder</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.7);">Combine markets from the same match into one bet</div>
+            </div>
+            <div style="padding:12px 15px;border-bottom:1px solid var(--border);">
+                <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Select a Match</div>
+                <div class="bb-m" style="padding:10px 13px;border-radius:var(--r);background:var(--card);border:1.5px solid var(--gold);font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;margin-bottom:5px;transition:all 0.1s;" onclick="setBBMatch(this)">⚽ Man City vs Arsenal · 20:45</div>
+                <div class="bb-m" style="padding:10px 13px;border-radius:var(--r);background:var(--card);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:5px;transition:all 0.1s;" onclick="setBBMatch(this)">⚽ Barcelona vs Real Madrid · LIVE</div>
+                <div class="bb-m" style="padding:10px 13px;border-radius:var(--r);background:var(--card);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:5px;transition:all 0.1s;" onclick="setBBMatch(this)">⚽ Bayern vs Dortmund · 18:30</div>
+                <div class="bb-m" style="padding:10px 13px;border-radius:var(--r);background:var(--card);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="setBBMatch(this)">⚽ AC Milan vs Juventus · 22:00</div>
+            </div>
+            <div style="padding:12px 15px;display:flex;flex-direction:column;gap:8px;">
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
+                    <div style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);">Match Result</div>
+                    <div style="display:flex;gap:5px;padding:10px 12px;flex-wrap:wrap;">
+                        <div class="bb-opt" style="padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="bbPick(this,'result',1.80)">Man City Win <span style="color:#27AE60;">1.80</span></div>
+                        <div class="bb-opt" style="padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="bbPick(this,'result',3.60)">Draw <span style="color:#27AE60;">3.60</span></div>
+                        <div class="bb-opt" style="padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="bbPick(this,'result',4.20)">Arsenal Win <span style="color:#27AE60;">4.20</span></div>
+                    </div>
+                </div>
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
+                    <div style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);">Both Teams to Score</div>
+                    <div style="display:flex;gap:5px;padding:10px 12px;flex-wrap:wrap;">
+                        <div class="bb-opt" style="padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="bbPick(this,'btts',1.70)">Yes <span style="color:#27AE60;">1.70</span></div>
+                        <div class="bb-opt" style="padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="bbPick(this,'btts',2.00)">No <span style="color:#27AE60;">2.00</span></div>
+                    </div>
+                </div>
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
+                    <div style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);">Total Goals</div>
+                    <div style="display:flex;gap:5px;padding:10px 12px;flex-wrap:wrap;">
+                        <div class="bb-opt" style="padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="bbPick(this,'goals',1.75)">Over 2.5 <span style="color:#27AE60;">1.75</span></div>
+                        <div class="bb-opt" style="padding:7px 13px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.1s;" onclick="bbPick(this,'goals',1.95)">Under 2.5 <span style="color:#27AE60;">1.95</span></div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:14px 15px;background:var(--primary);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.6);font-weight:600;text-transform:uppercase;margin-bottom:2px;" id="bb-sel-count">0 selections</div>
+                    <div style="font-size:26px;font-weight:800;color:var(--gold);" id="bb-ov">---</div>
+                </div>
+                <button class="btn-bb" onclick="bbAddToSlip()" style="background:rgba(0,0,0,0.2);border:1.5px solid var(--gold);color:var(--gold);padding:11px 20px;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;">Add to Slip →</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== LEADERBOARD PAGE ===== -->
+<div id="page-leaderboard" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div class="sec-hd"><div class="sec-title"><i class="fas fa-trophy"></i> Weekly Leaderboard</div><div class="sec-link">Resets Monday</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:10px;">
+            <div class="lb-row" style="display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border);">
+                <div style="font-size:15px;font-weight:800;width:24px;text-align:center;flex-shrink:0;color:var(--gold);">🥇</div>
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👑</div>
+                <div style="flex:1;"><div style="font-size:13px;font-weight:700;">JohnMwangi_254</div><div style="font-size:10px;color:var(--muted);margin-top:1px;">14 wins · 89% accuracy</div></div>
+                <div style="font-size:13px;font-weight:800;color:#27AE60;">+KSh 48,200</div>
+            </div>
+            <div class="lb-row" style="display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border);">
+                <div style="font-size:15px;font-weight:800;width:24px;text-align:center;flex-shrink:0;color:var(--gold);">🥈</div>
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🦁</div>
+                <div style="flex:1;"><div style="font-size:13px;font-weight:700;">NairobiKing</div><div style="font-size:10px;color:var(--muted);margin-top:1px;">11 wins · 81% accuracy</div></div>
+                <div style="font-size:13px;font-weight:800;color:#27AE60;">+KSh 31,500</div>
+            </div>
+            <div class="lb-row" style="display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border);">
+                <div style="font-size:15px;font-weight:800;width:24px;text-align:center;flex-shrink:0;color:var(--gold);">🥉</div>
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
+                <div style="flex:1;"><div style="font-size:13px;font-weight:700;">BetMaster_KE</div><div style="font-size:10px;color:var(--muted);margin-top:1px;">10 wins · 77% accuracy</div></div>
+                <div style="font-size:13px;font-weight:800;color:#27AE60;">+KSh 24,800</div>
+            </div>
+        </div>
+        <button style="width:100%;padding:12px;border-radius:var(--r);background:rgba(47,128,237,0.1);border:1px solid rgba(47,128,237,0.3);color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;"><i class="fas fa-share-alt"></i> Share My Bet Slip</button>
+    </div>
+</div>
+
+<!-- ===== PROMOS PAGE ===== -->
+<div id="page-promos" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:12px;"><i class="fas fa-gift"></i> All Promotions</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
+            <div class="promo-item" style="border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="font-size:24px;flex-shrink:0;">💰</div>
+                <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">100% First Deposit Bonus</div><div style="font-size:11px;color:var(--muted);">Up to KSh 5,000 matched. Min KSh 100.</div></div>
+                <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;" onclick="goPage('register')">Claim</button>
+            </div>
+            <div class="promo-item" style="border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="font-size:24px;flex-shrink:0;">⚡</div>
+                <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Accumulator Boost +50%</div><div style="font-size:11px;color:var(--muted);">5+ selection accas. Auto-applied.</div></div>
+                <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;">Opt In</button>
+            </div>
+            <div class="promo-item" style="border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="font-size:24px;flex-shrink:0;">🔄</div>
+                <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Friday Cash Back</div><div style="font-size:11px;color:var(--muted);">10% back on losses every Friday.</div></div>
+                <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;">More</button>
+            </div>
+            <div class="promo-item" style="border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="font-size:24px;flex-shrink:0;">⭐</div>
+                <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">VIP Points on Every Bet</div><div style="font-size:11px;color:var(--muted);">Earn points. Bronze → Diamond.</div></div>
+                <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;">View</button>
+            </div>
+            <div class="promo-item" style="border-bottom:none;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="font-size:24px;flex-shrink:0;">💬</div>
+                <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">WhatsApp First Bet Bonus</div><div style="font-size:11px;color:var(--muted);">First WhatsApp bet = KSh 100 free bet.</div></div>
+                <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;" onclick="goPage('whatsapp')">Start</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== WHATSAPP PAGE ===== -->
+<div id="page-whatsapp" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="background:linear-gradient(115deg,#0D2A1A,#091F0E);border:1px solid #2E7D32;border-radius:var(--r);padding:22px 16px;text-align:center;margin-bottom:10px;">
+            <div style="font-size:50px;margin-bottom:10px;"><i class="fab fa-whatsapp"></i></div>
+            <div style="font-size:20px;font-weight:800;margin-bottom:6px;color:#fff;">Bet via WhatsApp.<br/><span style="color:var(--wa);">No app. Just chat.</span></div>
+            <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:18px;">Place bets, check balance, withdraw — all from WhatsApp. Zero downloads.</div>
+            <button style="width:100%;padding:14px;border-radius:var(--r);background:var(--wa);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;"><i class="fab fa-whatsapp"></i> Open WhatsApp → +254 700 XOVA</button>
+            <button style="width:100%;padding:12px;border-radius:var(--r);background:transparent;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-size:13px;font-weight:600;cursor:pointer;"><i class="fas fa-save"></i> Save Number</button>
+        </div>
+        <div style="font-size:15px;font-weight:800;margin-bottom:10px;">How It Works</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">01</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Send BET to start</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Text BET to +254 700 XOVA. Bot replies with today's top matches.</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">02</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Pick match & outcome</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Reply with match number then 1 (Home), X (Draw), or 2 (Away).</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">03</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min KSh 100). Reply YES. M-Pesa STK push sent instantly.</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:10px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">04</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Win & withdraw instantly</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">We notify you on results. Winnings credited to wallet immediately.</div></div>
+        </div>
+    </div>
+</div>
+<!-- ===== LOGIN PAGE ===== -->
+<div id="page-login" class="page">
+    <div style="padding:20px 16px 80px;">
+        <div style="text-align:center;font-size:26px;font-weight:800;color:var(--gold);margin-bottom:4px;">SportyBet</div>
+        <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">Sign in to your account</div>
+        <div class="err-box" id="login-err" style="background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--live);margin-bottom:13px;display:none;"></div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Phone Number</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
+                <div style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;">🇰🇪 +254</div>
+                <input type="tel" id="lp" placeholder="7XX XXX XXX" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
+            </div>
+        </div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Password</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
+                <input type="password" id="lpass" placeholder="Enter your password" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
+                <div class="pass-eye" onclick="toggleEye('lpass',this)" style="padding:11px 12px;color:var(--muted);cursor:pointer;font-size:16px;">👁️</div>
+            </div>
+        </div>
+        <div style="text-align:right;margin-bottom:16px;"><span style="font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;">Forgot password?</span></div>
+        <button class="btn-auth" id="login-btn" onclick="doLogin()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">Sign In</button>
+        <div style="text-align:center;font-size:13px;color:var(--muted);">No account? <span class="auth-link" style="color:var(--gold);font-weight:700;cursor:pointer;" onclick="goPage('register')">Register free</span></div>
+        <div style="text-align:center;margin-top:10px;"><span style="font-size:12px;color:var(--muted);cursor:pointer;" onclick="goPage('home')">← Back to Home</span></div>
+    </div>
+</div>
+
+<!-- ===== REGISTER PAGE ===== -->
+<div id="page-register" class="page">
+    <div style="padding:20px 16px 80px;">
+        <div style="text-align:center;font-size:26px;font-weight:800;color:var(--gold);margin-bottom:4px;">SportyBet</div>
+        <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">Your Bet, Your Rules — Start free</div>
+        <div style="background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.2);border-radius:var(--r);padding:10px 14px;text-align:center;font-size:12px;font-weight:700;color:var(--gold);margin-bottom:18px;">🎁 KSh 5,000 Bonus + 500 VIP Points on signup</div>
+        <div class="err-box" id="reg-err" style="background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--live);margin-bottom:13px;display:none;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="margin-bottom:13px;">
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">First Name</label>
+                <input class="input-solo" type="text" id="rn1" placeholder="John" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;transition:border-color .15s;"/>
+            </div>
+            <div style="margin-bottom:13px;">
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Last Name</label>
+                <input class="input-solo" type="text" id="rn2" placeholder="Doe" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;transition:border-color .15s;"/>
+            </div>
+        </div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Country</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
+                <select id="rcountry" style="background:var(--input-bg);color:var(--text);width:100%;border:none;outline:none;appearance:none;-webkit-appearance:none;padding:11px 12px;font-size:14px;" onchange="updateDialCode(this)">
+                    <option value="" data-code="" data-flag="">🌍 Select Country</option>
+                    <option value="KE" data-code="+254" data-flag="🇰🇪">🇰🇪 Kenya</option>
+                    <option value="NG" data-code="+234" data-flag="🇳🇬">🇳🇬 Nigeria</option>
+                    <option value="GH" data-code="+233" data-flag="🇬🇭">🇬🇭 Ghana</option>
+                    <option value="TZ" data-code="+255" data-flag="🇹🇿">🇹🇿 Tanzania</option>
+                    <option value="UG" data-code="+256" data-flag="🇺🇬">🇺🇬 Uganda</option>
+                    <option value="ZA" data-code="+27" data-flag="🇿🇦">🇿🇦 South Africa</option>
+                    <option value="GB" data-code="+44" data-flag="🇬🇧">🇬🇧 United Kingdom</option>
+                    <option value="US" data-code="+1" data-flag="🇺🇸">🇺🇸 United States</option>
+                    <option value="OTHER" data-code="+" data-flag="🌍">🌍 Other</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Phone Number</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
+                <div style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;" id="dial-code-display">🌍 +</div>
+                <input type="tel" id="rp" placeholder="Enter phone number" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
+            </div>
+        </div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Password</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
+                <input type="password" id="rpass" placeholder="Min. 6 characters" oninput="updateStrength()" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
+                <div class="pass-eye" onclick="toggleEye('rpass',this)" style="padding:11px 12px;color:var(--muted);cursor:pointer;font-size:16px;">👁️</div>
+            </div>
+            <div class="strength-bar" id="s-bar" style="height:3px;border-radius:10px;margin-top:5px;background:var(--border);width:0;transition:width .3s,background .3s;"></div>
+            <div class="strength-hint" id="s-hint" style="font-size:10px;font-weight:600;margin-top:3px;"></div>
+        </div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Promo Code (optional)</label>
+            <input class="input-solo" type="text" id="rpromo" placeholder="e.g. XOVA100" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;transition:border-color .15s;"/>
+        </div>
+        <div style="display:flex;gap:9px;align-items:flex-start;margin-bottom:14px;cursor:pointer;">
+            <input type="checkbox" id="rterms" style="width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;"/>
+            <span style="font-size:12px;color:var(--muted);line-height:1.5;">I am 18+ and agree to the <span style="color:var(--gold);cursor:pointer;" onclick="goPage('terms')">Terms</span> and <span style="color:var(--gold);cursor:pointer;" onclick="goPage('privacy')">Privacy Policy</span></span>
+        </div>
+        <button class="btn-auth" id="reg-btn" onclick="doRegister()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">Create Account →</button>
+        <div style="text-align:center;font-size:13px;color:var(--muted);">Have an account? <span class="auth-link" style="color:var(--gold);font-weight:700;cursor:pointer;" onclick="goPage('login')">Sign in</span></div>
+        <div style="text-align:center;margin-top:10px;"><span style="font-size:12px;color:var(--muted);cursor:pointer;" onclick="goPage('home')">← Back to Home</span></div>
+    </div>
+</div>
+
+<!-- ===== DASHBOARD PAGE ===== -->
+<div id="page-dashboard" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="background:linear-gradient(110deg,var(--primary),#8A0D1A);border:1px solid var(--border);border-radius:var(--r);padding:18px 16px;margin-bottom:10px;">
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:2px;">Welcome back,</div>
+            <div style="font-size:20px;font-weight:800;color:var(--gold);" id="dash-name">Champion 👋</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;">
+                <div style="background:rgba(0,0,0,0.2);border-radius:var(--r);padding:10px;">
+                    <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Balance</div>
+                    <div style="font-size:16px;font-weight:800;color:#69F0AE;" id="dash-bal-display">KSh 0</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.2);border-radius:var(--r);padding:10px;">
+                    <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Active Bets</div>
+                    <div style="font-size:16px;font-weight:800;color:#fff;" id="dash-active-bets">0</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.2);border-radius:var(--r);padding:10px;">
+                    <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">VIP Points</div>
+                    <div style="font-size:16px;font-weight:800;color:#fff;" id="dash-vip">0</div>
+                </div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:10px;">
+            <div class="qa-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 6px;text-align:center;cursor:pointer;" onclick="openMpesa('deposit')">
+                <div style="font-size:20px;margin-bottom:4px;">💰</div>
+                <div style="font-size:10px;font-weight:600;color:var(--muted);">Deposit</div>
+            </div>
+            <div class="qa-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 6px;text-align:center;cursor:pointer;" onclick="goPage('mybets')">
+                <div style="font-size:20px;margin-bottom:4px;">📋</div>
+                <div style="font-size:10px;font-weight:600;color:var(--muted);">My Bets</div>
+            </div>
+            <div class="qa-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 6px;text-align:center;cursor:pointer;" onclick="goPage('builder')">
+                <div style="font-size:20px;margin-bottom:4px;">🏗️</div>
+                <div style="font-size:10px;font-weight:600;color:var(--muted);">Builder</div>
+            </div>
+            <div class="qa-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 6px;text-align:center;cursor:pointer;" onclick="goPage('wallet')">
+                <div style="font-size:20px;margin-bottom:4px;">📤</div>
+                <div style="font-size:10px;font-weight:600;color:var(--muted);">Withdraw</div>
+            </div>
+        </div>
+        <div class="sec-hd"><div class="sec-title">Recent Bets</div><div class="sec-link">All →</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:10px;" id="recent-bets">
+            <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+        </div>
+    </div>
+</div><!-- ===== WALLET PAGE ===== -->
+<div id="page-wallet" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="background:linear-gradient(110deg,var(--primary),#8A0D1A);border:1px solid var(--border);border-radius:var(--r);padding:20px 16px;text-align:center;margin-bottom:10px;">
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">Available Balance</div>
+            <div style="font-size:36px;font-weight:800;color:#27AE60;margin-bottom:16px;" id="wallet-bal-display">KSh 0</div>
+            <div style="display:flex;gap:8px;justify-content:center;">
+                <button class="btn-dep" onclick="openMpesa('deposit')" style="background:var(--gold);color:#000;border:none;border-radius:var(--r);padding:11px 26px;font-size:13px;font-weight:800;cursor:pointer;">Deposit</button>
+                <button class="btn-wit" onclick="setWalletTab('withdraw')" style="background:transparent;border:1.5px solid rgba(255,255,255,0.3);color:#fff;border-radius:var(--r);padding:11px 26px;font-size:13px;font-weight:700;cursor:pointer;">Withdraw</button>
+            </div>
+        </div>
+        <div style="display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
+            <div class="tw-tab active" id="tw-dep" onclick="setWalletTab('deposit')" style="flex:1;text-align:center;padding:11px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;border-bottom:2px solid var(--gold);">Deposit</div>
+            <div class="tw-tab" id="tw-wit" onclick="setWalletTab('withdraw')" style="flex:1;text-align:center;padding:11px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;">Withdraw</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;">
+            <div style="margin-bottom:13px;">
+                <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Deposit Amount (KSh)</label>
+                <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;">
+                    <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
+                    <input type="number" id="wf-amt" placeholder="Enter amount" min="50" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:14px;">
+                <div class="qs" onclick="setWAmt(100)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">100</div>
+                <div class="qs" onclick="setWAmt(500)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">500</div>
+                <div class="qs" onclick="setWAmt(1000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1K</div>
+                <div class="qs" onclick="setWAmt(2000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">2K</div>
+            </div>
+            <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesa('deposit')"><i class="fas fa-mobile-alt"></i> Pay via M-Pesa — Send STK Push</button>
+            <div style="font-size:10px;color:var(--muted);text-align:center;">Funds credited instantly after M-Pesa confirmation</div>
+        </div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Transaction History</div>
+        <div id="tx-history"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+    </div>
+</div>
+
+<!-- ===== ACCOUNT PAGE ===== -->
+<div id="page-account" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="background:linear-gradient(110deg,#1A1200,#221800);border:1px solid rgba(240,192,64,0.2);border-radius:var(--r);padding:16px;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:800;color:var(--gold2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;" id="acc-vip-tier">⭐ Bronze Tier</div>
+            <div style="font-size:30px;font-weight:800;color:var(--gold);line-height:1;" id="acc-vip-pts">0</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:10px;margin-top:2px;">VIP Points · SportyBet Member</div>
+            <div style="background:rgba(240,192,64,0.12);border-radius:10px;height:6px;overflow:hidden;margin-bottom:6px;">
+                <div class="vip-bar-fill" id="acc-vip-bar" style="height:100%;border-radius:10px;background:var(--gold);width:0%;"></div>
+            </div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);" id="acc-vip-next">1,000 pts to Silver</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+                <div style="background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.2);border-radius:3px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--gold);">Fast Payouts</div>
+                <div style="background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.2);border-radius:3px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--gold);">Odds Boosts</div>
+                <div style="background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.2);border-radius:3px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--gold);">VIP Support</div>
+            </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
+            <div style="background:var(--primary);padding:9px 14px;font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border);">My Account</div>
+            <div class="acc-row" onclick="goPage('dashboard')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-chart-pie"></i> Dashboard</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+            <div class="acc-row" onclick="openMpesa('deposit')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-coins"></i> Deposit (M-Pesa)</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+            <div class="acc-row" onclick="goPage('wallet')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-wallet"></i> Wallet & History</div>
+                <div style="font-size:12px;color:var(--muted);" id="acc-bal-row">→</div>
+            </div>
+            <div class="acc-row" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-user-edit"></i> Edit Profile</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+            <div class="acc-row" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-bell"></i> Notifications</div>
+                <div style="font-size:12px;color:var(--muted);">On →</div>
+            </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
+            <div style="background:var(--primary);padding:9px 14px;font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border);"><i class="fas fa-shield-alt"></i> Safe Play</div>
+            <div style="padding:14px;">
+                <div style="display:flex;gap:7px;margin-bottom:10px;">
+                    <button style="flex:1;padding:9px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-sliders-h"></i> Set Limits</button>
+                    <button style="flex:1;padding:9px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-pause"></i> Take Break</button>
+                    <button style="flex:1;padding:9px;border-radius:var(--r);background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);color:var(--live);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-ban"></i> Exclude</button>
+                </div>
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;font-size:11px;color:var(--muted);line-height:1.6;">🆘 <strong style="color:var(--text);">Helpline: 0800 723 253</strong> — Free, 24/7</div>
+            </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
+            <div style="background:var(--primary);padding:9px 14px;font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border);">Help & Legal</div>
+            <div class="acc-row" onclick="goPage('faq')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-question-circle"></i> FAQ</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+            <div class="acc-row" onclick="goPage('contact')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-phone"></i> Contact Us</div>
+                <div style="font-size:12px;color:var(--muted);">24/7 →</div>
+            </div>
+            <div class="acc-row" onclick="goPage('responsible')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-heart"></i> Responsible Gambling</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+            <div class="acc-row" onclick="goPage('howitworks')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-play-circle"></i> How It Works</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+            <div class="acc-row" onclick="goPage('terms')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-file-contract"></i> Terms & Conditions</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+            <div class="acc-row" onclick="goPage('privacy')" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;transition:background .1s;">
+                <div style="font-size:13px;font-weight:600;"><i class="fas fa-shield-alt"></i> Privacy Policy</div>
+                <div style="font-size:12px;color:var(--muted);">→</div>
+            </div>
+        </div>
+        <button onclick="doLogout()" style="width:100%;padding:12px;border-radius:var(--r);background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);color:var(--live);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+    </div>
+</div><!-- ===== FAQ PAGE ===== -->
+<div id="page-faq" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:12px;"><i class="fas fa-question-circle"></i> Frequently Asked Questions</div>
+        <div class="faq-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;">
+            <div class="faq-q" onclick="toggleFaq(this)" style="padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">How do I deposit money?<span class="faq-ico" style="color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;">+</span></div>
+            <div class="faq-a" style="padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;">Go to Wallet → Deposit, enter your amount, and tap Pay via M-Pesa. An STK push is sent to your phone. Enter your PIN and funds credited instantly. Minimum KSh 100.</div>
+        </div>
+        <div class="faq-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;">
+            <div class="faq-q" onclick="toggleFaq(this)" style="padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">How quickly can I withdraw?<span class="faq-ico" style="color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;">+</span></div>
+            <div class="faq-a" style="padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;">Withdrawals processed within 30 seconds, 24/7. No fees from SportyBet.</div>
+        </div>
+        <div class="faq-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;">
+            <div class="faq-q" onclick="toggleFaq(this)" style="padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">What is Cash Out?<span class="faq-ico" style="color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;">+</span></div>
+            <div class="faq-a" style="padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;">Cash Out lets you settle a live bet before the match ends. Lock in profit before the final whistle.</div>
+        </div>
+        <div class="faq-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;">
+            <div class="faq-q" onclick="toggleFaq(this)" style="padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">What markets are available?<span class="faq-ico" style="color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;">+</span></div>
+            <div class="faq-a" style="padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;">1X2, Double Chance, BTTS, Over/Under (1.5/2.5/3.5), Half Time Result, Draw No Bet, Correct Score, Total Goals Bands, Asian Handicap. Use Bet Builder to combine any markets.</div>
+        </div>
+        <div class="faq-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;">
+            <div class="faq-q" onclick="toggleFaq(this)" style="padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">How does Bet Builder work?<span class="faq-ico" style="color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;">+</span></div>
+            <div class="faq-a" style="padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;">Combine multiple markets from the same match — like Man City Win + Over 2.5 Goals + Haaland to Score — into one bet with a bigger combined odd.</div>
+        </div>
+        <div class="faq-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;">
+            <div class="faq-q" onclick="toggleFaq(this)" style="padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">Minimum bet?<span class="faq-ico" style="color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;">+</span></div>
+            <div class="faq-a" style="padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;">Minimum stake is KSh 100 per bet on website and WhatsApp.</div>
+        </div>
+        <div class="faq-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:6px;">
+            <div class="faq-q" onclick="toggleFaq(this)" style="padding:14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">Is SportyBet licensed?<span class="faq-ico" style="color:var(--gold);font-size:18px;flex-shrink:0;margin-left:8px;">+</span></div>
+            <div class="faq-a" style="padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);display:none;">SportyBet is licensed and regulated by the relevant gaming regulatory authority.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CONTACT PAGE ===== -->
+<div id="page-contact" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;"><i class="fas fa-headset"></i> Contact Us</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Available 24/7 · Under 2 min response</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;">
+            <div style="font-size:26px;flex-shrink:0;">💬</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Live Chat</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Chat with us right now</div><button class="btn-join" style="background:var(--primary);color:#fff;border:none;border-radius:var(--r);padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">Start Chat</button></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;">
+            <div style="font-size:26px;flex-shrink:0;"><i class="fab fa-whatsapp"></i></div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">WhatsApp Support</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px;">+254 700 XOVA · Text HELP</div><button style="background:var(--wa);color:#fff;border:none;border-radius:var(--r);padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;"><i class="fab fa-whatsapp"></i> Open WhatsApp</button></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;">
+            <div style="font-size:26px;flex-shrink:0;"><i class="fas fa-envelope"></i></div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Email</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px;">support@sportybet-platform.com</div><button class="btn-login" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold);border-radius:var(--r);padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">Send Email</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TERMS PAGE ===== -->
+<div id="page-terms" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;"><i class="fas fa-file-contract"></i> Terms & Conditions</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Last updated: 2025</div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">1. Eligibility</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">You must be at least 18 years of age to register and use SportyBet.</div></div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">2. Account Registration</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">One account per person. Providing false information results in immediate termination.</div></div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">3. Deposits & Withdrawals</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">All payments via M-Pesa. No withdrawal fees. Amounts above KSh 100,000 require ID verification.</div></div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">4. Betting Rules</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">All bets final once confirmed. SportyBet reserves the right to void bets in cases of pricing errors.</div></div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">5. Responsible Gambling</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">We provide deposit limits, self-exclusion, and time alerts. Problem Gambling Helpline: 0800 723 253.</div></div>
+    </div>
+</div>
+
+<!-- ===== PRIVACY PAGE ===== -->
+<div id="page-privacy" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;"><i class="fas fa-shield-alt"></i> Privacy Policy</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Last updated: 2025</div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">What We Collect</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">Name, phone, M-Pesa data, betting history, device info to provide our service and comply with licensing regulations.</div></div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">How We Use It</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">To operate your account, process payments, prevent fraud, and comply with legal obligations.</div></div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">Who We Share It With</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">Safaricom for M-Pesa and regulatory authorities as required by law. We never sell your data.</div></div>
+        <div style="margin-bottom:14px;"><div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:5px;">Your Rights</div><div style="font-size:12px;color:var(--muted);line-height:1.7;">Access, correct or delete your data. Email support@sportybet-platform.com — we respond within 72 hours.</div></div>
+    </div>
+</div>
+
+<!-- ===== RESPONSIBLE PAGE ===== -->
+<div id="page-responsible" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;"><i class="fas fa-heart"></i> Responsible Gambling</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Keeping betting fun and in control.</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;flex-shrink:0;">💰</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Deposit Limits</div><div style="font-size:11px;color:var(--muted);">Set daily, weekly or monthly limits. Takes effect immediately.</div></div>
+            <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;">Set Up</button>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;flex-shrink:0;">⏸️</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Take a Break</div><div style="font-size:11px;color:var(--muted);">Pause account for 24h, 7 days or 30 days.</div></div>
+            <button class="promo-cta" style="margin-left:auto;background:var(--primary);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;">Pause</button>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;flex-shrink:0;">🚫</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Self Exclusion</div><div style="font-size:11px;color:var(--muted);">Exclude for 6 months, 1 year or permanently.</div></div>
+            <button class="promo-cta" style="margin-left:auto;background:var(--live);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:var(--r);cursor:pointer;flex-shrink:0;">Exclude</button>
+        </div>
+        <div style="background:var(--live-bg);border:1px solid rgba(232,0,45,0.2);border-radius:var(--r);padding:14px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:5px;">🆘 Need help?</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7;">Problem Gambling Helpline: <strong style="color:var(--text);">0800 723 253</strong><br/>Free · 24/7 · Confidential</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== HOW IT WORKS PAGE ===== -->
+<div id="page-howitworks" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;"><i class="fas fa-play-circle"></i> How SportyBet Works</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Get started in under 2 minutes.</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">1</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-mobile-alt"></i> Register for free</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Create account with your phone number. 60 seconds. No documents needed.</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">2</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-coins"></i> Deposit via M-Pesa</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">From KSh 100. STK push to phone — enter PIN. Balance credited instantly.</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">3</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-futbol"></i> Pick your bets</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Tap odds to select. Choose from all markets — 1X2, BTTS, O/U, Correct Score and more.</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">4</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-coins"></i> Cash out anytime</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Cash out before the final whistle and lock in profit on live bets.</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:16px;display:flex;gap:12px;">
+            <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">5</div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-trophy"></i> Win and withdraw</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Balance updates instantly. Withdraw to M-Pesa in under 30 seconds, any time.</div></div>
+        </div>
+        <button class="btn-hero" onclick="goPage('register')" style="width:100%;padding:14px;font-size:14px;background:var(--gold);color:#000;border:none;border-radius:var(--r);font-weight:800;cursor:pointer;">Get Started Free</button>
+    </div>
+</div>
+
+<!-- ===== MY BETS PAGE ===== -->
+<div id="page-mybets" class="page">
+    <div style="padding:16px 16px 80px;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:12px;"><i class="fas fa-list"></i> My Bets</div>
+        <div style="display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
+            <div class="stab active" onclick="setMyBetsTab(this,'pending')" style="flex:1;text-align:center;padding:10px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;border-bottom:2px solid var(--gold);">Active</div>
+            <div class="stab" onclick="setMyBetsTab(this,'won')" style="flex:1;text-align:center;padding:10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;">Won</div>
+            <div class="stab" onclick="setMyBetsTab(this,'lost')" style="flex:1;text-align:center;padding:10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;">Lost</div>
+            <div class="stab" onclick="setMyBetsTab(this,'all')" style="flex:1;text-align:center;padding:10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;">All</div>
+        </div>
+        <div id="mybets-list"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+    </div>
+</div>
+
+<!-- ===== JACKPOT PAGE ===== -->
+<div id="page-jackpot" class="page">
+    <div style="padding:0 0 80px;">
+        <div style="background:linear-gradient(135deg,#1A1200,#2D1E00);padding:20px 16px 16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <div onclick="goPage('home')" style="color:rgba(255,255,255,0.6);font-size:20px;cursor:pointer;">←</div>
+                <div style="font-size:10px;font-weight:800;color:var(--gold2);text-transform:uppercase;letter-spacing:1px;"><i class="fas fa-trophy"></i> Midweek Jackpot</div>
+            </div>
+            <div style="font-size:32px;font-weight:800;color:var(--gold);margin-bottom:4px;">KSh 12,500,000</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.6);">Predict all 17 matches correctly to win the jackpot</div>
+            <div style="display:flex;gap:10px;margin-top:12px;">
+                <div style="flex:1;background:rgba(255,255,255,0.08);border-radius:var(--r);padding:8px;text-align:center;">
+                    <div style="font-size:18px;font-weight:800;color:#fff;" id="jp-selected">0/17</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.5);">Selected</div>
+                </div>
+                <div style="flex:1;background:rgba(255,255,255,0.08);border-radius:var(--r);padding:8px;text-align:center;">
+                    <div style="font-size:18px;font-weight:800;color:var(--gold);">KSh 100</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.5);">Entry Fee</div>
+                </div>
+                <div style="flex:1;background:rgba(255,255,255,0.08);border-radius:var(--r);padding:8px;text-align:center;">
+                    <div style="font-size:14px;font-weight:800;color:#FF6B6B;" id="jp-countdown">Loading...</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.5);">Closes In</div>
+                </div>
+            </div>
+        </div>
+        <div style="padding:12px 12px 0;" id="jp-games-list">
+            <div style="text-align:center;padding:30px;"><div class="spinner" style="width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;"></div></div>
+        </div>
+        <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;z-index:100;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="font-size:12px;color:var(--muted);">Entry fee: <strong style="color:var(--text);">KSh 100</strong></div>
+                <div style="font-size:12px;color:var(--muted);">Selected: <strong style="color:var(--gold);" id="jp-sel-count">0/17</strong></div>
+            </div>
+            <button id="jp-submit-btn" onclick="submitJackpot()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;opacity:.5;" disabled>Pick All 17 Matches to Enter</button>
+        </div>
+    </div>
+</div><!-- ===== BOTTOM NAV ===== -->
 <div class="bottom-nav">
     <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ico"><i class="fas fa-home"></i></div>Home</div>
     <div class="bn-item" id="bn-live" onclick="goPage('live')"><div class="bn-ico"><i class="fas fa-tv"></i></div>Live</div>
     <div class="bn-item" id="bn-slip" onclick="goPage('slip')"><div class="bn-ico"><i class="fas fa-ticket-alt"></i><span class="slip-badge" id="slip-badge">0</span></div>Slip</div>
-    <div class="bn-item" id="bn-mybets" onclick="goPage('mybets')"><div class="bn-ico"><i class="fas fa-list"></i></div>My Bets</div>
-    <div class="bn-item" id="bn-account" onclick="goPage('account')"><div class="bn-ico"><i class="fas fa-user"></i></div>Account</div>
+    <div class="bn-item" id="bn-mybets" onclick="currentUser?goPage('mybets'):goPage('login')"><div class="bn-ico"><i class="fas fa-list"></i></div>My Bets</div>
+    <div class="bn-item" id="bn-account" onclick="currentUser?goPage('account'):goPage('login')"><div class="bn-ico"><i class="fas fa-user"></i></div>Account</div>
 </div>
 
-<script>
+<!-- ===== CASHOUT MODAL ===== -->
+<div class="modal-bg" id="co-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:300;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 20px;width:100%;max-width:340px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:10px;">💰</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:6px;">Cash Out Available</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Lock in your winnings before the final whistle</div>
+        <div style="font-size:30px;font-weight:800;color:#27AE60;margin-bottom:4px;" id="co-amt">KSh 340</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:18px;" id="co-detail">Stake: KSh 200 · Profit: KSh 140</div>
+        <div style="display:flex;gap:8px;">
+            <button class="modal-keep" onclick="closeModal('co-modal')" style="flex:1;padding:11px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:700;cursor:pointer;">Keep Bet</button>
+            <button class="modal-go" onclick="processCashout()" style="flex:1;padding:11px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Cash Out Now</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MPESA SHEET ===== -->
+<div class="mpesa-overlay" id="mpesa-sheet" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:300;align-items:flex-end;justify-content:center;">
+    <div style="background:var(--surface);border-radius:16px 16px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;animation:slideUp 0.25s ease;">
+        <div id="mpesa-s0" style="display:block;">
+            <div style="text-align:center;font-size:36px;margin-bottom:6px;">💰</div>
+            <div style="text-align:center;font-size:16px;font-weight:800;margin-bottom:4px;">Deposit via M-Pesa</div>
+            <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Enter amount to deposit. Min KSh 100.</div>
+            <div style="margin-bottom:16px;">
+                <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Amount (KSh)</div>
+                <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
+                    <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
+                    <input type="number" id="mpesa-amt-input" placeholder="Enter amount" min="100" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:20px;font-weight:700;padding:12px;outline:none;"/>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:4px;">
+                    <div onclick="setMpesaAmt(100)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">100</div>
+                    <div onclick="setMpesaAmt(500)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">500</div>
+                    <div onclick="setMpesaAmt(1000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">1,000</div>
+                    <div onclick="setMpesaAmt(2000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">2,000</div>
+                    <div onclick="setMpesaAmt(5000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">5,000</div>
+                    <div onclick="setMpesaAmt(10000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">10,000</div>
+                </div>
+            </div>
+            <button class="btn-mpesa-go" onclick="proceedDeposit()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> Send M-Pesa Request</button>
+            <button class="btn-mpesa-cancel" onclick="closeModal('mpesa-sheet')" style="width:100%;padding:11px;border-radius:var(--r);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+        </div>
+        <div id="mpesa-s1" style="display:none;text-align:center;">
+            <div style="text-align:center;font-size:36px;margin-bottom:6px;">📱</div>
+            <div style="text-align:center;font-size:16px;font-weight:800;margin-bottom:4px;">Sending M-Pesa Request...</div>
+            <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Please wait while we send an STK push to your phone.</div>
+            <div style="text-align:center;font-size:28px;font-weight:800;color:#27AE60;margin-bottom:4px;" id="mpesa-amount">KSh 100</div>
+            <div class="spinner" style="width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:20px auto;"></div>
+            <button class="btn-mpesa-cancel" onclick="closeModal('mpesa-sheet')" style="width:100%;padding:11px;border-radius:var(--r);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+        </div>
+        <div id="mpesa-s2" style="display:none;text-align:center;padding:10px 0;">
+            <div style="font-size:44px;margin-bottom:12px;">📲</div>
+            <div style="font-size:16px;font-weight:800;margin-bottom:8px;">Check Your Phone</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.7;">An M-Pesa prompt has been sent to your phone.<br/>Enter your <strong style="color:var(--text);">M-Pesa PIN</strong> to complete payment.</div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:20px;text-align:left;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;"><span style="color:var(--muted);">Amount</span><span style="font-weight:700;color:#27AE60;" id="mpesa-amount2">KSh 100</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;"><span style="color:var(--muted);">To</span><span style="font-weight:700;">SportyBet</span></div>
+            </div>
+            <div class="spinner" style="width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;"></div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Waiting for confirmation...</div>
+            <button class="btn-mpesa-cancel" onclick="closeModal('mpesa-sheet')" style="width:100%;padding:11px;border-radius:var(--r);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+        </div>
+        <div id="mpesa-s3" style="display:none;text-align:center;">
+            <div style="font-size:48px;margin-bottom:12px;">✅</div>
+            <div style="font-size:18px;font-weight:800;margin-bottom:6px;">Payment Confirmed!</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Your balance has been updated</div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:20px;text-align:left;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;"><span style="color:var(--muted);">Reference</span><span style="font-weight:700;" id="mpesa-ref">---</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;"><span style="color:var(--muted);">Amount</span><span style="font-weight:700;color:#27AE60;" id="mpesa-confirmed-amt">KSh 100</span></div>
+            </div>
+            <button class="btn-mpesa-go" onclick="mpesaDone()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;">Done ✓</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== BET SUCCESS MODAL ===== -->
+<div class="success-modal" id="bet-success" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:300;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 20px;width:100%;max-width:340px;text-align:center;">
+        <div style="font-size:44px;margin-bottom:8px;">🎉</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Bet Placed!</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Your bet is confirmed and live.</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:12px;text-align:left;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--muted);">Reference</span>
+                <span style="font-weight:800;color:var(--gold);" id="bet-ref">#XO00000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--muted);">Stake</span>
+                <span style="font-weight:700;" id="bet-stake-display">KSh 0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--muted);">Total Odds</span>
+                <span style="font-weight:700;" id="bet-odds-display">0.00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;">
+                <span style="color:var(--muted);font-weight:700;">Possible Win</span>
+                <span style="font-weight:800;color:#27AE60;font-size:16px;" id="bet-win-display">KSh 0</span>
+            </div>
+        </div>
+        <div id="bet-selections-display" style="background:rgba(39,174,96,0.06);border:1px solid rgba(39,174,96,0.2);border-radius:var(--r);padding:10px 13px;margin-bottom:12px;text-align:left;font-size:11px;color:var(--muted);line-height:1.8;"></div>
+        <div style="background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.2);border-radius:var(--r);padding:9px 13px;margin-bottom:14px;text-align:center;">
+            <div style="font-size:11px;font-weight:600;color:var(--gold);">🏆 Good luck! We'll notify you when results are in.</div>
+        </div>
+        <button style="width:100%;padding:12px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:14px;font-weight:800;cursor:pointer;" onclick="closeBetSuccess()">Done ✓</button>
+    </div>
+</div><script>
     // ===== SUPABASE =====
     const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
     const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
@@ -1106,6 +1819,11 @@
     let isFeaturedBet = false;
     let jpPicks = {};
     let featuredTimerInterval = null;
+    let countdownInterval = null;
+    let currentCashoutBetId = null;
+    let currentCashoutAmt = 0;
+    let mpesaMode = 'deposit';
+    let myBetsFilter = 'pending';
 
     // ===== THEME =====
     function toggleTheme() {
@@ -1127,6 +1845,11 @@
         document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
         if(BN_MAP[p]) document.getElementById(BN_MAP[p])?.classList.add('active');
         window.scrollTo(0,0);
+        if(p === 'live') loadLivePage();
+        if(p === 'dashboard' && currentUser) loadDashboard();
+        if(p === 'wallet' && currentUser) loadWallet();
+        if(p === 'mybets') loadMyBets();
+        if(p === 'jackpot') initJackpot();
     }
 
     function setSport(el) {
@@ -1188,6 +1911,282 @@
         el.classList.add('active');
     }
 
+    function setSlipTab(el, mode) {
+        slipMode = mode;
+        document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        calcPayout();
+    }
+
+    function setMyBetsTab(el, filter) {
+        myBetsFilter = filter;
+        document.querySelectorAll('#page-mybets .stab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        loadMyBets();
+    }
+
+    function setWalletTab(mode) {
+        document.getElementById('tw-dep').classList.toggle('active', mode==='deposit');
+        document.getElementById('tw-wit').classList.toggle('active', mode==='withdraw');
+        document.getElementById('wf-lbl').textContent = mode==='deposit' ? 'Deposit Amount (KSh)' : 'Withdrawal Amount (KSh)';
+        const btn = document.getElementById('wf-btn');
+        if(mode==='deposit') {
+            btn.textContent = '📱 Pay via M-Pesa — Send STK Push';
+            btn.onclick = () => openMpesa('deposit');
+        } else {
+            btn.textContent = '📤 Withdraw to M-Pesa';
+            btn.onclick = handleWithdraw;
+        }
+    }
+
+    function setWAmt(v) { const i=document.getElementById('wf-amt'); if(i) i.value=v; }
+
+    function setMpesaAmt(v) { const i = document.getElementById('mpesa-amt-input'); if(i) i.value = v; }
+
+    function setEl(id, v) { const el=document.getElementById(id); if(el) el.textContent=v; }
+
+    function isSel(mid, mtype, sel) {
+        return slip.some(s => s.matchId===mid && s.marketType===mtype && s.selection===sel);
+    }
+
+    function toggleEye(id, btn) {
+        const i = document.getElementById(id);
+        i.type = i.type==='password' ? 'text' : 'password';
+        btn.textContent = i.type==='password' ? '👁️' : '🙈';
+    }
+
+    function toggleFaq(el) {
+        const a = el.nextElementSibling;
+        const i = el.querySelector('.faq-ico');
+        const o = a.classList.toggle('open');
+        i.textContent = o ? '−' : '+';
+    }
+
+    function togglePanel(id) {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.classList.toggle('open');
+        const btn = document.querySelector(`[onclick*="'${id}'"]`);
+        if(btn && btn.classList.contains('btn-expand')) btn.textContent = el.classList.contains('open') ? 'Less ▴' : 'More ▾';
+    }
+
+    function closeModal(id) { const el=document.getElementById(id); if(el) el.classList.remove('open'); }
+
+    function fmtTime(iso) {
+        if(!iso) return '---';
+        const d = new Date(iso);
+        const now = new Date();
+        const nairobi = {timeZone:'Africa/Nairobi'};
+        const time = d.toLocaleTimeString('en-KE', {hour:'2-digit', minute:'2-digit', ...nairobi});
+        const todayStr = now.toLocaleDateString('en-KE', nairobi);
+        const matchStr = d.toLocaleDateString('en-KE', nairobi);
+        const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
+        const tomorrowStr = tomorrow.toLocaleDateString('en-KE', nairobi);
+        if(matchStr === todayStr) return `Today ${time}`;
+        if(matchStr === tomorrowStr) return `Tomorrow ${time}`;
+        return d.toLocaleDateString('en-KE', {weekday:'short', day:'numeric', month:'short', ...nairobi}) + ' ' + time;
+    }
+
+    function updateTicker(live) {
+        const el = document.getElementById('ticker-text');
+        if(!el || !live.length) return;
+        el.innerHTML = live.map(m => `<span><span class="ticker-hi">${m.home_team} ${m.home_score}--${m.away_score} ${m.away_team}</span> · ${m.league} · ${m.minute||0}'</span>`).join('');
+    }
+
+    // ===== AUTH =====
+    function updateStrength() {
+        const v=document.getElementById('rpass')?.value||'';
+        const bar=document.getElementById('s-bar'), hint=document.getElementById('s-hint');
+        if(!v){bar.style.width='0%';hint.textContent='';return;}
+        if(v.length<4){bar.style.width='28%';bar.style.background='var(--live)';hint.style.color='var(--live)';hint.textContent='Weak';}
+        else if(v.length<7){bar.style.width='60%';bar.style.background='var(--gold2)';hint.style.color='var(--gold2)';hint.textContent='Fair';}
+        else{bar.style.width='100%';bar.style.background='var(--gold)';hint.style.color='var(--gold)';hint.textContent='Strong';}
+    }
+
+    function updateDialCode(sel) {
+        const opt = sel.options[sel.selectedIndex];
+        const code = opt.getAttribute('data-code') || '+';
+        const flag = opt.getAttribute('data-flag') || '🌍';
+        const display = document.getElementById('dial-code-display');
+        if(display) display.textContent = flag + ' ' + code;
+        const phoneInput = document.getElementById('rp');
+        if(phoneInput) {
+            const placeholders = {'+254':'7XX XXX XXX','+234':'8XX XXX XXXX','+233':'5X XXX XXXX','+255':'7XX XXX XXX','+256':'7XX XXX XXX','+27':'8X XXX XXXX','+44':'7XXX XXXXXX','+1':'(XXX) XXX-XXXX'};
+            phoneInput.placeholder = placeholders[code] || 'Enter phone number';
+        }
+    }
+
+    async function doRegister() {
+        const first=document.getElementById('rn1')?.value.trim(), last=document.getElementById('rn2')?.value.trim();
+        const phone=document.getElementById('rp')?.value.trim(), pass=document.getElementById('rpass')?.value;
+        const agreed=document.getElementById('rterms')?.checked;
+        const err=document.getElementById('reg-err');
+        err.style.display='none';
+        if(!first){err.textContent='Please enter your first name.';err.style.display='block';return;}
+        if(!phone||phone.length<6){err.textContent='Please enter a valid phone number.';err.style.display='block';return;}
+        if(!pass||pass.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}
+        if(!agreed){err.textContent='You must agree to the Terms & Conditions.';err.style.display='block';return;}
+        const btn=document.getElementById('reg-btn');
+        btn.textContent='Creating...'; btn.disabled=true;
+        const sel=document.getElementById('rcountry');
+        const dialCode=(sel?.options[sel.selectedIndex]?.getAttribute('data-code')||'+254').replace('+','');
+        const cleanPhone=phone.replace(/^0/,'').replace(/\s/g,'');
+        const fmt=dialCode+cleanPhone;
+        const email=fmt+'@sportybet.app';
+        try {
+            const {data:existing} = await db.from('users').select('id').eq('phone',fmt).maybeSingle();
+            if(existing){err.textContent='This phone number is already registered. Please sign in.';err.style.display='block';btn.textContent='Create Account →';btn.disabled=false;return;}
+            const {data,error} = await db.auth.signUp({
+                email,
+                password:pass,
+                options:{ emailRedirectTo: null, data:{ phone:fmt, full_name:first+' '+last } }
+            });
+            if(error) throw error;
+            const userId = data?.user?.id;
+            if(userId) {
+                await new Promise(r => setTimeout(r, 500));
+                await db.from('users').insert({
+                    id:userId,
+                    phone:fmt,
+                    full_name:first+' '+last,
+                    balance:0,
+                    vip_points:500,
+                    vip_tier:'Bronze',
+                    promo_code:document.getElementById('rpromo')?.value||null,
+                });
+            }
+            btn.textContent='Create Account →'; btn.disabled=false;
+            currentUser=data.user; await loadProfile(); updateAuthUI();
+            goPage('dashboard');
+        } catch(e) {
+            btn.textContent='Create Account →'; btn.disabled=false;
+            if(e.message?.includes('rate limit')) err.textContent='Too many attempts. Please wait 1 minute and try again.';
+            else if(e.message?.includes('already registered')) err.textContent='Phone already registered. Please sign in instead.';
+            else err.textContent=e.message||'Registration failed. Please try again.';
+            err.style.display='block';
+        }
+    }
+
+    async function doLogin() {
+        const phone=document.getElementById('lp')?.value.trim(), pass=document.getElementById('lpass')?.value;
+        const err=document.getElementById('login-err');
+        err.style.display='none';
+        if(!phone||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+        const btn=document.getElementById('login-btn');
+        btn.textContent='Signing in...'; btn.disabled=true;
+        const cleanPhone=phone.replace(/^0/,'').replace(/\s/g,'');
+        let fmt='254'+cleanPhone;
+        try {
+            const {data:udata} = await db.from('users').select('phone').like('phone','%'+cleanPhone).maybeSingle();
+            if(udata?.phone) fmt=udata.phone;
+        } catch(_){}
+        const email=fmt+'@sportybet.app';
+        try {
+            const {data,error} = await db.auth.signInWithPassword({email,password:pass});
+            if(error) throw error;
+            btn.textContent='Sign In'; btn.disabled=false;
+            currentUser=data.user; await loadProfile(); updateAuthUI();
+            goPage('dashboard');
+        } catch(e) {
+            btn.textContent='Sign In'; btn.disabled=false;
+            err.textContent='Incorrect phone or password.';
+            err.style.display='block';
+        }
+    }
+
+    async function doLogout() {
+        await db.auth.signOut();
+        currentUser=null;
+        currentProfile=null;
+        updateAuthUI();
+        goPage('home');
+    }
+
+    async function loadProfile() {
+        if(!currentUser) return;
+        try {
+            const {data, error} = await db.from('users').select('*').eq('id',currentUser.id).single();
+            if(error) throw error;
+            currentProfile = data;
+            updateProfileUI();
+            updateAuthUI();
+        } catch(e) {
+            console.error('Profile error:',e);
+            setTimeout(async () => {
+                try {
+                    const {data} = await db.from('users').select('*').eq('id',currentUser.id).single();
+                    if(data) { currentProfile=data; updateProfileUI(); updateAuthUI(); }
+                } catch(_) {}
+            }, 2000);
+        }
+    }
+
+    function updateAuthUI() {
+        const g=document.getElementById('hdr-guest'), u=document.getElementById('hdr-user');
+        if(!g||!u) return;
+        if(currentUser) {
+            g.style.display='none';
+            u.style.display='flex';
+            if(currentProfile) setEl('hdr-bal', parseFloat(currentProfile.balance||0).toLocaleString());
+        } else {
+            g.style.display='flex';
+            u.style.display='none';
+        }
+    }
+
+    function updateProfileUI() {
+        if(!currentProfile) return;
+        const name=(currentProfile.full_name||'Champion').split(' ')[0];
+        const bal=parseFloat(currentProfile.balance||0), pts=currentProfile.vip_points||0;
+        setEl('dash-name',name+' 👋');
+        setEl('dash-bal-display','KSh '+bal.toLocaleString());
+        setEl('dash-vip',pts.toLocaleString());
+        setEl('wallet-bal-display','KSh '+bal.toLocaleString());
+        setEl('hdr-bal',bal.toLocaleString());
+        setEl('acc-bal-row','KSh '+bal.toLocaleString()+' →');
+        setEl('acc-vip-tier','⭐ '+(currentProfile.vip_tier||'Bronze')+' Tier');
+        setEl('acc-vip-pts',pts.toLocaleString());
+        const tiers={Bronze:1000,Silver:2500,Gold:4000,Platinum:10000,Diamond:99999};
+        const next=Object.entries(tiers).find(([,v]) => pts<v);
+        if(next){setEl('acc-vip-next',(next[1]-pts).toLocaleString()+' pts to '+next[0]);const bar=document.getElementById('acc-vip-bar');if(bar)bar.style.width=Math.min(100,(pts/next[1])*100)+'%';}
+    }
+
+    function showAuthPrompt(msg) {
+        alert(msg || 'Please sign in to continue');
+        goPage('login');
+    }
+
+    // ===== LOAD MATCHES =====
+    async function loadMatches() {
+        try {
+            const { data, error } = await db.from('matches')
+                .select('*, markets(*), live_events(*)')
+                .order('kick_off', {ascending:true});
+            if(error) throw error;
+            const now = Date.now();
+            const threeHoursAgo = now - 3*60*60*1000;
+            allMatches = (data||[]).filter(m => {
+                const ko = new Date(m.kick_off).getTime();
+                if(m.is_featured) return true;
+                if(m.status === 'live') return true;
+                if(m.status === 'upcoming') return ko > now;
+                if(m.status === 'finished') return ko > threeHoursAgo;
+                return false;
+            });
+            filterMatchesBySport();
+            updateTicker(allMatches.filter(m=>m.status==='live'));
+        } catch(e) {
+            console.error('Match load error:', e);
+        }
+    }
+
+    function subscribeRealtime() {
+        db.channel('live-updates')
+            .on('postgres_changes',{event:'*',schema:'public',table:'matches'}, () => loadMatches())
+            .on('postgres_changes',{event:'INSERT',schema:'public',table:'live_events'}, () => loadMatches())
+            .subscribe();
+    }
+
     // ===== WINNERS =====
     const WINNERS_DATA = [
         {amount:'KES 43,092.00', ago:'1 min ago', masked:'**********0'},
@@ -1220,58 +2219,7 @@
         el.innerHTML = rows;
     }
 
-    // ===== MATCH FUNCTIONS =====
-    async function loadMatches() {
-        try {
-            const { data, error } = await db.from('matches')
-                .select('*, markets(*), live_events(*)')
-                .order('kick_off', {ascending:true});
-            if(error) throw error;
-            const now = Date.now();
-            const threeHoursAgo = now - 3*60*60*1000;
-            allMatches = (data||[]).filter(m => {
-                const ko = new Date(m.kick_off).getTime();
-                if(m.is_featured) return true;
-                if(m.status === 'live') return true;
-                if(m.status === 'upcoming') return ko > now;
-                if(m.status === 'finished') return ko > threeHoursAgo;
-                return false;
-            });
-            filterMatchesBySport();
-            updateTicker(allMatches.filter(m=>m.status==='live'));
-        } catch(e) {
-            console.error('Match load error:', e);
-        }
-    }
-
-    function fmtTime(iso) {
-        if(!iso) return '---';
-        const d = new Date(iso);
-        const now = new Date();
-        const nairobi = {timeZone:'Africa/Nairobi'};
-        const time = d.toLocaleTimeString('en-KE', {hour:'2-digit', minute:'2-digit', ...nairobi});
-        const todayStr = now.toLocaleDateString('en-KE', nairobi);
-        const matchStr = d.toLocaleDateString('en-KE', nairobi);
-        const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
-        const tomorrowStr = tomorrow.toLocaleDateString('en-KE', nairobi);
-        if(matchStr === todayStr) return `Today ${time}`;
-        if(matchStr === tomorrowStr) return `Tomorrow ${time}`;
-        return d.toLocaleDateString('en-KE', {weekday:'short', day:'numeric', month:'short', ...nairobi}) + ' ' + time;
-    }
-
-    function updateTicker(live) {
-        const el = document.getElementById('ticker-text');
-        if(!el || !live.length) return;
-        el.innerHTML = live.map(m => `<span><span class="ticker-hi">${m.home_team} ${m.home_score}--${m.away_score} ${m.away_team}</span> · ${m.league} · ${m.minute||0}'</span>`).join('');
-    }
-
-    function isSel(mid, mtype, sel) {
-        return slip.some(s => s.matchId===mid && s.marketType===mtype && s.selection===sel);
-    }
-
-    function setEl(id, v) { const el=document.getElementById(id); if(el) el.textContent=v; }
-
-    // ===== FEATURED MATCH =====
+    // ===== MATCH RENDERING =====
     function renderFeatured(m) {
         const evs = m.live_events || [];
         const chips = [
@@ -1289,7 +2237,6 @@
 
         const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
         const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
-
         const kickoffTime = new Date(m.kick_off).getTime();
         const isLive = m.status === 'live';
 
@@ -1356,8 +2303,6 @@
         return `${m}m ${s}s`;
     }
 
-    let countdownInterval = null;
-
     function startCountdown(kickoffTime) {
         if(countdownInterval) clearInterval(countdownInterval);
         countdownInterval = setInterval(() => {
@@ -1422,53 +2367,6 @@
         return html;
     }
 
-    // ===== ADD FEATURED ODD =====
-    function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
-        if(!currentUser) {
-            showAuthPrompt('Sign in to place your bet on ' + matchName);
-            return;
-        }
-        isFeaturedBet = true;
-        addOdd(btn, matchId, marketType, matchName, selection, val);
-        const stakeEl = document.getElementById('stake');
-        if(stakeEl && parseFloat(stakeEl.value) < 500) { stakeEl.value = 500; calcPayout(); }
-        const qsRow = document.getElementById('qs-row');
-        if(qsRow) qsRow.innerHTML = `
-            <div class="qs" onclick="setStake(500)">500</div>
-            <div class="qs" onclick="setStake(1000)">1K</div>
-            <div class="qs" onclick="setStake(2000)">2K</div>
-            <div class="qs" onclick="setStake(5000)">5K</div>
-        `;
-        goPage('slip');
-    }
-
-    // ===== SHARE =====
-    function shareFeatured(url, matchName) {
-        if(navigator.share) {
-            navigator.share({ title: matchName + ' — SportyBet', text: '🔥 Bet on ' + matchName + ' now on SportyBet!', url });
-        } else {
-            navigator.clipboard.writeText(url).then(() => {
-                showShareToast();
-            }).catch(() => {
-                prompt('Copy this link:', url);
-            });
-        }
-    }
-
-    function showShareToast() {
-        let t = document.getElementById('share-toast');
-        if(!t) {
-            t = document.createElement('div');
-            t.id = 'share-toast';
-            t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1A1A1A;border:1px solid var(--gold);border-radius:6px;padding:10px 18px;font-size:12px;font-weight:700;color:var(--gold);z-index:999;white-space:nowrap;';
-            t.textContent = '🔗 Link copied to clipboard!';
-            document.body.appendChild(t);
-        }
-        t.style.display = 'block';
-        setTimeout(() => { t.style.display = 'none'; }, 2500);
-    }
-
-    // ===== MATCH LIST =====
     function renderMatchList(cid, matches, isLive) {
         const el = document.getElementById(cid);
         if(!el) return;
@@ -1501,7 +2399,7 @@
                 <div class="match-top">
                     ${isLive ? `<span class="match-live-t"><span class="live-dot" style="display:inline-block;width:4px;height:4px;background:var(--live);border-radius:50%;animation:blink 1s infinite;margin-right:4px;"></span>${m.minute||0}'</span>` : `<span class="match-time">${fmtTime(m.kick_off)}</span>`}
                     <div class="match-actions-top">
-                        ${isLive ? `<button class="btn-co" onclick="openCashout('${mn}',${Math.round(m.potential_win||340)},${m.stake||200})"><i class="fas fa-coins"></i> CO</button>` : ''}
+                        ${isLive ? `<button class="btn-co" onclick="openCashout('${mn}',${Math.round((m.potential_win||340))},${m.stake||200})"><i class="fas fa-coins"></i> CO</button>` : ''}
                         ${sf.length ? `<button class="btn-stats" onclick="togglePanel('st-${m.id}')"><i class="fas fa-chart-bar"></i></button>` : ''}
                         ${hasMkts ? `<button class="btn-expand" onclick="togglePanel('mm-${m.id}')">More ▾</button>` : ''}
                     </div>
@@ -1558,15 +2456,7 @@
         return html;
     }
 
-    function togglePanel(id) {
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.classList.toggle('open');
-        const btn = document.querySelector(`[onclick*="'${id}'"]`);
-        if(btn && btn.classList.contains('btn-expand')) btn.textContent = el.classList.contains('open') ? 'Less ▴' : 'More ▾';
-    }
-
-    // ===== BET SLIP =====
+    // ===== BET SLIP FUNCTIONS =====
     function addOdd(btn, matchId, marketType, matchName, selection, val) {
         const decodedName = matchName.replace(/&#39;/g,"'");
         const was = btn.classList.contains('sel');
@@ -1593,23 +2483,650 @@
     }
 
     function renderSlip() {
-        // Simplified for demo - you can expand with full slip functionality
         const badge = document.getElementById('slip-badge');
+        const clearBtn = document.getElementById('slip-clear-btn');
         if(badge) { badge.textContent=slip.length; badge.classList.toggle('show',slip.length>0); }
+        if(clearBtn) clearBtn.style.display = slip.length>0?'block':'none';
+        const body = document.getElementById('slip-body');
+        const foot = document.getElementById('slip-foot');
+        if(!body) return;
+        if(!slip.length) {
+            body.innerHTML='<div class="slip-empty" style="text-align:center;padding:50px 20px;"><div style="font-size:44px;margin-bottom:12px;">🎯</div><div style="font-size:13px;color:var(--muted);line-height:1.6;">Select odds from any match to build your slip</div></div>';
+            if(foot) foot.style.display='none'; return;
+        }
+        const totalOdds = slipMode==='acca' ? slip.reduce((a,s)=>a*s.val,1) : (slip.length ? slip[slip.length-1].val : 1);
+        const accaBanner = slipMode==='acca' && slip.length > 1 ? `
+            <div style="background:linear-gradient(110deg,var(--primary),#8B0000);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">${slip.length} Fold Accumulator</div>
+                    <div style="font-size:22px;font-weight:800;color:var(--gold);">${totalOdds.toFixed(2)}x</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:2px;">Potential Win</div>
+                    <div style="font-size:16px;font-weight:800;color:#fff;">KSh ${Math.round((parseFloat(document.getElementById('stake')?.value)||100)*totalOdds).toLocaleString()}</div>
+                </div>
+            </div>
+        ` : '';
+        body.innerHTML = accaBanner + slip.map((s,i) => `
+            <div class="slip-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-bottom:8px;">
+                <div style="font-size:12px;font-weight:700;margin-bottom:2px;">${s.matchName}</div>
+                <div style="font-size:10px;color:var(--muted);">${s.marketType.replace(/_/g,' ').toUpperCase()}</div>
+                <div style="font-size:12px;font-weight:700;color:#27AE60;margin-top:4px;">${s.selection}</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px;">
+                    <div style="font-size:16px;font-weight:800;color:var(--gold);">${parseFloat(s.val).toFixed(2)}</div>
+                    <div style="font-size:16px;color:var(--muted);cursor:pointer;padding:4px;" onclick="removeItem(${i})">✕</div>
+                </div>
+            </div>
+        `).join('');
+        if(foot) foot.style.display='block';
+        calcPayout();
     }
 
-    function calcPayout() {}
-    function setStake(v) {}
+    function removeItem(i) {
+        const r=slip[i]; slip.splice(i,1);
+        document.querySelectorAll(`[onclick*="'${r.matchId}','${r.marketType}'"]`).forEach(b=>b.classList.remove('sel'));
+        renderSlip();
+    }
 
-    // ===== AUTH =====
-    function showAuthPrompt(msg) {
-        alert(msg || 'Please sign in to continue');
-        goPage('login');
+    function clearSlip() {
+        slip=[];
+        document.querySelectorAll('.odd-btn.sel').forEach(b=>b.classList.remove('sel'));
+        renderSlip();
+    }
+
+    function calcPayout() {
+        const stake = parseFloat(document.getElementById('stake')?.value)||0;
+        const odds = slipMode==='single'?(slip.length?slip[slip.length-1].val:1):slip.reduce((a,s)=>a*s.val,1);
+        setEl('tot-odds', odds.toFixed(2));
+        setEl('pot-win', 'KSh '+Math.round(stake*odds).toLocaleString());
+        setEl('sel-ct', slip.length);
+        const btn = document.getElementById('place-bet-btn');
+        if(btn) {
+            const bal = parseFloat(currentProfile?.balance||0);
+            if(!currentUser) btn.textContent = 'Sign In to Bet';
+            else if(bal >= stake) btn.textContent = `Place Bet — KSh ${stake.toLocaleString()}`;
+            else btn.textContent = `Deposit & Bet (Need KSh ${(stake-bal).toLocaleString()} more)`;
+        }
+        const note = document.getElementById('bet-balance-note');
+        if(note) {
+            const bal = parseFloat(currentProfile?.balance||0);
+            note.textContent = `Available balance: KSh ${bal.toLocaleString()}`;
+            note.style.color = bal >= stake ? 'var(--muted)' : 'var(--live)';
+        }
+    }
+
+    function setStake(v) {
+        const i=document.getElementById('stake');
+        if(i){ i.value=v; calcPayout(); }
+    }
+
+    function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
+        if(!currentUser) {
+            showAuthPrompt('Sign in to place your bet on ' + matchName);
+            return;
+        }
+        isFeaturedBet = true;
+        addOdd(btn, matchId, marketType, matchName, selection, val);
+        const stakeEl = document.getElementById('stake');
+        if(stakeEl && parseFloat(stakeEl.value) < 500) { stakeEl.value = 500; calcPayout(); }
+        const qsRow = document.getElementById('qs-row');
+        if(qsRow) qsRow.innerHTML = `
+            <div class="qs" onclick="setStake(500)">500</div>
+            <div class="qs" onclick="setStake(1000)">1K</div>
+            <div class="qs" onclick="setStake(2000)">2K</div>
+            <div class="qs" onclick="setStake(5000)">5K</div>
+        `;
+        goPage('slip');
+    }
+
+    async function validateAndPlaceBet() {
+        if(!currentUser){ showAuthPrompt('Sign in to place your bet'); return; }
+        const stake=parseFloat(document.getElementById('stake')?.value)||0;
+        const minBet = isFeaturedBet ? 500 : 100;
+        if(stake < minBet){
+            const inp=document.getElementById('stake');
+            if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',1000); }
+            alert(`Minimum bet is KSh ${minBet}`);
+            return;
+        }
+        const balance = parseFloat(currentProfile?.balance||0);
+        if(balance < stake){
+            alert(`Insufficient balance. Please deposit at least KSh ${(stake-balance).toLocaleString()} more.`);
+            setTimeout(()=>openMpesa('deposit'), 1500);
+            return;
+        }
+        await recordBet();
+        document.getElementById('bet-success').classList.add('open');
+    }
+
+    async function recordBet() {
+        if(!currentUser||!currentProfile||!slip.length) return;
+        const stake=parseFloat(document.getElementById('stake')?.value)||100;
+        const totalOdds=slipMode==='acca'?slip.reduce((a,s)=>a*s.val,1):slip[slip.length-1].val;
+        const potWin=Math.round(stake*totalOdds);
+        const ref='#XO'+Math.floor(Math.random()*90000+10000);
+        try {
+            const {data:bet}=await db.from('bets').insert({
+                user_id:currentUser.id,
+                bet_type:slipMode==='acca'?'accumulator':'single',
+                stake,total_odds:parseFloat(totalOdds.toFixed(2)),
+                potential_win:potWin,status:'pending',reference:ref
+            }).select().single();
+            if(bet) {
+                await db.from('bet_selections').insert(slip.map(s=>({
+                    bet_id:bet.id,match_name:s.matchName,
+                    market_type:s.marketType,selection:s.selection,
+                    odds:s.val,status:'pending'
+                })));
+                const newBal=(currentProfile.balance||0)-stake;
+                const newVip=(currentProfile.vip_points||0)+Math.floor(stake/10);
+                await db.from('users').update({balance:newBal,vip_points:newVip}).eq('id',currentUser.id);
+                await db.from('transactions').insert({
+                    user_id:currentUser.id,type:'bet',amount:stake,
+                    balance_before:currentProfile.balance,balance_after:newBal,
+                    status:'completed',description:'Bet placed: '+ref
+                });
+                currentProfile.balance=newBal;
+                currentProfile.vip_points=newVip;
+                updateProfileUI();
+            }
+            setEl('bet-ref', ref);
+            setEl('bet-stake-display', 'KSh '+stake.toLocaleString());
+            setEl('bet-odds-display', parseFloat(totalOdds.toFixed(2)).toString()+'x');
+            setEl('bet-win-display', 'KSh '+potWin.toLocaleString());
+            const selDisplay = document.getElementById('bet-selections-display');
+            if(selDisplay) {
+                selDisplay.innerHTML = slip.map(s =>
+                    `<div style="padding:2px 0;">✓ <strong style="color:var(--text);">${s.matchName}</strong> — ${s.selection} @ ${parseFloat(s.val.toString()).toFixed(2)}</div>`
+                ).join('');
+            }
+        } catch(e){console.error('Bet error:',e);}
+    }
+
+    function closeBetSuccess() {
+        document.getElementById('bet-success').classList.remove('open');
+        clearSlip();
+        goPage('home');
     }
 
     // ===== CASHOUT =====
-    function openCashout(match, amount, stake) {
-        alert(`Cash Out available for ${match}\nYou receive: KSh ${amount.toLocaleString()}`);
+    function openCashout(matchOrRef, cashAmt, stake, betId) {
+        currentCashoutBetId = betId || null;
+        currentCashoutAmt = parseFloat(cashAmt);
+        setEl('co-amt','KSh '+currentCashoutAmt.toLocaleString());
+        setEl('co-detail',`Stake: KSh ${parseFloat(stake).toLocaleString()} · You receive: KSh ${currentCashoutAmt.toLocaleString()}`);
+        const btn = document.querySelector('#co-modal .modal-go');
+        if(btn) { btn.disabled = false; btn.textContent = 'Cash Out Now'; }
+        document.getElementById('co-modal').style.display = 'flex';
+    }
+
+    async function processCashout() {
+        const btn = document.querySelector('#co-modal .modal-go');
+        if(btn) { btn.disabled=true; btn.textContent='Processing...'; }
+        if(!currentUser||!currentProfile) { document.getElementById('co-modal').style.display='none'; return; }
+        const betId = currentCashoutBetId;
+        const amt = currentCashoutAmt;
+        currentCashoutBetId = null;
+        currentCashoutAmt = 0;
+        document.getElementById('co-modal').style.display='none';
+        if(!betId || !amt) { alert('Invalid cashout.'); return; }
+        try {
+            const {data:updated, error:updateErr} = await db.from('bets')
+                .update({status:'cashed_out', actual_win:amt, cashout_amount:amt})
+                .eq('id', betId)
+                .eq('status','pending')
+                .select('id');
+            if(updateErr) throw updateErr;
+            if(!updated || updated.length === 0) {
+                alert('This bet was already settled. No changes made.');
+                return;
+            }
+            const newBal = (currentProfile.balance||0) + amt;
+            await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
+            await db.from('transactions').insert({
+                user_id:currentUser.id, type:'win', amount:amt,
+                balance_before:currentProfile.balance, balance_after:newBal,
+                status:'completed', description:'Cash out — KSh '+amt.toLocaleString()
+            });
+            currentProfile.balance = newBal;
+            updateProfileUI();
+            alert('✅ KSh '+amt.toLocaleString()+' cashed out!');
+            setTimeout(loadMyBets, 500);
+        } catch(e) {
+            alert('Cash out failed: '+e.message);
+        }
+    }
+
+    // ===== MPESA =====
+    async function openMpesa(mode) {
+        if(!currentUser){ sessionStorage.setItem('pendingAction',mode); goPage('login'); return; }
+        mpesaMode = mode;
+        ['mpesa-s0','mpesa-s1','mpesa-s2','mpesa-s3'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.style.display='none';
+        });
+        document.getElementById('mpesa-sheet').style.display='flex';
+        if(mode === 'deposit') {
+            const inp = document.getElementById('mpesa-amt-input');
+            if(inp) inp.value = '';
+            document.getElementById('mpesa-s0').style.display = 'block';
+        } else {
+            let amt = parseFloat(document.getElementById('stake')?.value)||100;
+            const min = isFeaturedBet ? 500 : 100;
+            if(amt < min){ amt=min; const i=document.getElementById('stake'); if(i){i.value=min;calcPayout();} }
+            setEl('mpesa-amount','KSh '+parseInt(amt).toLocaleString());
+            setEl('mpesa-amount2','KSh '+parseInt(amt).toLocaleString());
+            setEl('mpesa-confirmed-amt','KSh '+parseInt(amt).toLocaleString());
+            document.getElementById('mpesa-s1').style.display = 'block';
+            await mpesaConfirm(amt);
+        }
+    }
+
+    async function proceedDeposit() {
+        const amt = parseFloat(document.getElementById('mpesa-amt-input')?.value);
+        if(!amt || amt < 100) {
+            const inp = document.getElementById('mpesa-amt-input');
+            if(inp) { inp.style.border='1.5px solid var(--live)'; setTimeout(()=>inp.style.border='',1500); }
+            return;
+        }
+        setEl('mpesa-amount','KSh '+parseInt(amt).toLocaleString());
+        setEl('mpesa-amount2','KSh '+parseInt(amt).toLocaleString());
+        setEl('mpesa-confirmed-amt','KSh '+parseInt(amt).toLocaleString());
+        document.getElementById('mpesa-s0').style.display='none';
+        document.getElementById('mpesa-s1').style.display='block';
+        await mpesaConfirm(amt);
+    }
+
+    async function mpesaConfirm(amt) {
+        if(!currentUser || !currentProfile) return;
+        if(!amt) {
+            const amtText = document.getElementById('mpesa-amount')?.textContent || 'KSh 100';
+            amt = parseFloat(amtText.replace('KSh ','').replace(/,/g,''));
+        }
+        const phone = currentProfile.phone;
+        try {
+            const res = await fetch('https://nmcdwmmfdrazmufodirq.supabase.co/functions/v1/mpesa-stk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPA_KEY}`,
+                },
+                body: JSON.stringify({
+                    amount: amt,
+                    phone: phone,
+                    user_id: currentUser.id,
+                    type: mpesaMode,
+                })
+            });
+            const text = await res.text();
+            let data;
+            try { data = JSON.parse(text); }
+            catch(e) { throw new Error('Server error: ' + text.substring(0,100)); }
+            if(!data.success) {
+                document.getElementById('mpesa-sheet').style.display='none';
+                alert('M-Pesa Error: ' + (data.error || 'STK push failed. Please try again.'));
+                return;
+            }
+            document.getElementById('mpesa-s1').style.display='none';
+            document.getElementById('mpesa-s2').style.display='block';
+            const txId = data.tx_id;
+            let attempts = 0;
+            const poll = setInterval(async () => {
+                attempts++;
+                try {
+                    const { data: tx } = await db.from('transactions').select('status,balance_after,mpesa_code').eq('id', txId).single();
+                    if(tx?.status === 'completed') {
+                        clearInterval(poll);
+                        document.getElementById('mpesa-s2').style.display='none';
+                        document.getElementById('mpesa-s3').style.display='block';
+                        setEl('mpesa-ref', tx.mpesa_code || 'CONFIRMED');
+                        if(tx.balance_after) { currentProfile.balance = tx.balance_after; updateProfileUI(); }
+                        if(mpesaMode === 'bet') await recordBet();
+                    } else if(tx?.status === 'failed') {
+                        clearInterval(poll);
+                        document.getElementById('mpesa-sheet').style.display='none';
+                        alert('Payment was cancelled or failed. Please try again.');
+                    } else if(attempts >= 20) {
+                        clearInterval(poll);
+                        document.getElementById('mpesa-sheet').style.display='none';
+                        alert('No response yet. If you entered your PIN, your balance will update shortly.');
+                    }
+                } catch(e) { console.error('Poll error:', e); }
+            }, 3000);
+        } catch(e) {
+            document.getElementById('mpesa-sheet').style.display='none';
+            alert('Connection error. Please check your internet and try again.');
+        }
+    }
+
+    function mpesaDone() {
+        document.getElementById('mpesa-sheet').style.display='none';
+        if(mpesaMode==='bet') {
+            setTimeout(()=>{ document.getElementById('bet-success').classList.add('open'); }, 200);
+        } else {
+            loadProfile().then(()=>{ updateAuthUI(); calcPayout(); });
+            goPage('wallet');
+        }
+    }
+
+    async function handleWithdraw(){
+        if(!currentUser){goPage('login');return;}
+        const amt=parseFloat(document.getElementById('wf-amt')?.value);
+        if(!amt||amt<100){alert('Minimum withdrawal is KSh 100');return;}
+        if(!currentProfile||currentProfile.balance<amt){alert('Insufficient balance for this withdrawal');return;}
+        alert('Withdrawal of KSh '+amt+' initiated. You will receive M-Pesa within 30 seconds.');
+    }
+
+    // ===== SHARE =====
+    function shareFeatured(url, matchName) {
+        if(navigator.share) {
+            navigator.share({ title: matchName + ' — SportyBet', text: '🔥 Bet on ' + matchName + ' now on SportyBet!', url });
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                let t = document.getElementById('share-toast');
+                if(!t) {
+                    t = document.createElement('div');
+                    t.id = 'share-toast';
+                    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1A1A1A;border:1px solid var(--gold);border-radius:6px;padding:10px 18px;font-size:12px;font-weight:700;color:var(--gold);z-index:999;white-space:nowrap;';
+                    t.textContent = '🔗 Link copied to clipboard!';
+                    document.body.appendChild(t);
+                }
+                t.style.display = 'block';
+                setTimeout(() => { t.style.display = 'none'; }, 2500);
+            }).catch(() => {
+                prompt('Copy this link:', url);
+            });
+        }
+    }
+
+    // ===== DASHBOARD =====
+    async function loadDashboard() {
+        if(!currentUser) return;
+        await loadProfile();
+        try {
+            const {data:bets} = await db.from('bets').select('*,bet_selections(*)').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(5);
+            setEl('dash-active-bets',(bets||[]).filter(b=>b.status==='pending').length);
+            const c=document.getElementById('recent-bets');
+            if(!c) return;
+            if(!bets||!bets.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No bets placed yet. Start betting!</div>';return;}
+            const sc={won:'s-won',lost:'s-lost',pending:'s-pending'};
+            c.innerHTML=bets.map(b=>{
+                const sel=b.bet_selections?.[0];
+                const pc=b.status==='won'?'var(--gold)':b.status==='lost'?'var(--live)':'var(--gold)';
+                const pt=b.status==='won'?'+KSh '+(b.actual_win-b.stake).toLocaleString():b.status==='lost'?'-KSh '+b.stake.toLocaleString():'KSh '+parseFloat(b.potential_win).toLocaleString();
+                return `<div class="bet-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;">
+                    <div class="bi-info" style="flex:1;">
+                        <div class="bi-match" style="font-size:12px;font-weight:700;margin-bottom:2px;">${sel?.match_name||'Bet'}</div>
+                        <div class="bi-pick" style="font-size:11px;color:var(--muted);">${sel?.selection||''} · Odds ${b.total_odds} · KSh ${b.stake}</div>
+                    </div>
+                    <div class="bi-right" style="text-align:right;">
+                        <div class="status ${sc[b.status]||'s-pending'}" style="display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;background:${b.status==='won'?'rgba(39,174,96,0.12)':b.status==='lost'?'var(--live-bg)':'rgba(240,192,64,0.12)'};color:${b.status==='won'?'#27AE60':b.status==='lost'?'var(--live)':'var(--gold)'};">${b.status.toUpperCase()}</div>
+                        <div class="bi-profit" style="font-size:12px;font-weight:700;margin-top:3px;color:${pc};">${pt}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        } catch(e){console.error('Dashboard error:',e);}
+    }
+
+    // ===== WALLET =====
+    async function loadWallet() {
+        if(!currentUser) return;
+        await loadProfile();
+        try {
+            const {data:txs} = await db.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20);
+            const c=document.getElementById('tx-history');
+            if(!c) return;
+            if(!txs||!txs.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No transactions yet</div>';return;}
+            c.innerHTML=txs.map(t=>{
+                const failed = t.status==='failed' || t.status==='cancelled' || (t.description||'').toLowerCase().includes('cancel') || (t.description||'').toLowerCase().includes('error') || (t.description||'').toLowerCase().includes('failed');
+                const pos = ['deposit','win','bonus','refund'].includes(t.type) && !failed;
+                const col = failed?'var(--muted)':pos?'#27AE60':t.type==='withdrawal'?'var(--gold)':'var(--live)';
+                const sign = failed?'':pos?'+':'-';
+                const dt=new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'});
+                const desc = failed?'❌ '+(t.description||'Failed'):t.description||t.type.charAt(0).toUpperCase()+t.type.slice(1);
+                return `<div class="tx-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div class="tx-desc" style="font-size:12px;font-weight:600;margin-bottom:2px;">${desc}</div><div class="tx-date" style="font-size:10px;color:var(--muted);">${dt}</div></div>
+                    <div style="font-size:13px;font-weight:800;color:${col};">${sign}KSh ${parseFloat(t.amount).toLocaleString()}</div>
+                </div>`;
+            }).join('');
+        } catch(e){console.error('Wallet error:',e);}
+    }
+
+    // ===== LIVE PAGE =====
+    async function loadLivePage() {
+        const live = allMatches.filter(m=>m.status==='live');
+        const el = document.getElementById('live-count'); if(el) el.textContent = `${live.length} live now`;
+        renderMatchList('live-page-matches', live, true);
+        const feat = allMatches.find(m=>m.is_featured);
+        const si = document.getElementById('stream-feat-info');
+        if(si && feat) si.innerHTML = `<div style="font-size:13px;font-weight:700;">${feat.league_flag||''} ${feat.home_team} ${feat.home_score}--${feat.away_score} ${feat.away_team}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;">${feat.league} · ${feat.status==='live'?feat.minute+"' LIVE":fmtTime(feat.kick_off)}</div>`;
+        const sl = document.getElementById('stream-live-list');
+        if(sl) sl.innerHTML = live.map(m => `<div class="stream-li" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--border);cursor:pointer;">
+            <span class="sli-tag sli-live" style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;flex-shrink:0;color:var(--live);background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);">LIVE</span>
+            <span class="sli-name" style="font-size:12px;font-weight:600;flex:1;">${m.home_team} vs ${m.away_team}</span>
+            <span class="sli-score" style="font-size:12px;font-weight:800;color:var(--gold);">${m.home_score}--${m.away_score} · ${m.minute||0}'</span>
+        </div>`).join('') +
+        allMatches.filter(m=>m.status==='upcoming').slice(0,3).map(m => `<div class="stream-li" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--border);cursor:pointer;">
+            <span class="sli-tag sli-soon" style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;flex-shrink:0;color:var(--muted);background:var(--card);border:1px solid var(--border);">${fmtTime(m.kick_off)}</span>
+            <span class="sli-name" style="font-size:12px;font-weight:600;flex:1;">${m.home_team} vs ${m.away_team}</span>
+            <span style="font-size:10px;color:var(--muted);">Stream from KO</span>
+        </div>`).join('');
+    }
+
+    // ===== MY BETS =====
+    async function loadMyBets() {
+        if(!currentUser) { goPage('login'); return; }
+        const el = document.getElementById('mybets-list');
+        if(!el) return;
+        el.innerHTML = '<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
+        try {
+            let q = db.from('bets').select('*,bet_selections(*)').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+            if(myBetsFilter !== 'all') q = q.eq('status', myBetsFilter);
+            const {data:bets} = await q;
+            if(!bets||!bets.length) {
+                el.innerHTML = `<div style="text-align:center;padding:40px 20px;"><div style="font-size:36px;margin-bottom:10px;">🎯</div><div style="font-size:13px;color:var(--muted);">No ${myBetsFilter === 'all' ? '' : myBetsFilter} bets yet</div></div>`;
+                return;
+            }
+            const statusColors = {won:'#27AE60',lost:'var(--live)',pending:'var(--gold)',void:'var(--muted)',cashed_out:'#2F80ED'};
+            const statusBg = {won:'rgba(39,174,96,.12)',lost:'var(--live-bg)',pending:'rgba(240,192,64,.1)',void:'rgba(255,255,255,.05)',cashed_out:'rgba(47,128,237,.1)'};
+            const statusLabel = {won:'WON',lost:'LOST',pending:'ACTIVE',void:'VOID',cashed_out:'CASHED OUT'};
+            el.innerHTML = bets.map(b => {
+                const sels = b.bet_selections || [];
+                const statusCol = statusColors[b.status] || 'var(--muted)';
+                const statusBgCol = statusBg[b.status] || 'rgba(255,255,255,.05)';
+                const label = statusLabel[b.status] || b.status.toUpperCase();
+                const profit = b.status==='won' ? `+KSh ${parseFloat(b.actual_win||b.potential_win).toLocaleString()}`
+                    : b.status==='lost' ? `-KSh ${parseFloat(b.stake).toLocaleString()}`
+                    : b.status==='cashed_out' ? `Cashed: KSh ${parseFloat(b.cashout_amount||b.actual_win||0).toLocaleString()}`
+                    : `Possible: KSh ${parseFloat(b.potential_win).toLocaleString()}`;
+                return `
+                    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
+                        <div style="padding:12px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">${b.bet_type} · ${b.reference||''}</div>
+                                <div style="font-size:12px;color:var(--muted);margin-top:2px;">${new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'})}</div>
+                            </div>
+                            <div style="background:${statusBgCol};border-radius:4px;padding:4px 10px;font-size:11px;font-weight:800;color:${statusCol};">${label}</div>
+                        </div>
+                        ${sels.map(s => `
+                            <div style="padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                                <div>
+                                    <div style="font-size:12px;font-weight:600;">${s.match_name||''}</div>
+                                    <div style="font-size:11px;color:var(--muted);margin-top:1px;">${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:#27AE60;font-weight:700;">${s.selection||''}</span></div>
+                                </div>
+                                <div style="font-size:14px;font-weight:800;color:var(--gold);">${parseFloat(s.odds||0).toFixed(2)}</div>
+                            </div>
+                        `).join('')}
+                        <div style="padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:var(--card);">
+                            <div style="font-size:12px;color:var(--muted);">Stake: <strong style="color:var(--text);">KSh ${parseFloat(b.stake).toLocaleString()}</strong> · Odds: <strong style="color:var(--gold);">${parseFloat(b.total_odds).toFixed(2)}</strong></div>
+                            <div style="font-size:13px;font-weight:800;color:${statusCol};">${profit}</div>
+                        </div>
+                        ${b.status==='pending' ? `<div style="padding:8px 13px;background:rgba(39,174,96,.08);border-top:1px solid rgba(39,174,96,.2);display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-size:11px;color:#27AE60;">💰 Cash Out Available</span>
+                            <button onclick="openCashout('${b.reference}',${Math.round(b.potential_win*0.75)},${b.stake},'${b.id}')" style="background:#27AE60;border:none;border-radius:4px;color:#fff;font-size:11px;font-weight:700;padding:5px 11px;cursor:pointer;">Cash Out</button>
+                        </div>` : ''}
+                        ${b.status==='cashed_out' ? `<div style="padding:8px 13px;background:rgba(47,128,237,.08);border-top:1px solid rgba(47,128,237,.2);text-align:center;font-size:11px;color:#2F80ED;font-weight:600;">✅ Bet cashed out — KSh ${parseFloat(b.cashout_amount||b.actual_win||0).toLocaleString()} credited</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        } catch(e) { console.error('My bets error:',e); }
+    }
+
+    // ===== JACKPOT =====
+    const JP_CLOSE = new Date('2026-08-20T21:00:00+03:00');
+    const JP_TOTAL = 17;
+
+    function initJackpot() {
+        loadJackpotGames();
+        updateJackpotCountdown();
+        setInterval(updateJackpotCountdown, 60000);
+    }
+
+    function updateJackpotCountdown() {
+        const el = document.getElementById('jp-countdown');
+        if(!el) return;
+        const diff = JP_CLOSE - Date.now();
+        if(diff <= 0) { el.textContent = 'Closed'; return; }
+        const h = Math.floor(diff/3600000);
+        const m = Math.floor((diff%3600000)/60000);
+        el.textContent = h > 24 ? `${Math.floor(h/24)}d ${h%24}h` : `${h}h ${m}m`;
+    }
+
+    async function loadJackpotGames() {
+        const el = document.getElementById('jp-games-list');
+        if(!el) return;
+        const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
+        if(!games.length) {
+            el.innerHTML = '<div style="text-align:center;padding:30px;font-size:13px;color:var(--muted);">No upcoming matches available.<br/>Check back later or sync matches.</div>';
+            return;
+        }
+        renderJackpotGames(games);
+    }
+
+    function renderJackpotGames(games) {
+        const el = document.getElementById('jp-games-list');
+        if(!el) return;
+        el.innerHTML = games.map((m,i) => {
+            const mkts = (m.markets||[]).filter(x=>x.market_type==='1x2');
+            const h = mkts.find(x=>x.selection==='Home Win');
+            const d = mkts.find(x=>x.selection==='Draw');
+            const a = mkts.find(x=>x.selection==='Away Win');
+            const pick = jpPicks[m.id];
+            return `
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
+                    <div style="padding:8px 12px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                        <div style="font-size:10px;font-weight:700;color:var(--muted);">MATCH ${i+1} · ${m.league_flag||'⚽'} ${m.league}</div>
+                        <div style="font-size:10px;color:var(--muted);">${fmtTime(m.kick_off)}</div>
+                    </div>
+                    <div style="padding:10px 12px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                            <div style="font-size:13px;font-weight:700;flex:1;">${m.home_team}</div>
+                            <div style="font-size:11px;color:var(--muted);padding:0 8px;">vs</div>
+                            <div style="font-size:13px;font-weight:700;flex:1;text-align:right;">${m.away_team}</div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">
+                            <button onclick="jpPick('${m.id}','1','${i}')" id="jp-${m.id}-1" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='1'?'var(--gold)':'var(--border)'};background:${pick==='1'?'var(--gold)':'var(--card)'};color:${pick==='1'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
+                                <div style="font-size:9px;color:${pick==='1'?'rgba(0,0,0,0.6)':'var(--muted)'};">1 Home</div>
+                                <div>${h?h.odds:'---'}</div>
+                            </button>
+                            <button onclick="jpPick('${m.id}','X','${i}')" id="jp-${m.id}-X" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='X'?'var(--gold)':'var(--border)'};background:${pick==='X'?'var(--gold)':'var(--card)'};color:${pick==='X'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
+                                <div style="font-size:9px;color:${pick==='X'?'rgba(0,0,0,0.6)':'var(--muted)'};">X Draw</div>
+                                <div>${d?d.odds:'---'}</div>
+                            </button>
+                            <button onclick="jpPick('${m.id}','2','${i}')" id="jp-${m.id}-2" style="padding:8px 4px;border-radius:var(--r);border:1.5px solid ${pick==='2'?'var(--gold)':'var(--border)'};background:${pick==='2'?'var(--gold)':'var(--card)'};color:${pick==='2'?'#000':'var(--text)'};font-size:11px;font-weight:700;cursor:pointer;text-align:center;">
+                                <div style="font-size:9px;color:${pick==='2'?'rgba(0,0,0,0.6)':'var(--muted)'};">2 Away</div>
+                                <div>${a?a.odds:'---'}</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        updateJpCount();
+    }
+
+    function jpPick(matchId, sel, idx) {
+        jpPicks[matchId] = sel;
+        ['1','X','2'].forEach(s => {
+            const btn = document.getElementById(`jp-${matchId}-${s}`);
+            if(!btn) return;
+            const active = s === sel;
+            btn.style.background = active ? 'var(--gold)' : 'var(--card)';
+            btn.style.borderColor = active ? 'var(--gold)' : 'var(--border)';
+            btn.style.color = active ? '#000' : 'var(--text)';
+        });
+        updateJpCount();
+    }
+
+    function updateJpCount() {
+        const count = Object.keys(jpPicks).length;
+        const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
+        const total = games.length;
+        const txt = `${count}/${total}`;
+        setEl('jp-selected', txt);
+        setEl('jp-sel-count', txt);
+        const btn = document.getElementById('jp-submit-btn');
+        if(btn) {
+            const done = count >= total;
+            btn.disabled = !done;
+            btn.style.opacity = done ? '1' : '.5';
+            btn.textContent = done ? `Enter Jackpot — KSh 100` : `Pick All ${total} Matches to Enter`;
+        }
+    }
+
+    async function submitJackpot() {
+        if(!currentUser) { alert('Sign in to enter the jackpot'); goPage('login'); return; }
+        if(!currentProfile || currentProfile.balance < 100) {
+            alert('Insufficient balance. Deposit at least KSh 100 first.');
+            return;
+        }
+        const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
+        if(Object.keys(jpPicks).length < games.length) {
+            alert('Please pick a result for all matches');
+            return;
+        }
+        try {
+            const newBal = currentProfile.balance - 100;
+            await db.from('users').update({balance:newBal}).eq('id',currentUser.id);
+            await db.from('transactions').insert({
+                user_id:currentUser.id, type:'bet', amount:100,
+                balance_before:currentProfile.balance, balance_after:newBal,
+                status:'completed', description:'Jackpot entry — Midweek Jackpot'
+            });
+            currentProfile.balance = newBal;
+            updateProfileUI();
+            jpPicks = {};
+            alert('🏆 Jackpot entry confirmed! Good luck!');
+            goPage('home');
+        } catch(e) { alert('Entry failed: '+e.message); }
+    }
+
+    // ===== BET BUILDER =====
+    let bbSel = {};
+
+    function setBBMatch(el) {
+        document.querySelectorAll('.bb-m').forEach(m=>m.classList.remove('active'));
+        el.classList.add('active');
+        bbSel={};
+        document.querySelectorAll('.bb-opt').forEach(o=>o.classList.remove('sel'));
+        setEl('bb-ov','---');
+        setEl('bb-sel-count','0 selections');
+    }
+
+    function bbPick(btn, mkt, val) {
+        const was=btn.classList.contains('sel');
+        btn.closest('.bb-opts').querySelectorAll('.bb-opt').forEach(b=>b.classList.remove('sel'));
+        if(!was){btn.classList.add('sel');bbSel[mkt]=val;}else{delete bbSel[mkt];}
+        const k=Object.keys(bbSel), c=k.length?Object.values(bbSel).reduce((a,v)=>a*v,1):null;
+        setEl('bb-ov',c?c.toFixed(2)+'x':'---');
+        setEl('bb-sel-count',`${k.length} selection${k.length!==1?'s':''}`);
+    }
+
+    function bbAddToSlip() {
+        const k=Object.keys(bbSel); if(!k.length){alert('Select at least one market first.');return;}
+        const c=Object.values(bbSel).reduce((a,v)=>a*v,1);
+        const mn=document.querySelector('.bb-m.active')?.textContent.replace('⚽ ','').trim()||'Builder Match';
+        slip.push({id:Date.now(),matchId:'builder',marketType:'builder',matchName:mn,selection:k.join(' + '),val:c});
+        renderSlip(); goPage('slip');
     }
 
     // ===== INIT =====
@@ -1617,19 +3134,90 @@
         const {data:{session}} = await db.auth.getSession();
         if(session?.user) {
             currentUser = session.user;
-            // Load profile
             try {
                 const {data} = await db.from('users').select('*').eq('id',currentUser.id).single();
                 if(data) currentProfile = data;
             } catch(e) {}
+            updateAuthUI();
+            if(currentProfile) updateProfileUI();
         }
         await loadMatches();
+        subscribeRealtime();
         renderWinners();
         setInterval(async () => { await loadMatches(); }, 5 * 60 * 1000);
+        // Check for deep link
+        const params = new URLSearchParams(window.location.search);
+        const matchId = params.get('match');
+        if(matchId) {
+            setTimeout(() => {
+                const m = allMatches.find(x => x.id === matchId);
+                if(m) {
+                    document.getElementById('featured-section')?.scrollIntoView({behavior:'smooth', block:'start'});
+                    if(!currentUser) {
+                        setTimeout(() => showAuthPrompt('Sign in to bet on ' + m.home_team + ' vs ' + m.away_team), 1800);
+                    }
+                }
+            }, 600);
+        }
     }
+
+    // Handle modal clicks to close
+    window.addEventListener('click', e => {
+        if(e.target.classList.contains('modal-bg') || e.target.classList.contains('mpesa-overlay') || e.target.classList.contains('success-modal')) {
+            document.querySelectorAll('.modal-bg, .mpesa-overlay, .success-modal').forEach(m => {
+                if(m.style.display !== 'none') m.style.display = 'none';
+            });
+        }
+    });
+
+    // Make functions globally accessible
+    window.goPage = goPage;
+    window.toggleTheme = toggleTheme;
+    window.setSport = setSport;
+    window.setDay = setDay;
+    window.toggleFaq = toggleFaq;
+    window.toggleEye = toggleEye;
+    window.doLogin = doLogin;
+    window.doRegister = doRegister;
+    window.doLogout = doLogout;
+    window.updateDialCode = updateDialCode;
+    window.updateStrength = updateStrength;
+    window.addOdd = addOdd;
+    window.addFeaturedOdd = addFeaturedOdd;
+    window.renderSlip = renderSlip;
+    window.removeItem = removeItem;
+    window.clearSlip = clearSlip;
+    window.calcPayout = calcPayout;
+    window.setStake = setStake;
+    window.validateAndPlaceBet = validateAndPlaceBet;
+    window.setSlipTab = setSlipTab;
+    window.setMyBetsTab = setMyBetsTab;
+    window.setWalletTab = setWalletTab;
+    window.setWAmt = setWAmt;
+    window.setMpesaAmt = setMpesaAmt;
+    window.openMpesa = openMpesa;
+    window.proceedDeposit = proceedDeposit;
+    window.mpesaDone = mpesaDone;
+    window.handleWithdraw = handleWithdraw;
+    window.openCashout = openCashout;
+    window.processCashout = processCashout;
+    window.closeModal = closeModal;
+    window.closeBetSuccess = closeBetSuccess;
+    window.shareFeatured = shareFeatured;
+    window.togglePanel = togglePanel;
+    window.toggleFeatMarkets = toggleFeatMarkets;
+    window.setBBMatch = setBBMatch;
+    window.bbPick = bbPick;
+    window.bbAddToSlip = bbAddToSlip;
+    window.jpPick = jpPick;
+    window.submitJackpot = submitJackpot;
+    window.switchToFootball = switchToFootball;
+    window.loadMyBets = loadMyBets;
+    window.loadWallet = loadWallet;
+    window.loadDashboard = loadDashboard;
 
     init();
 </script>
 
 </body>
-    </html>
+</html>
