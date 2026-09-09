@@ -8,14 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+        /* ===== RESET & VARIABLES ===== */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         [data-theme="dark"] {
             --bg: #0B0E11;
@@ -76,45 +70,18 @@
             padding-bottom: 80px;
         }
 
-        button, input, select {
-            font-family: 'Inter', sans-serif;
-        }
+        button, input, select { font-family: 'Inter', sans-serif; }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
+        /* ===== ANIMATIONS ===== */
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+        @keyframes ticker { from{transform:translateX(100vw)} to{transform:translateX(-100%)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes spin { to{transform:rotate(360deg)} }
+        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+        @keyframes winnersScroll { 0%{transform:translateY(0)} 100%{transform:translateY(-50%)} }
 
-        @keyframes ticker {
-            from { transform: translateX(100vw); }
-            to { transform: translateX(-100%); }
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
-        }
-
-        @keyframes winnersScroll {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-        }
-
-        /* HEADER */
+        /* ===== HEADER ===== */
         .header {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
@@ -125,41 +92,14 @@
             position: sticky;
             top: 0;
             z-index: 200;
-            backdrop-filter: blur(10px);
         }
 
-        .logo {
-            display: flex;
-            flex-direction: column;
-            line-height: 1;
-            cursor: pointer;
-        }
+        .logo { display: flex; flex-direction: column; line-height: 1; cursor: pointer; }
+        .logo-main { font-size: 24px; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; }
+        .logo-main span { color: var(--gold); }
+        .logo-sub { font-size: 8px; color: var(--muted); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
 
-        .logo-main {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--primary);
-            letter-spacing: -0.5px;
-        }
-
-        .logo-main span {
-            color: var(--gold);
-        }
-
-        .logo-sub {
-            font-size: 8px;
-            color: var(--muted);
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        .hdr-right {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
+        .hdr-right { display: flex; gap: 8px; align-items: center; }
 
         .theme-btn {
             background: var(--card2);
@@ -176,10 +116,7 @@
             justify-content: center;
             transition: var(--transition);
         }
-
-        .theme-btn:hover {
-            background: var(--border);
-        }
+        .theme-btn:hover { background: var(--border); }
 
         .btn-login {
             background: transparent;
@@ -192,11 +129,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .btn-login:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        .btn-login:hover { border-color: var(--primary); color: var(--primary); }
 
         .btn-join {
             background: var(--primary);
@@ -209,10 +142,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .btn-join:hover {
-            background: var(--primary-hover);
-        }
+        .btn-join:hover { background: var(--primary-hover); }
 
         .bal-chip {
             background: var(--card);
@@ -227,16 +157,10 @@
             gap: 6px;
             transition: var(--transition);
         }
+        .bal-chip:hover { border-color: var(--primary); }
+        .bal-chip strong { color: var(--gold); }
 
-        .bal-chip:hover {
-            border-color: var(--primary);
-        }
-
-        .bal-chip strong {
-            color: var(--gold);
-        }
-
-        /* SPORT NAV */
+        /* ===== SPORT NAV ===== */
         .sport-nav-wrap {
             position: sticky;
             top: 73px;
@@ -253,10 +177,7 @@
             overflow-x: auto;
             white-space: nowrap;
         }
-
-        .sport-nav::-webkit-scrollbar {
-            display: none;
-        }
+        .sport-nav::-webkit-scrollbar { display: none; }
 
         .sp {
             display: inline-flex;
@@ -273,28 +194,11 @@
             transition: var(--transition);
             background: var(--card2);
         }
+        .sp:hover { background: var(--border); }
+        .sp.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .sp .soon-tag { background: var(--gold); color: #000; font-size: 7px; font-weight: 800; padding: 1px 6px; border-radius: 10px; margin-left: 2px; }
 
-        .sp:hover {
-            background: var(--border);
-        }
-
-        .sp.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
-        .sp .soon-tag {
-            background: var(--gold);
-            color: #000;
-            font-size: 7px;
-            font-weight: 800;
-            padding: 1px 6px;
-            border-radius: 10px;
-            margin-left: 2px;
-        }
-
-        /* TICKER */
+        /* ===== TICKER ===== */
         .ticker {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
@@ -303,7 +207,6 @@
             height: 32px;
             overflow: hidden;
         }
-
         .ticker-lbl {
             background: var(--primary);
             color: #fff;
@@ -316,12 +219,7 @@
             letter-spacing: 0.5px;
             flex-shrink: 0;
         }
-
-        .ticker-body {
-            overflow: hidden;
-            flex: 1;
-        }
-
+        .ticker-body { overflow: hidden; flex: 1; }
         .ticker-inner {
             display: inline-block;
             white-space: nowrap;
@@ -329,18 +227,12 @@
             font-size: 11px;
             color: var(--muted);
         }
+        .ticker-hi { color: var(--text); font-weight: 600; }
 
-        .ticker-hi {
-            color: var(--text);
-            font-weight: 600;
-        }
+        /* ===== CONTENT ===== */
+        .content { padding: 16px 16px 80px; }
 
-        /* CONTENT */
-        .content {
-            padding: 16px 16px 80px;
-        }
-
-        /* HERO */
+        /* ===== HERO ===== */
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, #8A0D1A 100%);
             border-radius: var(--r);
@@ -349,7 +241,6 @@
             overflow: hidden;
             margin-bottom: 20px;
         }
-
         .hero-glow {
             position: absolute;
             right: -60px;
@@ -360,33 +251,11 @@
             background: radial-gradient(circle, rgba(240,192,64,0.15) 0%, transparent 70%);
             pointer-events: none;
         }
+        .hero h1 { font-size: 26px; font-weight: 900; line-height: 1.15; margin-bottom: 8px; color: #fff; }
+        .hero h1 span { color: var(--gold); }
+        .hero p { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 16px; }
 
-        .hero h1 {
-            font-size: 26px;
-            font-weight: 900;
-            line-height: 1.15;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-
-        .hero h1 span {
-            color: var(--gold);
-        }
-
-        .hero p {
-            font-size: 13px;
-            color: rgba(255,255,255,0.7);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        .hero-btns {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
+        .hero-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
         .btn-hero {
             background: var(--gold);
             color: #000;
@@ -398,12 +267,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .btn-hero:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(240,192,64,0.3);
-        }
-
+        .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(240,192,64,0.3); }
         .btn-hero2 {
             background: transparent;
             border: 1.5px solid rgba(255,255,255,0.3);
@@ -415,10 +279,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .btn-hero2:hover {
-            background: rgba(255,255,255,0.1);
-        }
+        .btn-hero2:hover { background: rgba(255,255,255,0.1); }
 
         .hero-footer {
             display: flex;
@@ -426,7 +287,6 @@
             padding-top: 12px;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
-
         .hf-badge {
             font-size: 11px;
             font-weight: 600;
@@ -435,13 +295,7 @@
             align-items: center;
             gap: 6px;
         }
-
-        .hf-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--gold);
-        }
+        .hf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
 
         .bonus-strip {
             background: var(--card);
@@ -454,17 +308,8 @@
             margin-bottom: 16px;
             transition: var(--transition);
         }
-
-        .bonus-strip:hover {
-            border-color: var(--gold);
-        }
-
-        .bs-text {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
+        .bonus-strip:hover { border-color: var(--gold); }
+        .bs-text { font-size: 12px; font-weight: 600; color: var(--text); }
         .bs-btn {
             background: var(--gold);
             color: #000;
@@ -476,12 +321,9 @@
             cursor: pointer;
             transition: var(--transition);
         }
+        .bs-btn:hover { transform: scale(1.05); }
 
-        .bs-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* SECTION */
+        /* ===== SECTION HEADER ===== */
         .sec-hd {
             display: flex;
             align-items: center;
@@ -490,27 +332,9 @@
             margin-bottom: 12px;
             border-bottom: 1px solid var(--border);
         }
-
-        .sec-title {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sec-link {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--gold);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .sec-link:hover {
-            opacity: 0.8;
-        }
+        .sec-title { font-size: 14px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .sec-link { font-size: 12px; font-weight: 600; color: var(--gold); cursor: pointer; transition: var(--transition); }
+        .sec-link:hover { opacity: 0.8; }
 
         .live-pill {
             display: inline-flex;
@@ -523,17 +347,9 @@
             padding: 2px 10px;
             border-radius: 20px;
         }
+        .live-dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; animation: blink 1s ease-in-out infinite; flex-shrink: 0; }
 
-        .live-dot {
-            width: 5px;
-            height: 5px;
-            background: #fff;
-            border-radius: 50%;
-            animation: blink 1s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-
-        /* FEATURED MATCH */
+        /* ===== FEATURED MATCH ===== */
         .featured-wrap {
             background: var(--surface);
             border-radius: var(--r);
@@ -550,73 +366,17 @@
             justify-content: space-between;
             align-items: center;
         }
+        .feat-badge { font-size: 10px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
+        .feat-countdown { font-size: 12px; font-weight: 800; color: #fff; background: rgba(0,0,0,0.2); padding: 3px 12px; border-radius: 20px; }
 
-        .feat-badge {
-            font-size: 10px;
-            font-weight: 800;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .feat-countdown {
-            font-size: 12px;
-            font-weight: 800;
-            color: #fff;
-            background: rgba(0,0,0,0.2);
-            padding: 3px 12px;
-            border-radius: 20px;
-        }
-
-        .feat-body {
-            padding: 16px;
-        }
-
-        .feat-teams {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .ft-team {
-            flex: 1;
-            text-align: center;
-        }
-
-        .ft-team .ft-emoji {
-            font-size: 28px;
-            margin-bottom: 4px;
-        }
-
-        .ft-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
-
-        .ft-score {
-            font-size: 32px;
-            font-weight: 900;
-            color: var(--gold);
-            line-height: 1;
-        }
-
-        .ft-vs {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--muted);
-            padding: 0 12px;
-        }
-
-        .feat-meta {
-            text-align: center;
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
+        .feat-body { padding: 16px; }
+        .feat-teams { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .ft-team { flex: 1; text-align: center; }
+        .ft-team .ft-emoji { font-size: 28px; margin-bottom: 4px; }
+        .ft-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+        .ft-score { font-size: 32px; font-weight: 900; color: var(--gold); line-height: 1; }
+        .ft-vs { font-size: 12px; font-weight: 600; color: var(--muted); padding: 0 12px; }
+        .feat-meta { text-align: center; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
 
         .feat-events {
             display: flex;
@@ -628,7 +388,6 @@
             border-radius: var(--r);
             margin-bottom: 12px;
         }
-
         .ev-chip {
             display: flex;
             align-items: center;
@@ -640,7 +399,6 @@
             font-size: 10px;
             color: var(--text2);
         }
-
         .ev-chip.goal { border-color: rgba(39,174,96,0.3); color: #69F0AE; }
         .ev-chip.red { border-color: rgba(232,0,45,0.3); color: #FF6B6B; }
         .ev-chip.yellow { border-color: rgba(240,192,64,0.3); color: var(--gold); }
@@ -652,7 +410,6 @@
             gap: 6px;
             margin-top: 12px;
         }
-
         .feat-odds-section .odd-btn {
             background: var(--card2);
             border: 1.5px solid var(--border);
@@ -667,37 +424,12 @@
             min-height: 52px;
             justify-content: center;
         }
-
-        .feat-odds-section .odd-btn:hover {
-            border-color: var(--primary);
-            background: var(--match-hover);
-        }
-
-        .feat-odds-section .odd-btn.sel {
-            background: var(--gold);
-            border-color: var(--gold);
-        }
-
-        .feat-odds-section .odd-btn.sel .odd-lbl {
-            color: rgba(0,0,0,0.6);
-        }
-        .feat-odds-section .odd-btn.sel .odd-val {
-            color: #000;
-        }
-
-        .feat-odds-section .odd-lbl {
-            font-size: 9px;
-            font-weight: 600;
-            color: var(--text2);
-            text-align: center;
-            line-height: 1.2;
-        }
-
-        .feat-odds-section .odd-val {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--text);
-        }
+        .feat-odds-section .odd-btn:hover { border-color: var(--primary); background: var(--match-hover); }
+        .feat-odds-section .odd-btn.sel { background: var(--gold); border-color: var(--gold); }
+        .feat-odds-section .odd-btn.sel .odd-lbl { color: rgba(0,0,0,0.6); }
+        .feat-odds-section .odd-btn.sel .odd-val { color: #000; }
+        .feat-odds-section .odd-lbl { font-size: 9px; font-weight: 600; color: var(--text2); text-align: center; line-height: 1.2; }
+        .feat-odds-section .odd-val { font-size: 15px; font-weight: 800; color: var(--text); }
 
         .feat-bottom {
             padding: 10px 16px;
@@ -708,14 +440,8 @@
             gap: 8px;
             background: var(--card2);
         }
-
-        .feat-min {
-            font-size: 10px;
-            color: var(--muted);
-        }
-        .feat-min strong {
-            color: var(--gold);
-        }
+        .feat-min { font-size: 10px; color: var(--muted); }
+        .feat-min strong { color: var(--gold); }
 
         .feat-share {
             display: flex;
@@ -731,25 +457,14 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .feat-share:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        .feat-share:hover { border-color: var(--primary); color: var(--primary); }
 
         .feat-more-markets {
             padding: 8px 16px 16px;
             display: none;
         }
-
-        .feat-more-markets.open {
-            display: block;
-        }
-
-        .feat-more-markets .mkt-group {
-            margin-bottom: 12px;
-        }
-
+        .feat-more-markets.open { display: block; }
+        .feat-more-markets .mkt-group { margin-bottom: 12px; }
         .feat-more-markets .mkt-title {
             font-size: 10px;
             font-weight: 800;
@@ -760,19 +475,8 @@
             padding-bottom: 4px;
             border-bottom: 1px solid var(--border);
         }
-
-        .feat-more-markets .odds-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-        }
-
-        .feat-more-markets .odds-4 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 5px;
-        }
-
+        .feat-more-markets .odds-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .feat-more-markets .odds-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
         .feat-more-markets .odd-btn {
             background: var(--card);
             border: 1.5px solid var(--border);
@@ -787,36 +491,12 @@
             min-height: 44px;
             justify-content: center;
         }
-
-        .feat-more-markets .odd-btn:hover {
-            border-color: var(--primary);
-        }
-
-        .feat-more-markets .odd-btn.sel {
-            background: var(--gold);
-            border-color: var(--gold);
-        }
-
-        .feat-more-markets .odd-btn.sel .odd-lbl {
-            color: rgba(0,0,0,0.6);
-        }
-        .feat-more-markets .odd-btn.sel .odd-val {
-            color: #000;
-        }
-
-        .feat-more-markets .odd-lbl {
-            font-size: 9px;
-            font-weight: 600;
-            color: var(--text2);
-            text-align: center;
-            line-height: 1.2;
-        }
-
-        .feat-more-markets .odd-val {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--text);
-        }
+        .feat-more-markets .odd-btn:hover { border-color: var(--primary); }
+        .feat-more-markets .odd-btn.sel { background: var(--gold); border-color: var(--gold); }
+        .feat-more-markets .odd-btn.sel .odd-lbl { color: rgba(0,0,0,0.6); }
+        .feat-more-markets .odd-btn.sel .odd-val { color: #000; }
+        .feat-more-markets .odd-lbl { font-size: 9px; font-weight: 600; color: var(--text2); text-align: center; line-height: 1.2; }
+        .feat-more-markets .odd-val { font-size: 14px; font-weight: 800; color: var(--text); }
 
         .btn-toggle-markets {
             display: block;
@@ -832,13 +512,9 @@
             transition: var(--transition);
             text-align: center;
         }
+        .btn-toggle-markets:hover { background: var(--border); color: var(--text); }
 
-        .btn-toggle-markets:hover {
-            background: var(--border);
-            color: var(--text);
-        }
-
-        /* MATCH CARDS */
+        /* ===== MATCH CARDS ===== */
         .match-card-modern {
             background: var(--surface);
             border-radius: var(--r);
@@ -848,10 +524,7 @@
             border: 1px solid var(--border);
             transition: var(--transition);
         }
-
-        .match-card-modern:hover {
-            border-color: var(--primary);
-        }
+        .match-card-modern:hover { border-color: var(--primary); }
 
         .match-card-modern .league-hd {
             background: var(--card2);
@@ -864,35 +537,17 @@
             letter-spacing: 0.5px;
         }
 
-        .match-card-modern .match-main {
-            padding: 12px 14px;
-        }
-
+        .match-card-modern .match-main { padding: 12px 14px; }
         .match-card-modern .match-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
         }
+        .match-time { font-size: 11px; font-weight: 700; color: var(--gold); }
+        .match-live-t { font-size: 11px; font-weight: 800; color: var(--live); }
 
-        .match-time {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--gold);
-        }
-
-        .match-live-t {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--live);
-        }
-
-        .match-actions-top {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
+        .match-actions-top { display: flex; gap: 6px; align-items: center; }
         .btn-co {
             background: var(--gold);
             color: #000;
@@ -904,11 +559,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .btn-co:hover {
-            transform: scale(1.05);
-        }
-
+        .btn-co:hover { transform: scale(1.05); }
         .btn-stats {
             background: rgba(47,128,237,0.1);
             border: 1px solid rgba(47,128,237,0.2);
@@ -920,11 +571,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .btn-stats:hover {
-            background: rgba(47,128,237,0.15);
-        }
-
+        .btn-stats:hover { background: rgba(47,128,237,0.15); }
         .btn-expand {
             background: var(--card);
             border: 1px solid var(--border);
@@ -936,39 +583,14 @@
             cursor: pointer;
             transition: var(--transition);
         }
+        .btn-expand:hover { border-color: var(--primary); color: var(--text); }
 
-        .btn-expand:hover {
-            border-color: var(--primary);
-            color: var(--text);
-        }
+        .match-card-modern .teams { margin-bottom: 10px; }
+        .match-card-modern .team-row { display: flex; align-items: center; justify-content: space-between; padding: 3px 0; }
+        .match-card-modern .team-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .match-card-modern .team-sc { font-size: 14px; font-weight: 800; color: var(--live); }
 
-        .match-card-modern .teams {
-            margin-bottom: 10px;
-        }
-
-        .match-card-modern .team-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 3px 0;
-        }
-
-        .match-card-modern .team-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .match-card-modern .team-sc {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--live);
-        }
-
-        .match-card-modern .odds-section {
-            margin-bottom: 4px;
-        }
-
+        .match-card-modern .odds-section { margin-bottom: 4px; }
         .match-card-modern .odds-mkt-lbl {
             font-size: 9px;
             font-weight: 700;
@@ -977,24 +599,9 @@
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
-
-        .match-card-modern .odds-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 5px;
-        }
-
-        .match-card-modern .odds-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-        }
-
-        .match-card-modern .odds-4 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 5px;
-        }
+        .match-card-modern .odds-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+        .match-card-modern .odds-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .match-card-modern .odds-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
 
         .match-card-modern .odd-btn {
             background: var(--card2);
@@ -1010,43 +617,13 @@
             min-height: 44px;
             justify-content: center;
         }
-
-        .match-card-modern .odd-btn:hover {
-            border-color: var(--primary);
-            background: var(--match-hover);
-        }
-
-        .match-card-modern .odd-btn.sel {
-            background: var(--gold);
-            border-color: var(--gold);
-        }
-
-        .match-card-modern .odd-btn.sel .odd-lbl {
-            color: rgba(0,0,0,0.6);
-        }
-        .match-card-modern .odd-btn.sel .odd-val {
-            color: #000;
-        }
-
-        .match-card-modern .odd-btn.suspended {
-            opacity: 0.45;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .match-card-modern .odd-lbl {
-            font-size: 9px;
-            font-weight: 600;
-            color: var(--text2);
-            text-align: center;
-            line-height: 1.2;
-        }
-
-        .match-card-modern .odd-val {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--text);
-        }
+        .match-card-modern .odd-btn:hover { border-color: var(--primary); background: var(--match-hover); }
+        .match-card-modern .odd-btn.sel { background: var(--gold); border-color: var(--gold); }
+        .match-card-modern .odd-btn.sel .odd-lbl { color: rgba(0,0,0,0.6); }
+        .match-card-modern .odd-btn.sel .odd-val { color: #000; }
+        .match-card-modern .odd-btn.suspended { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+        .match-card-modern .odd-lbl { font-size: 9px; font-weight: 600; color: var(--text2); text-align: center; line-height: 1.2; }
+        .match-card-modern .odd-val { font-size: 14px; font-weight: 800; color: var(--text); }
 
         .match-card-modern .more-mkts {
             display: none;
@@ -1054,19 +631,9 @@
             background: var(--card);
             padding: 10px 14px;
         }
-
-        .match-card-modern .more-mkts.open {
-            display: block;
-        }
-
-        .match-card-modern .mkt-group {
-            margin-bottom: 12px;
-        }
-
-        .match-card-modern .mkt-group:last-child {
-            margin-bottom: 0;
-        }
-
+        .match-card-modern .more-mkts.open { display: block; }
+        .match-card-modern .mkt-group { margin-bottom: 12px; }
+        .match-card-modern .mkt-group:last-child { margin-bottom: 0; }
         .match-card-modern .mkt-title {
             font-size: 10px;
             font-weight: 800;
@@ -1084,30 +651,10 @@
             background: var(--card);
             padding: 10px 14px;
         }
-
-        .match-card-modern .stats-panel.open {
-            display: block;
-        }
-
-        .match-card-modern .form-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
-        }
-
-        .match-card-modern .form-lbl {
-            font-size: 11px;
-            color: var(--muted);
-            width: 90px;
-            flex-shrink: 0;
-        }
-
-        .match-card-modern .form-dots {
-            display: flex;
-            gap: 3px;
-        }
-
+        .match-card-modern .stats-panel.open { display: block; }
+        .match-card-modern .form-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+        .match-card-modern .form-lbl { font-size: 11px; color: var(--muted); width: 90px; flex-shrink: 0; }
+        .match-card-modern .form-dots { display: flex; gap: 3px; }
         .match-card-modern .fd {
             width: 19px;
             height: 19px;
@@ -1118,12 +665,11 @@
             font-size: 9px;
             font-weight: 800;
         }
-
         .fd.w { background: #1B5E20; color: #69F0AE; }
         .fd.d { background: #33290A; color: #FFD54F; }
         .fd.l { background: #4A0010; color: #FF8A80; }
 
-        /* DAY TABS */
+        /* ===== DAY TABS ===== */
         .day-tabs {
             display: flex;
             background: var(--surface);
@@ -1132,7 +678,6 @@
             margin-bottom: 12px;
             border: 1px solid var(--border);
         }
-
         .dtab {
             flex: 1;
             text-align: center;
@@ -1144,17 +689,10 @@
             transition: var(--transition);
             border-right: 1px solid var(--border);
         }
+        .dtab:last-child { border-right: none; }
+        .dtab.active { background: var(--primary); color: #fff; }
 
-        .dtab:last-child {
-            border-right: none;
-        }
-
-        .dtab.active {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        /* JACKPOT */
+        /* ===== JACKPOT ===== */
         .jackpot {
             background: linear-gradient(135deg, #1A1200, #2D1E00);
             border: 1px solid rgba(240,192,64,0.2);
@@ -1168,33 +706,10 @@
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .jackpot:hover {
-            border-color: var(--gold);
-        }
-
-        .jp-tag {
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--gold2);
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-            margin-bottom: 3px;
-        }
-
-        .jp-amt {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--gold);
-            line-height: 1;
-        }
-
-        .jp-sub {
-            font-size: 10px;
-            color: var(--muted);
-            margin-top: 3px;
-        }
-
+        .jackpot:hover { border-color: var(--gold); }
+        .jp-tag { font-size: 10px; font-weight: 800; color: var(--gold2); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 3px; }
+        .jp-amt { font-size: 24px; font-weight: 800; color: var(--gold); line-height: 1; }
+        .jp-sub { font-size: 10px; color: var(--muted); margin-top: 3px; }
         .btn-jp {
             background: var(--gold2);
             color: #fff;
@@ -1207,12 +722,9 @@
             flex-shrink: 0;
             transition: var(--transition);
         }
+        .btn-jp:hover { transform: scale(1.05); }
 
-        .btn-jp:hover {
-            transform: scale(1.05);
-        }
-
-        /* WINNERS */
+        /* ===== WINNERS ===== */
         .winners-wrap {
             background: var(--surface);
             border-radius: var(--r);
@@ -1220,7 +732,904 @@
             margin-bottom: 16px;
             border: 1px solid var(--border);
         }
-
         .winners-header {
             background: var(--primary);
-            padding: 8px
+            padding: 8px 14px;
+        }
+        .winners-header span { font-size: 10px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
+        .winners-scroll { height: 220px; overflow: hidden; position: relative; }
+        .winners-inner {
+            position: absolute;
+            width: 100%;
+            animation: winnersScroll 18s linear infinite;
+        }
+        .winner-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .winner-row .wr-left { display: flex; align-items: center; gap: 9px; }
+        .winner-row .wr-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .winner-row .wr-amount { font-size: 13px; font-weight: 800; color: var(--gold); }
+        .winner-row .wr-meta { font-size: 10px; color: var(--muted); margin-top: 1px; }
+        .winner-row .wr-time { font-size: 10px; color: var(--muted); text-align: right; flex-shrink: 0; }
+
+        /* ===== WHATSAPP STRIP ===== */
+        .wa-strip {
+            background: linear-gradient(135deg, #0D2A1A, #0A1F0D);
+            border: 1px solid #2E7D32;
+            border-radius: var(--r);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-wa-sm {
+            background: var(--wa);
+            color: #fff;
+            border: none;
+            border-radius: var(--r);
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+        .btn-wa-sm:hover { transform: scale(1.05); }
+
+        /* ===== PROMO ===== */
+        .promo-item {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .promo-item:active { background: var(--match-hover); }
+        .promo-item:last-child { border-bottom: none; }
+        .promo-ico { font-size: 24px; flex-shrink: 0; }
+        .promo-t { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .promo-s { font-size: 11px; color: var(--muted); }
+        .promo-cta {
+            margin-left: auto;
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: var(--r);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+        .promo-cta:hover { background: var(--primary-hover); }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 16px 14px 0;
+            margin-top: 16px;
+        }
+        .footer-logo { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+        .footer-logo span { color: var(--gold); }
+        .footer-sub { font-size: 11px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+        .footer-links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .footer-links span { font-size: 11px; color: var(--text2); cursor: pointer; transition: var(--transition); }
+        .footer-links span:hover { color: var(--text); }
+        .footer-copy { font-size: 10px; color: var(--muted); line-height: 1.6; padding-bottom: 16px; }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            z-index: 200;
+            padding: 4px 0 env(safe-area-inset-bottom);
+        }
+        .bn-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 4px;
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            gap: 2px;
+            transition: var(--transition);
+            position: relative;
+        }
+        .bn-item.active { color: var(--primary); }
+        .bn-ico { font-size: 20px; line-height: 1; }
+        .slip-badge {
+            position: absolute;
+            top: 0;
+            right: calc(50% - 18px);
+            background: var(--primary);
+            color: #fff;
+            font-size: 8px;
+            font-weight: 800;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .slip-badge.show { display: flex; }
+
+        /* ===== PAGES ===== */
+        .page { display: none; }
+        .page.active { display: block; animation: fadeUp 0.2s ease; }
+
+        /* ===== LOADING ===== */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            color: var(--muted);
+            font-size: 12px;
+            gap: 8px;
+        }
+        .loading-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+        .loading-dot:nth-child(2) { animation-delay: .2s; }
+        .loading-dot:nth-child(3) { animation-delay: .4s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .content { padding: 12px 12px 80px; }
+            .hero h1 { font-size: 22px; }
+            .ft-score { font-size: 28px; }
+            .ft-team .ft-emoji { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+    <div class="logo" onclick="goPage('home')">
+        <div class="logo-main">Sporty<span>Bet</span></div>
+        <div class="logo-sub">Your Bet, Your Rules</div>
+    </div>
+    <div class="hdr-right">
+        <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+        <div id="hdr-guest" style="display:flex;gap:7px;">
+            <button class="btn-login" onclick="goPage('login')">Log In</button>
+            <button class="btn-join" onclick="goPage('register')">Join Free</button>
+        </div>
+        <div id="hdr-user" style="display:none;gap:7px;align-items:center;">
+            <div class="bal-chip" onclick="goPage('wallet')">KSh <strong id="hdr-bal">0</strong></div>
+            <button class="btn-login" onclick="goPage('account')"><i class="fas fa-user"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SPORT NAV ===== -->
+<div class="sport-nav-wrap" id="sport-nav-wrap">
+    <div class="sport-nav">
+        <div class="sp active" onclick="setSport(this)">⚽ Football</div>
+        <div class="sp" onclick="setSport(this)">🏀 Basketball <span class="soon-tag">SOON</span></div>
+        <div class="sp" onclick="setSport(this)">🎾 Tennis <span class="soon-tag">SOON</span></div>
+        <div class="sp" onclick="setSport(this)">🏉 Rugby <span class="soon-tag">SOON</span></div>
+        <div class="sp" onclick="setSport(this)">🏏 Cricket <span class="soon-tag">SOON</span></div>
+        <div class="sp" onclick="setSport(this)">🥊 Boxing <span class="soon-tag">SOON</span></div>
+        <div class="sp" onclick="setSport(this)">🏒 Hockey <span class="soon-tag">SOON</span></div>
+        <div class="sp" onclick="setSport(this)">🎮 Esports <span class="soon-tag">SOON</span></div>
+    </div>
+    <div class="ticker">
+        <div class="ticker-lbl">● LIVE</div>
+        <div class="ticker-body"><span class="ticker-inner" id="ticker-text"><span><span class="ticker-hi">Loading live scores...</span></span></span></div>
+    </div>
+</div>
+
+<!-- ===== HOME PAGE ===== -->
+<div id="page-home" class="page active">
+    <div class="content">
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="hero-glow"></div>
+            <h1>Your Bet,<br/><span>Your Rules.</span></h1>
+            <p><strong style="color:rgba(255,255,255,.85);">Cash out early. Build custom bets. Withdraw in seconds.</strong></p>
+            <div class="hero-btns">
+                <button class="btn-hero" onclick="goPage('register')">Join Free</button>
+                <button class="btn-hero2" onclick="goPage('live')"><i class="fas fa-play"></i> Watch Live</button>
+            </div>
+            <div class="hero-footer">
+                <div class="hf-badge"><div class="hf-dot"></div>M-Pesa Instant</div>
+                <div class="hf-badge"><i class="fab fa-whatsapp"></i> WhatsApp Betting</div>
+                <div class="hf-badge"><i class="fas fa-coins"></i> Cash Out</div>
+            </div>
+        </div>
+
+        <!-- BONUS -->
+        <div class="bonus-strip">
+            <span class="bs-text">🎁 100% bonus up to KSh 5,000 on first deposit</span>
+            <button class="bs-btn" onclick="goPage('register')">Claim Now</button>
+        </div>
+
+        <!-- WINNERS -->
+        <div class="winners-wrap">
+            <div class="winners-header"><span><i class="fas fa-trophy"></i> Grand Prize Winners</span></div>
+            <div class="winners-scroll">
+                <div class="winners-inner" id="winners-scroll"></div>
+            </div>
+        </div>
+
+        <!-- FEATURED -->
+        <div id="featured-section"></div>
+
+        <!-- JACKPOT -->
+        <div class="jackpot" onclick="goPage('jackpot')" style="cursor:pointer;">
+            <div>
+                <div class="jp-tag"><i class="fas fa-trophy"></i> Midweek Jackpot</div>
+                <div class="jp-amt">KSh 12,500,000</div>
+                <div class="jp-sub">Predict 17 matches · Closes Wed 21:00 EAT</div>
+            </div>
+            <button class="btn-jp" onclick="event.stopPropagation();goPage('jackpot')">Enter →</button>
+        </div>
+
+        <!-- LIVE SECTION -->
+        <div class="sec-hd">
+            <div class="sec-title"><span class="live-pill"><span class="live-dot"></span>LIVE</span> In-Play</div>
+            <div class="sec-link" onclick="goPage('live')">All Live →</div>
+        </div>
+        <div id="live-matches"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+
+        <!-- UPCOMING -->
+        <div class="sec-hd"><div class="sec-title">Upcoming Matches</div><div class="sec-link">View All →</div></div>
+        <div class="day-tabs">
+            <div class="dtab active" onclick="setDay(this)">Today</div>
+            <div class="dtab" onclick="setDay(this)">Tomorrow</div>
+            <div class="dtab" onclick="setDay(this)">Weekend</div>
+            <div class="dtab" onclick="setDay(this)">This Week</div>
+        </div>
+        <div id="upcoming-matches"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
+
+        <!-- WHATSAPP -->
+        <div class="wa-strip">
+            <div style="font-size:26px;flex-shrink:0;"><i class="fab fa-whatsapp"></i></div>
+            <div>
+                <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;">Bet via WhatsApp</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.55);">No app · Instant M-Pesa</div>
+            </div>
+            <button class="btn-wa-sm" onclick="goPage('whatsapp')">Open →</button>
+        </div>
+
+        <!-- PROMOS -->
+        <div class="sec-hd" style="margin-bottom:0;"><div class="sec-title"><i class="fas fa-gift"></i> Promotions</div><div class="sec-link" onclick="goPage('promos')">All →</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;margin-bottom:16px;">
+            <div class="promo-item"><div class="promo-ico">💰</div><div><div class="promo-t">100% First Deposit Bonus</div><div class="promo-s">Up to KSh 5,000 matched instantly</div></div><button class="promo-cta" onclick="goPage('register')">Claim</button></div>
+            <div class="promo-item"><div class="promo-ico">⚡</div><div><div class="promo-t">Accumulator Boost +50%</div><div class="promo-s">Extra on winning accas of 5+</div></div><button class="promo-cta">Opt In</button></div>
+            <div class="promo-item" style="border-bottom:none;"><div class="promo-ico">🔄</div><div><div class="promo-t">Friday Cash Back</div><div class="promo-s">10% back on losses every Friday</div></div><button class="promo-cta">More</button></div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-logo">Sporty<span>Bet</span></div>
+            <div class="footer-sub">The most advanced sports betting platform. 18+ only. Bet responsibly. Play within your limits.</div>
+            <div class="footer-links">
+                <span onclick="goPage('howitworks')">How It Works</span>
+                <span onclick="goPage('responsible')">Safe Play</span>
+                <span onclick="goPage('faq')">FAQ</span>
+                <span onclick="goPage('contact')">Contact</span>
+                <span onclick="goPage('terms')">Terms</span>
+                <span onclick="goPage('privacy')">Privacy</span>
+            </div>
+            <div class="footer-copy">© 2025 SportyBet · Helpline: 0800 723 253</div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== OTHER PAGES (SIMPLIFIED PLACEHOLDERS) ===== -->
+<div id="page-live" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-tv" style="font-size:40px;display:block;margin-bottom:12px;"></i>Live matches loading...</div></div>
+<div id="page-slip" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-ticket-alt" style="font-size:40px;display:block;margin-bottom:12px;"></i>Your bet slip</div></div>
+<div id="page-builder" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-layer-group" style="font-size:40px;display:block;margin-bottom:12px;"></i>Bet Builder</div></div>
+<div id="page-leaderboard" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-trophy" style="font-size:40px;display:block;margin-bottom:12px;"></i>Leaderboard</div></div>
+<div id="page-promos" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-gift" style="font-size:40px;display:block;margin-bottom:12px;"></i>Promotions</div></div>
+<div id="page-whatsapp" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fab fa-whatsapp" style="font-size:40px;display:block;margin-bottom:12px;"></i>WhatsApp Betting</div></div>
+<div id="page-login" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-sign-in-alt" style="font-size:40px;display:block;margin-bottom:12px;"></i>Sign In</div></div>
+<div id="page-register" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-user-plus" style="font-size:40px;display:block;margin-bottom:12px;"></i>Create Account</div></div>
+<div id="page-dashboard" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-chart-pie" style="font-size:40px;display:block;margin-bottom:12px;"></i>Dashboard</div></div>
+<div id="page-wallet" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-wallet" style="font-size:40px;display:block;margin-bottom:12px;"></i>Wallet</div></div>
+<div id="page-account" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-cog" style="font-size:40px;display:block;margin-bottom:12px;"></i>Account</div></div>
+<div id="page-faq" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-question-circle" style="font-size:40px;display:block;margin-bottom:12px;"></i>FAQ</div></div>
+<div id="page-contact" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-headset" style="font-size:40px;display:block;margin-bottom:12px;"></i>Contact Us</div></div>
+<div id="page-terms" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-file-contract" style="font-size:40px;display:block;margin-bottom:12px;"></i>Terms</div></div>
+<div id="page-privacy" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-shield-alt" style="font-size:40px;display:block;margin-bottom:12px;"></i>Privacy</div></div>
+<div id="page-responsible" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-heart" style="font-size:40px;display:block;margin-bottom:12px;"></i>Responsible Gambling</div></div>
+<div id="page-howitworks" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-play-circle" style="font-size:40px;display:block;margin-bottom:12px;"></i>How It Works</div></div>
+<div id="page-mybets" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-list" style="font-size:40px;display:block;margin-bottom:12px;"></i>My Bets</div></div>
+<div id="page-jackpot" class="page"><div style="padding:20px;text-align:center;color:var(--muted);"><i class="fas fa-trophy" style="font-size:40px;display:block;margin-bottom:12px;"></i>Jackpot</div></div>
+
+<!-- ===== BOTTOM NAV ===== -->
+<div class="bottom-nav">
+    <div class="bn-item active" id="bn-home" onclick="goPage('home')"><div class="bn-ico"><i class="fas fa-home"></i></div>Home</div>
+    <div class="bn-item" id="bn-live" onclick="goPage('live')"><div class="bn-ico"><i class="fas fa-tv"></i></div>Live</div>
+    <div class="bn-item" id="bn-slip" onclick="goPage('slip')"><div class="bn-ico"><i class="fas fa-ticket-alt"></i><span class="slip-badge" id="slip-badge">0</span></div>Slip</div>
+    <div class="bn-item" id="bn-mybets" onclick="goPage('mybets')"><div class="bn-ico"><i class="fas fa-list"></i></div>My Bets</div>
+    <div class="bn-item" id="bn-account" onclick="goPage('account')"><div class="bn-ico"><i class="fas fa-user"></i></div>Account</div>
+</div>
+
+<script>
+    // ===== SUPABASE =====
+    const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
+    const { createClient } = supabase;
+    const db = createClient(SUPA_URL, SUPA_KEY);
+
+    // ===== STATE =====
+    let currentUser = null;
+    let currentProfile = null;
+    let slip = [];
+    let slipMode = 'single';
+    let currentSport = 'football';
+    let isDark = true;
+    let allMatches = [];
+    let isFeaturedBet = false;
+    let jpPicks = {};
+    let featuredTimerInterval = null;
+
+    // ===== THEME =====
+    function toggleTheme() {
+        isDark = !isDark;
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+    }
+
+    // ===== NAVIGATION =====
+    const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets','jackpot'];
+    const BN_MAP = {home:'bn-home', live:'bn-live', slip:'bn-slip', mybets:'bn-mybets', account:'bn-account', dashboard:'bn-account', wallet:'bn-account'};
+
+    function goPage(p) {
+        ALL_PAGES.forEach(n => { const el = document.getElementById('page-'+n); if(el) el.classList.remove('active'); });
+        const t = document.getElementById('page-'+p);
+        if(t) t.classList.add('active');
+        const sn = document.getElementById('sport-nav-wrap');
+        if(sn) sn.style.display = ['home','live'].includes(p) ? 'block' : 'none';
+        document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+        if(BN_MAP[p]) document.getElementById(BN_MAP[p])?.classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    function setSport(el) {
+        document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
+        el.classList.add('active');
+        const sportText = el.textContent.trim();
+        const sportMap = {
+            '⚽ Football': 'football',
+            '🏀 Basketball': 'basketball',
+            '🎾 Tennis': 'tennis',
+            '🏉 Rugby': 'rugby',
+            '🏏 Cricket': 'cricket',
+            '🥊 Boxing': 'boxing',
+            '🏒 Hockey': 'hockey',
+            '🎮 Esports': 'esports'
+        };
+        currentSport = sportMap[sportText] || 'football';
+        filterMatchesBySport();
+    }
+
+    function filterMatchesBySport() {
+        const supported = ['football'];
+        if(!supported.includes(currentSport)) {
+            const el = document.getElementById('featured-section');
+            if(el) el.innerHTML = `<div style="text-align:center;padding:40px 20px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);">
+                <div style="font-size:40px;margin-bottom:12px;">${getSportEmoji(currentSport)}</div>
+                <div style="font-size:15px;font-weight:800;margin-bottom:6px;">${currentSport.charAt(0).toUpperCase()+currentSport.slice(1)} Coming Soon</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;">We're adding ${currentSport} markets very soon.</div>
+                <button onclick="switchToFootball()" style="background:var(--primary);border:none;border-radius:var(--r);color:#fff;padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;">⚽ Back to Football</button>
+            </div>`;
+            document.getElementById('live-matches').innerHTML = '';
+            document.getElementById('upcoming-matches').innerHTML = '';
+            return;
+        }
+        const featured = allMatches.find(m => m.is_featured);
+        if(featured) renderFeatured(featured);
+        else document.getElementById('featured-section').innerHTML = '';
+        renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
+        renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
+    }
+
+    function getSportEmoji(sport) {
+        const map = {basketball:'🏀',tennis:'🎾',rugby:'🏉',cricket:'🏏',boxing:'🥊',hockey:'🏒',esports:'🎮'};
+        return map[sport] || '🏆';
+    }
+
+    function switchToFootball() {
+        const footballBtn = document.querySelector('.sp');
+        if(footballBtn) {
+            document.querySelectorAll('.sp').forEach(s => s.classList.remove('active'));
+            footballBtn.classList.add('active');
+            currentSport = 'football';
+            filterMatchesBySport();
+        }
+    }
+
+    function setDay(el) {
+        document.querySelectorAll('.dtab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // ===== WINNERS =====
+    const WINNERS_DATA = [
+        {amount:'KES 43,092.00', ago:'1 min ago', masked:'**********0'},
+        {amount:'KES 135,000.00', ago:'3 min ago', masked:'**********5'},
+        {amount:'KES 45,675.00', ago:'20 min ago', masked:'**********8'},
+        {amount:'KES 83,119.40', ago:'28 min ago', masked:'**********5'},
+        {amount:'KES 38,950.00', ago:'32 min ago', masked:'**********1'},
+        {amount:'KES 261,183.90', ago:'56 min ago', masked:'**********0'},
+        {amount:'KES 38,250.00', ago:'57 min ago', masked:'**********2'},
+        {amount:'KES 86,919.61', ago:'1 hr ago', masked:'**********8'},
+        {amount:'KES 418,039.69', ago:'1 hr ago', masked:'**********1'},
+        {amount:'KES 48,750.00', ago:'1 hr ago', masked:'**********7'}
+    ];
+
+    function renderWinners() {
+        const el = document.getElementById('winners-scroll');
+        if(!el) return;
+        const rows = [...WINNERS_DATA, ...WINNERS_DATA].map(w => `
+            <div class="winner-row">
+                <div class="wr-left">
+                    <div class="wr-icon"><i class="fas fa-trophy"></i></div>
+                    <div>
+                        <div class="wr-amount">${w.amount}</div>
+                        <div class="wr-meta">Sports Betting · ${w.masked}</div>
+                    </div>
+                </div>
+                <div class="wr-time">${w.ago}</div>
+            </div>
+        `).join('');
+        el.innerHTML = rows;
+    }
+
+    // ===== MATCH FUNCTIONS =====
+    async function loadMatches() {
+        try {
+            const { data, error } = await db.from('matches')
+                .select('*, markets(*), live_events(*)')
+                .order('kick_off', {ascending:true});
+            if(error) throw error;
+            const now = Date.now();
+            const threeHoursAgo = now - 3*60*60*1000;
+            allMatches = (data||[]).filter(m => {
+                const ko = new Date(m.kick_off).getTime();
+                if(m.is_featured) return true;
+                if(m.status === 'live') return true;
+                if(m.status === 'upcoming') return ko > now;
+                if(m.status === 'finished') return ko > threeHoursAgo;
+                return false;
+            });
+            filterMatchesBySport();
+            updateTicker(allMatches.filter(m=>m.status==='live'));
+        } catch(e) {
+            console.error('Match load error:', e);
+        }
+    }
+
+    function fmtTime(iso) {
+        if(!iso) return '---';
+        const d = new Date(iso);
+        const now = new Date();
+        const nairobi = {timeZone:'Africa/Nairobi'};
+        const time = d.toLocaleTimeString('en-KE', {hour:'2-digit', minute:'2-digit', ...nairobi});
+        const todayStr = now.toLocaleDateString('en-KE', nairobi);
+        const matchStr = d.toLocaleDateString('en-KE', nairobi);
+        const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
+        const tomorrowStr = tomorrow.toLocaleDateString('en-KE', nairobi);
+        if(matchStr === todayStr) return `Today ${time}`;
+        if(matchStr === tomorrowStr) return `Tomorrow ${time}`;
+        return d.toLocaleDateString('en-KE', {weekday:'short', day:'numeric', month:'short', ...nairobi}) + ' ' + time;
+    }
+
+    function updateTicker(live) {
+        const el = document.getElementById('ticker-text');
+        if(!el || !live.length) return;
+        el.innerHTML = live.map(m => `<span><span class="ticker-hi">${m.home_team} ${m.home_score}--${m.away_score} ${m.away_team}</span> · ${m.league} · ${m.minute||0}'</span>`).join('');
+    }
+
+    function isSel(mid, mtype, sel) {
+        return slip.some(s => s.matchId===mid && s.marketType===mtype && s.selection===sel);
+    }
+
+    function setEl(id, v) { const el=document.getElementById(id); if(el) el.textContent=v; }
+
+    // ===== FEATURED MATCH =====
+    function renderFeatured(m) {
+        const evs = m.live_events || [];
+        const chips = [
+            ...evs.filter(e=>e.event_type==='goal').map(e => `<span class="ev-chip goal"><i class="fas fa-futbol"></i> ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}${e.player_name?' · '+e.player_name:''}</span>`),
+            ...evs.filter(e=>e.event_type==='red_card').map(e => `<span class="ev-chip red"><i class="fas fa-circle"></i> ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}</span>`),
+            ...evs.filter(e=>e.event_type==='yellow_card').map(e => `<span class="ev-chip yellow"><i class="fas fa-square"></i> ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}</span>`),
+            ...evs.filter(e=>e.event_type==='corner').map(e => `<span class="ev-chip corner"><i class="fas fa-flag"></i> ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}</span>`)
+        ].join('');
+
+        const mkts = m.markets || [];
+        const mk12 = mkts.filter(mk => mk.market_type==='1x2');
+        const h = mk12.find(mk => mk.selection==='Home Win');
+        const d = mk12.find(mk => mk.selection==='Draw');
+        const a = mk12.find(mk => mk.selection==='Away Win');
+
+        const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
+        const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
+
+        const kickoffTime = new Date(m.kick_off).getTime();
+        const isLive = m.status === 'live';
+
+        document.getElementById('featured-section').innerHTML = `
+            <div class="featured-wrap">
+                <div class="feat-header">
+                    <div class="feat-badge"><i class="fas fa-star"></i> Featured Match</div>
+                    <div class="feat-countdown" id="feat-countdown">${isLive ? '🔴 LIVE' : getCountdown(kickoffTime)}</div>
+                </div>
+                <div class="feat-body">
+                    <div class="feat-teams">
+                        <div class="ft-team">
+                            <div class="ft-emoji">⚽</div>
+                            <div class="ft-name">${m.home_team}</div>
+                            <div class="ft-score">${m.home_score}</div>
+                        </div>
+                        <div class="ft-vs">VS</div>
+                        <div class="ft-team">
+                            <div class="ft-emoji">⚽</div>
+                            <div class="ft-name">${m.away_team}</div>
+                            <div class="ft-score">${m.away_score}</div>
+                        </div>
+                    </div>
+                    <div class="feat-meta">${m.league_flag||''} ${m.league} · ${isLive ? `⏱️ ${m.minute||0}'` : fmtTime(m.kick_off)}</div>
+                    ${chips ? `<div class="feat-events">${chips}</div>` : ''}
+                    <div class="feat-odds-section">
+                        <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
+                            <div class="odd-lbl">1 Home</div>
+                            <div class="odd-val">${h?h.odds:'---'}</div>
+                        </div>
+                        <div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d?d.odds:1})">
+                            <div class="odd-lbl">X Draw</div>
+                            <div class="odd-val">${d?d.odds:'---'}</div>
+                        </div>
+                        <div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a?a.odds:1})">
+                            <div class="odd-lbl">2 Away</div>
+                            <div class="odd-val">${a?a.odds:'---'}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feat-bottom">
+                    <div class="feat-min">Min bet: <strong>KSh 1000</strong></div>
+                    <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')"><i class="fas fa-share-alt"></i> Share</button>
+                </div>
+                <button class="btn-toggle-markets" onclick="toggleFeatMarkets()"><i class="fas fa-chevron-down"></i> More Markets</button>
+                <div class="feat-more-markets" id="feat-more-markets">
+                    ${renderFeatMoreMkts(m, mn)}
+                </div>
+            </div>
+        `;
+
+        if(!isLive) startCountdown(kickoffTime);
+    }
+
+    function getCountdown(kickoffTime) {
+        const now = Date.now();
+        const diff = kickoffTime - now;
+        if(diff <= 0) return '🔴 LIVE';
+        const h = Math.floor(diff/3600000);
+        const m = Math.floor((diff%3600000)/60000);
+        const s = Math.floor((diff%60000)/1000);
+        if(h > 24) return `${Math.floor(h/24)}d ${h%24}h`;
+        if(h > 0) return `${h}h ${m}m ${s}s`;
+        return `${m}m ${s}s`;
+    }
+
+    let countdownInterval = null;
+
+    function startCountdown(kickoffTime) {
+        if(countdownInterval) clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+            const el = document.getElementById('feat-countdown');
+            if(!el) { clearInterval(countdownInterval); return; }
+            const now = Date.now();
+            const diff = kickoffTime - now;
+            if(diff <= 0) {
+                el.textContent = '🔴 LIVE';
+                clearInterval(countdownInterval);
+                return;
+            }
+            const h = Math.floor(diff/3600000);
+            const m = Math.floor((diff%3600000)/60000);
+            const s = Math.floor((diff%60000)/1000);
+            if(h > 24) el.textContent = `${Math.floor(h/24)}d ${h%24}h`;
+            else if(h > 0) el.textContent = `${h}h ${m}m ${s}s`;
+            else el.textContent = `${m}m ${s}s`;
+        }, 1000);
+    }
+
+    function toggleFeatMarkets() {
+        const el = document.getElementById('feat-more-markets');
+        if(el) {
+            el.classList.toggle('open');
+            const btn = document.querySelector('.btn-toggle-markets');
+            if(btn) btn.innerHTML = el.classList.contains('open') ? '<i class="fas fa-chevron-up"></i> Less Markets' : '<i class="fas fa-chevron-down"></i> More Markets';
+        }
+    }
+
+    function renderFeatMoreMkts(m, mn) {
+        const mkts = m.markets || [];
+        const typeMap = {
+            double_chance: 'Double Chance',
+            btts: 'Both Teams to Score',
+            over_under: 'Over / Under Goals',
+            ht_result: 'Half Time Result',
+            dnb: 'Draw No Bet',
+            correct_score: 'Correct Score',
+            total_goals: 'Total Goals',
+            asian_handicap: 'Asian Handicap'
+        };
+        let html = '';
+        Object.entries(typeMap).forEach(([type, label]) => {
+            const group = mkts.filter(x => x.market_type===type);
+            if(!group.length) return;
+            const cls = group.length===2 ? 'odds-2' : group.length>=4 ? 'odds-4' : 'odds-3';
+            html += `
+                <div class="mkt-group">
+                    <div class="mkt-title">${label}</div>
+                    <div class="${cls}">
+                        ${group.map(mk => `
+                            <div class="odd-btn${isSel(m.id,type,mk.selection)?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','${type}','${mn}','${mk.selection}',${mk.odds})">
+                                <div class="odd-lbl">${mk.selection}</div>
+                                <div class="odd-val">${mk.odds}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+        return html;
+    }
+
+    // ===== ADD FEATURED ODD =====
+    function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
+        if(!currentUser) {
+            showAuthPrompt('Sign in to place your bet on ' + matchName);
+            return;
+        }
+        isFeaturedBet = true;
+        addOdd(btn, matchId, marketType, matchName, selection, val);
+        const stakeEl = document.getElementById('stake');
+        if(stakeEl && parseFloat(stakeEl.value) < 500) { stakeEl.value = 500; calcPayout(); }
+        const qsRow = document.getElementById('qs-row');
+        if(qsRow) qsRow.innerHTML = `
+            <div class="qs" onclick="setStake(500)">500</div>
+            <div class="qs" onclick="setStake(1000)">1K</div>
+            <div class="qs" onclick="setStake(2000)">2K</div>
+            <div class="qs" onclick="setStake(5000)">5K</div>
+        `;
+        goPage('slip');
+    }
+
+    // ===== SHARE =====
+    function shareFeatured(url, matchName) {
+        if(navigator.share) {
+            navigator.share({ title: matchName + ' — SportyBet', text: '🔥 Bet on ' + matchName + ' now on SportyBet!', url });
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                showShareToast();
+            }).catch(() => {
+                prompt('Copy this link:', url);
+            });
+        }
+    }
+
+    function showShareToast() {
+        let t = document.getElementById('share-toast');
+        if(!t) {
+            t = document.createElement('div');
+            t.id = 'share-toast';
+            t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1A1A1A;border:1px solid var(--gold);border-radius:6px;padding:10px 18px;font-size:12px;font-weight:700;color:var(--gold);z-index:999;white-space:nowrap;';
+            t.textContent = '🔗 Link copied to clipboard!';
+            document.body.appendChild(t);
+        }
+        t.style.display = 'block';
+        setTimeout(() => { t.style.display = 'none'; }, 2500);
+    }
+
+    // ===== MATCH LIST =====
+    function renderMatchList(cid, matches, isLive) {
+        const el = document.getElementById(cid);
+        if(!el) return;
+        if(!matches || !matches.length) {
+            el.innerHTML = `<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">${isLive?'No live matches right now':'No upcoming matches'}</div>`;
+            return;
+        }
+        const groups = {};
+        matches.forEach(m => { const k=(m.league_flag||'')+' '+m.league; if(!groups[k])groups[k]=[]; groups[k].push(m); });
+        el.innerHTML = Object.entries(groups).map(([lg, ms]) => `
+            <div class="match-card-modern">
+                <div class="league-hd">${lg}</div>
+                ${ms.map(m => renderCard(m, isLive)).join('')}
+            </div>
+        `).join('');
+    }
+
+    function renderCard(m, isLive) {
+        const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
+        const mk12 = (m.markets||[]).filter(x => x.market_type==='1x2');
+        const h = mk12.find(x => x.selection==='Home Win');
+        const d = mk12.find(x => x.selection==='Draw');
+        const a = mk12.find(x => x.selection==='Away Win');
+        const hasMkts = (m.markets||[]).length > 3;
+        const sf = m.home_form||[], af = m.away_form||[];
+        const fd = r => `<div class="fd ${r.toLowerCase()}">${r}</div>`;
+
+        return `
+            <div class="match-main">
+                <div class="match-top">
+                    ${isLive ? `<span class="match-live-t"><span class="live-dot" style="display:inline-block;width:4px;height:4px;background:var(--live);border-radius:50%;animation:blink 1s infinite;margin-right:4px;"></span>${m.minute||0}'</span>` : `<span class="match-time">${fmtTime(m.kick_off)}</span>`}
+                    <div class="match-actions-top">
+                        ${isLive ? `<button class="btn-co" onclick="openCashout('${mn}',${Math.round(m.potential_win||340)},${m.stake||200})"><i class="fas fa-coins"></i> CO</button>` : ''}
+                        ${sf.length ? `<button class="btn-stats" onclick="togglePanel('st-${m.id}')"><i class="fas fa-chart-bar"></i></button>` : ''}
+                        ${hasMkts ? `<button class="btn-expand" onclick="togglePanel('mm-${m.id}')">More ▾</button>` : ''}
+                    </div>
+                </div>
+                <div class="teams">
+                    <div class="team-row"><span class="team-name">${m.home_team}</span>${isLive ? `<span class="team-sc">${m.home_score}</span>` : ''}</div>
+                    <div class="team-row"><span class="team-name">${m.away_team}</span>${isLive ? `<span class="team-sc">${m.away_score}</span>` : ''}</div>
+                </div>
+                <div class="odds-section">
+                    <div class="odds-mkt-lbl">Match Result (1X2)</div>
+                    <div class="odds-3">
+                        ${h ? `<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl">1 Home</div><div class="odd-val">${h.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">1</div><div class="odd-val">---</div></div>`}
+                        ${d ? `<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl">X Draw</div><div class="odd-val">${d.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">X</div><div class="odd-val">---</div></div>`}
+                        ${a ? `<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl">2 Away</div><div class="odd-val">${a.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">2</div><div class="odd-val">---</div></div>`}
+                    </div>
+                </div>
+            </div>
+            ${sf.length ? `<div class="stats-panel" id="st-${m.id}"><div style="font-size:11px;font-weight:700;margin-bottom:8px;">${mn} — Form Guide</div><div class="form-row"><span class="form-lbl">${m.home_team}:</span><div class="form-dots">${sf.map(fd).join('')}</div></div><div class="form-row"><span class="form-lbl">${m.away_team}:</span><div class="form-dots">${af.map(fd).join('')}</div></div></div>` : ''}
+            ${hasMkts ? `<div class="more-mkts" id="mm-${m.id}">${renderMoreMkts(m, mn)}</div>` : ''}
+        `;
+    }
+
+    function renderMoreMkts(m, mn) {
+        const mkts = m.markets||[];
+        const typeMap = {
+            double_chance: 'Double Chance',
+            btts: 'Both Teams to Score',
+            over_under: 'Over / Under Goals',
+            ht_result: 'Half Time Result',
+            dnb: 'Draw No Bet',
+            correct_score: 'Correct Score',
+            total_goals: 'Total Goals',
+            asian_handicap: 'Asian Handicap'
+        };
+        let html = '';
+        Object.entries(typeMap).forEach(([type, label]) => {
+            const group = mkts.filter(x => x.market_type===type);
+            if(!group.length) return;
+            const cls = group.length===2 ? 'odds-2' : group.length>=4 ? 'odds-4' : 'odds-3';
+            html += `
+                <div class="mkt-group">
+                    <div class="mkt-title">${label}</div>
+                    <div class="${cls}">
+                        ${group.map(mk => `
+                            <div class="odd-btn${isSel(m.id,type,mk.selection)?' sel':''}" onclick="addOdd(this,'${m.id}','${type}','${mn}','${mk.selection}',${mk.odds})">
+                                <div class="odd-lbl">${mk.selection}</div>
+                                <div class="odd-val">${mk.odds}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+        return html;
+    }
+
+    function togglePanel(id) {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.classList.toggle('open');
+        const btn = document.querySelector(`[onclick*="'${id}'"]`);
+        if(btn && btn.classList.contains('btn-expand')) btn.textContent = el.classList.contains('open') ? 'Less ▴' : 'More ▾';
+    }
+
+    // ===== BET SLIP =====
+    function addOdd(btn, matchId, marketType, matchName, selection, val) {
+        const decodedName = matchName.replace(/&#39;/g,"'");
+        const was = btn.classList.contains('sel');
+        slip = slip.filter(s => !(s.matchId===matchId && s.marketType===marketType));
+        document.querySelectorAll('.odd-btn.sel').forEach(b => {
+            const oc = b.getAttribute('onclick')||'';
+            if(oc.includes(`'${matchId}'`) && oc.includes(`'${marketType}'`)) b.classList.remove('sel');
+        });
+        if(!was) {
+            btn.classList.add('sel');
+            slip.push({id:Date.now(), matchId, marketType, matchName:decodedName, selection, val:parseFloat(val)});
+        }
+        if(!slip.some(s => s.matchId==='featured')) {
+            isFeaturedBet=false;
+            const qsRow = document.getElementById('qs-row');
+            if(qsRow) qsRow.innerHTML = `
+                <div class="qs" onclick="setStake(100)">100</div>
+                <div class="qs" onclick="setStake(500)">500</div>
+                <div class="qs" onclick="setStake(1000)">1K</div>
+                <div class="qs" onclick="setStake(2000)">2K</div>
+            `;
+        }
+        renderSlip();
+    }
+
+    function renderSlip() {
+        // Simplified for demo - you can expand with full slip functionality
+        const badge = document.getElementById('slip-badge');
+        if(badge) { badge.textContent=slip.length; badge.classList.toggle('show',slip.length>0); }
+    }
+
+    function calcPayout() {}
+    function setStake(v) {}
+
+    // ===== AUTH =====
+    function showAuthPrompt(msg) {
+        alert(msg || 'Please sign in to continue');
+        goPage('login');
+    }
+
+    // ===== CASHOUT =====
+    function openCashout(match, amount, stake) {
+        alert(`Cash Out available for ${match}\nYou receive: KSh ${amount.toLocaleString()}`);
+    }
+
+    // ===== INIT =====
+    async function init() {
+        const {data:{session}} = await db.auth.getSession();
+        if(session?.user) {
+            currentUser = session.user;
+            // Load profile
+            try {
+                const {data} = await db.from('users').select('*').eq('id',currentUser.id).single();
+                if(data) currentProfile = data;
+            } catch(e) {}
+        }
+        await loadMatches();
+        renderWinners();
+        setInterval(async () => { await loadMatches(); }, 5 * 60 * 1000);
+    }
+
+    init();
+</script>
+
+</body>
+    </html>
