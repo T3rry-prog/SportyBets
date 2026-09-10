@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <title>SportyBet — Sports Betting</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;10;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         /* ===== RESET & VARIABLES ===== */
@@ -1100,11 +1100,11 @@
                 <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Stake ($)</div>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;">
                     <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                    <input class="stake-in" id="stake" type="number" value="100" min="10" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                    <input class="stake-in" id="stake" type="number" value="100" min="50" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/ value="10" min="10" oninput="calcPayout()">
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;" id="qs-row">
                     <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">500</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
                     <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">1K</div>
                     <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">2K</div>
                 </div>
@@ -1184,7 +1184,7 @@
                 <div style="font-size:15px;font-weight:800;width:24px;text-align:center;flex-shrink:0;color:var(--gold);">🥈</div>
                 <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🦁</div>
                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;">NairobiKing</div><div style="font-size:10px;color:var(--muted);margin-top:1px;">11 wins · 81% accuracy</div></div>
-                <div style="font-size:13px;font-weight:800;color:#27AE60;">+$ 31,500</div>
+                <div style="font-size:13px;font-weight:800;color:#27AE60;">+$ 31,10</div>
             </div>
             <div class="lb-row" style="display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--border);">
                 <div style="font-size:15px;font-weight:800;width:24px;text-align:center;flex-shrink:0;color:var(--gold);">🥉</div>
@@ -1269,7 +1269,7 @@
         <div style="margin-bottom:13px;">
             <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Phone Number</label>
             <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
-                <div style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;">🌍 Select</div>
+                <div style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;"></div>
                 <input type="tel" id="lp" placeholder="7XX XXX XXX" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
             </div>
         </div>
@@ -1292,7 +1292,7 @@
     <div style="padding:20px 16px 80px;">
         <div style="text-align:center;font-size:26px;font-weight:800;color:var(--gold);margin-bottom:4px;">SportyBet</div>
         <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">Your Bet, Your Rules — Start free</div>
-        <div style="background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.2);border-radius:var(--r);padding:10px 14px;text-align:center;font-size:12px;font-weight:700;color:var(--gold);margin-bottom:18px;">🎁 $50 Bonus + 500 VIP Points on signup</div>
+        <div style="background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.2);border-radius:var(--r);padding:10px 14px;text-align:center;font-size:12px;font-weight:700;color:var(--gold);margin-bottom:18px;">🎁 $50 Bonus + 10 VIP Points on signup</div>
         <div class="err-box" id="reg-err" style="background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--live);margin-bottom:13px;display:none;"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <div style="margin-bottom:13px;">
@@ -1463,16 +1463,16 @@
                         <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
                         <input type="number" id="wf-amt" placeholder="Min 100" min="100" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                     </div>
-                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh</div>
+                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh 100</div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:14px;">
                     <div class="qs" onclick="setWAmt(100)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">100</div>
                     <div class="qs" onclick="setWAmt(200)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">200</div>
-                    <div class="qs" onclick="setWAmt(500)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">500</div>
-                    <div class="qs" onclick="setWAmt(1000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
+                    <div class="qs" onclick="setWAmt(10)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">10</div>
+                    <div class="qs" onclick="setWAmt(20)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
                 </div>
                 <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesaFromWallet()"><i class="fas fa-mobile-alt"></i> Send M-Pesa STK Push</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh</div>
+                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh 100</div>
             </div>
         </div>
 
@@ -1821,7 +1821,7 @@
 </div>
 
 
-<div id="app-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;padding:20px;">
+<div id="app-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;padding:20px;">
   <div style="background:var(--surface,#fff);border-radius:14px;max-width:340px;width:100%;padding:22px 20px;box-shadow:0 16px 40px rgba(0,0,0,0.25);">
     <div id="app-modal-title" style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--text,#1A1D24);">Notice</div>
     <div id="app-modal-body" style="font-size:13px;line-height:1.55;color:var(--muted,#5A6570);margin-bottom:18px;"></div>
@@ -1872,11 +1872,11 @@
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:4px;">
                     <div onclick="setMpesaAmt(100)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">100</div>
-                    <div onclick="setMpesaAmt(500)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">500</div>
-                    <div onclick="setMpesaAmt(1000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">1,000</div>
-                    <div onclick="setMpesaAmt(2000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">2,000</div>
-                    <div onclick="setMpesaAmt(5000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">5,000</div>
-                    <div onclick="setMpesaAmt(10000)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">10,000</div>
+                    <div onclick="setMpesaAmt(10)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">10</div>
+                    <div onclick="setMpesaAmt(20)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">1,000</div>
+                    <div onclick="setMpesaAmt(50)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">2,000</div>
+                    <div onclick="setMpesaAmt(100)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">5,000</div>
+                    <div onclick="setMpesaAmt(200)" style="padding:9px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--text);">10,000</div>
                 </div>
             </div>
             <button class="btn-mpesa-go" onclick="proceedDeposit()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> Send M-Pesa Request</button>
@@ -2188,7 +2188,7 @@
         const err = document.getElementById('mpesa-min-err');
         if(!amt || amt < 100) {
             if(err) err.style.display = 'block';
-            appToast('Minimum M-Pesa deposit is KSh', 'err');
+            appToast('Minimum M-Pesa deposit is KSh 100', 'err');
             return;
         }
         if(err) err.style.display = 'none';
@@ -2305,14 +2305,14 @@
             if(error) throw error;
             const userId = data?.user?.id;
             if(userId) {
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 10));
                 await db.from('users').insert({
                     id:userId,
                     phone:fmt,
                     full_name:first+' '+last,
                     country: countryVal,
                     balance:0,
-                    vip_points:500,
+                    vip_points:10,
                     vip_tier:'Bronze',
                     promo_code:document.getElementById('rpromo')?.value||null,
                 });
@@ -2379,7 +2379,7 @@
                     const {data} = await db.from('users').select('*').eq('id',currentUser.id).single();
                     if(data) { currentProfile=data; updateProfileUI(); updateAuthUI(); }
                 } catch(_) {}
-            }, 2000);
+            }, 50);
         }
     }
 
@@ -2410,7 +2410,7 @@
         setEl('acc-bal-row', fmtMoney(bal)+' →');
         setEl('acc-vip-tier','⭐ '+(currentProfile.vip_tier||'Bronze')+' Tier');
         setEl('acc-vip-pts',pts.toLocaleString());
-        const tiers={Bronze:1000,Silver:2500,Gold:4000,Platinum:10000,Diamond:99999};
+        const tiers={Bronze:20,Silver:210,Gold:4000,Platinum:200,Diamond:99999};
         const next=Object.entries(tiers).find(([,v]) => pts<v);
         if(next){setEl('acc-vip-next',(next[1]-pts).toLocaleString()+' pts to '+next[0]);const bar=document.getElementById('acc-vip-bar');if(bar)bar.style.width=Math.min(100,(pts/next[1])*100)+'%';}
     }
@@ -2428,7 +2428,7 @@
                 .order('kick_off', {ascending:true});
             if(error) throw error;
             const now = Date.now();
-            const threeHoursAgo = now - 3*60*60*1000;
+            const threeHoursAgo = now - 3*60*60*20;
             allMatches = (data||[]).filter(m => {
                 const ko = new Date(m.kick_off).getTime();
                 if(m.is_featured) return true;
@@ -2670,7 +2670,7 @@
         if(diff <= 0) return '🔴 LIVE';
         const h = Math.floor(diff/3600000);
         const m = Math.floor((diff%3600000)/60000);
-        const s = Math.floor((diff%60000)/1000);
+        const s = Math.floor((diff%60000)/20);
         if(h > 24) return `${Math.floor(h/24)}d ${h%24}h`;
         if(h > 0) return `${h}h ${m}m ${s}s`;
         return `${m}m ${s}s`;
@@ -2697,11 +2697,11 @@
             }
             const h = Math.floor(diff/3600000);
             const m = Math.floor((diff%3600000)/60000);
-            const s = Math.floor((diff%60000)/1000);
+            const s = Math.floor((diff%60000)/20);
             if(h > 24) el.textContent = `${Math.floor(h/24)}d ${h%24}h`;
             else if(h > 0) el.textContent = `${h}h ${m}m ${s}s`;
             else el.textContent = `${m}m ${s}s`;
-        }, 1000);
+        }, 20);
     }
 
     function toggleFeatMarkets() {
@@ -2876,7 +2876,7 @@ function renderFeatMoreMkts(m, mn) {
             const qsRow = document.getElementById('qs-row');
             if(qsRow) qsRow.innerHTML = `
                 <div class="qs" onclick="setStake(100)">100</div>
-                <div class="qs" onclick="setStake(10)">500</div>
+                <div class="qs" onclick="setStake(10)">10</div>
                 <div class="qs" onclick="setStake(20)">1K</div>
                 <div class="qs" onclick="setStake(50)">2K</div>
             `;
@@ -2971,10 +2971,10 @@ function renderFeatMoreMkts(m, mn) {
         isFeaturedBet = true;
         addOdd(btn, matchId, marketType, matchName, selection, val);
         const stakeEl = document.getElementById('stake');
-        if(stakeEl && parseFloat(stakeEl.value) < 500) { stakeEl.value = 500; calcPayout(); }
+        if(stakeEl && parseFloat(stakeEl.value) < 10) { stakeEl.value = 10; calcPayout(); }
         const qsRow = document.getElementById('qs-row');
         if(qsRow) qsRow.innerHTML = `
-            <div class="qs" onclick="setStake(10)">500</div>
+            <div class="qs" onclick="setStake(10)">10</div>
             <div class="qs" onclick="setStake(20)">1K</div>
             <div class="qs" onclick="setStake(50)">2K</div>
             <div class="qs" onclick="setStake(100)">5K</div>
@@ -2987,17 +2987,17 @@ function renderFeatMoreMkts(m, mn) {
         if(placingBet) return;
         if(!currentUser){ showAuthPrompt('Sign in to place your bet'); return; }
         const stake=parseFloat(document.getElementById('stake')?.value)||0;
-        const minBet = isFeaturedBet ? 500 : 100;
+        const minBet = isFeaturedBet ? 10 : 100;
         if(stake < minBet){
             const inp=document.getElementById('stake');
-            if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',1000); }
+            if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',20); }
             appToast('Minimum bet is ' + getCurrencySymbol() + ' ' + minBet, 'err');
             return;
         }
         const balance = parseFloat(currentProfile?.balance||0);
         if(balance < stake){
             appToast('Insufficient balance. Please deposit to continue.', 'err');
-            setTimeout(()=>openMpesa('deposit'), 1500);
+            setTimeout(()=>openMpesa('deposit'), 110);
             return;
         }
         const btn = document.getElementById('place-bet-btn');
@@ -3018,7 +3018,7 @@ function renderFeatMoreMkts(m, mn) {
         const stake=parseFloat(document.getElementById('stake')?.value)||100;
         const totalOdds=slipMode==='acca'?slip.reduce((a,s)=>a*s.val,1):slip[slip.length-1].val;
         const potWin=Math.round(stake*totalOdds);
-        const ref='#XO'+Math.floor(Math.random()*90000+10000);
+        const ref='#XO'+Math.floor(Math.random()*90000+200);
         try {
             const {data:bet}=await db.from('bets').insert({
                 user_id:currentUser.id,
@@ -3107,7 +3107,7 @@ function renderFeatMoreMkts(m, mn) {
             currentProfile.balance = newBal;
             updateProfileUI();
             appToast('Cash out successful.', 'ok');
-            setTimeout(loadMyBets, 500);
+            setTimeout(loadMyBets, 10);
         } catch(e) {
             appToast('Cash out failed. Please try again.', 'err');
         }
@@ -3127,7 +3127,7 @@ function renderFeatMoreMkts(m, mn) {
             document.getElementById('mpesa-s0').style.display = 'block';
         } else {
             let amt = parseFloat(document.getElementById('stake')?.value)||100;
-            const min = isFeaturedBet ? 500 : 100;
+            const min = isFeaturedBet ? 10 : 100;
             if(amt < min){ amt=min; const i=document.getElementById('stake'); if(i){i.value=min;calcPayout();} }
             setEl('mpesa-amount','$ '+parseInt(amt).toLocaleString());
             setEl('mpesa-amount2','$ '+parseInt(amt).toLocaleString());
@@ -3141,7 +3141,7 @@ function renderFeatMoreMkts(m, mn) {
         const amt = parseFloat(document.getElementById('mpesa-amt-input')?.value);
         if(!amt || amt < 100) {
             const inp = document.getElementById('mpesa-amt-input');
-            if(inp) { inp.style.border='1.5px solid var(--live)'; setTimeout(()=>inp.style.border='',1500); }
+            if(inp) { inp.style.border='1.5px solid var(--live)'; setTimeout(()=>inp.style.border='',110); }
             return;
         }
         setEl('mpesa-amount','$ '+parseInt(amt).toLocaleString());
@@ -3290,7 +3290,7 @@ function renderFeatMoreMkts(m, mn) {
                     document.body.appendChild(t);
                 }
                 t.style.display = 'block';
-                setTimeout(() => { t.style.display = 'none'; }, 2500);
+                setTimeout(() => { t.style.display = 'none'; }, 210);
             }).catch(() => {
                 prompt('Copy this link:', url);
             });
@@ -3636,7 +3636,7 @@ function renderFeatMoreMkts(m, mn) {
     function copyUSDT(){
         navigator.clipboard.writeText(USDT_ADDRESS).then(()=>{
             const btn = document.querySelector('[onclick="copyUSDT()"]');
-            if(btn){ const t=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=t,1500); }
+            if(btn){ const t=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=t,110); }
         }).catch(()=>prompt('Copy this address:', USDT_ADDRESS));
     }
 
@@ -3691,7 +3691,7 @@ function renderFeatMoreMkts(m, mn) {
     function startAvMarqueeLoop(){
         fillAvMarquee();
         if(avMarqueeTimer) clearInterval(avMarqueeTimer);
-        avMarqueeTimer = setInterval(fillAvMarquee, 35000);
+        avMarqueeTimer = setInterval(fillAvMarquee, 3100);
     }
 
     function pushAvHistory(mult, crashed) {
@@ -3884,7 +3884,7 @@ function renderFeatMoreMkts(m, mn) {
         await loadMatches();
         subscribeRealtime();
         renderWinners();
-        setInterval(async () => { await loadMatches(); }, 5 * 60 * 1000);
+        setInterval(async () => { await loadMatches(); }, 5 * 60 * 20);
         // Check for deep link
         const params = new URLSearchParams(window.location.search);
         const matchId = params.get('match');
@@ -4090,22 +4090,51 @@ function switchTab(i){
 let EXCHANGE_RATE = 130;
 let userCurrency = "USD";
 
-function handleCountryChange(code){
+function handleCountryChange(){
+  let code = document.getElementById("country-code")?.value;
   userCurrency = (code === "+254") ? "KES" : "USD";
-  updateAll();
+  initStake();
+  calcPayout();
 }
 
-function formatMoney(usd){
-  return userCurrency === "KES"
-    ? "KSh " + (usd * EXCHANGE_RATE).toLocaleString()
-    : "$ " + parseFloat(usd).toFixed(2);
+function initStake(){
+  let base = 10;
+  let val = userCurrency === "KES" ? base * EXCHANGE_RATE : base;
+  let el = document.getElementById("stake");
+  if(el) el.value = val;
 }
 
-function updateAll(){
-  document.querySelectorAll('[id="stake-currency"]').forEach(el=>{
-    el.innerText = userCurrency === "KES" ? "KSh" : "$";
-  });
+function calcPayout(){
+  let stakeInput = document.getElementById("stake");
+  if(!stakeInput) return;
+
+  let input = parseFloat(stakeInput.value) || 0;
+  let oddsEl = document.getElementById("tot-odds");
+  let odds = oddsEl ? parseFloat(oddsEl.innerText) : 1;
+
+  let stakeUSD = userCurrency === "KES" ? input / EXCHANGE_RATE : input;
+  if(stakeUSD < 10) stakeUSD = 10;
+
+  let winUSD = stakeUSD * odds;
+
+  let stakeDisplay = userCurrency === "KES" ? stakeUSD * EXCHANGE_RATE : stakeUSD;
+  let winDisplay = userCurrency === "KES" ? winUSD * EXCHANGE_RATE : winUSD;
+
+  let winEl = document.getElementById("pot-win");
+  if(winEl){
+    winEl.innerText = (userCurrency==="KES"?"KSh ":"$ ") + Math.round(winDisplay);
+  }
+
+  let btn = document.getElementById("place-bet-btn");
+  if(btn){
+    btn.innerText = "Place Bet — " + (userCurrency==="KES"?"KSh ":"$ ") + Math.round(stakeDisplay);
+  }
 }
+
+window.addEventListener("load", function(){
+  initStake();
+  calcPayout();
+});
 </script>
 
 </body>
