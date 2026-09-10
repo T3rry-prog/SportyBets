@@ -1471,26 +1471,48 @@
             </div>
 
             <div id="dep-crypto-panel" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
+                <div style="font-size:13px;font-weight:800;margin-bottom:4px;">Crypto Deposit</div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Minimum $50 · Select coin & network carefully</div>
+
+                <!-- Coin selector -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="crypto-coin-tabs">
+                    <button type="button" class="crypto-coin-btn active" data-coin="USDT" onclick="selectCryptoCoin('USDT')" style="padding:10px 6px;border-radius:var(--r);border:1.5px solid var(--primary);background:rgba(226,27,45,0.08);cursor:pointer;text-align:center;">
+                        <div style="font-size:16px;margin-bottom:2px;">₮</div>
+                        <div style="font-size:11px;font-weight:800;color:var(--text);">USDT</div>
+                        <div style="font-size:9px;color:var(--muted);">TRC20</div>
+                    </button>
+                    <button type="button" class="crypto-coin-btn" data-coin="BTC" onclick="selectCryptoCoin('BTC')" style="padding:10px 6px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--card);cursor:pointer;text-align:center;">
+                        <div style="font-size:16px;margin-bottom:2px;">₿</div>
+                        <div style="font-size:11px;font-weight:800;color:var(--text);">BTC</div>
+                        <div style="font-size:9px;color:var(--muted);">Bitcoin</div>
+                    </button>
+                    <button type="button" class="crypto-coin-btn" data-coin="ETH" onclick="selectCryptoCoin('ETH')" style="padding:10px 6px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--card);cursor:pointer;text-align:center;">
+                        <div style="font-size:16px;margin-bottom:2px;">Ξ</div>
+                        <div style="font-size:11px;font-weight:800;color:var(--text);">ETH</div>
+                        <div style="font-size:9px;color:var(--muted);">ERC20</div>
+                    </button>
+                </div>
+
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                    <span style="font-size:18px;">₮</span>
+                    <span style="font-size:18px;" id="crypto-coin-icon">₮</span>
                     <div>
-                        <div style="font-size:13px;font-weight:800;">Deposit with USDT (TRC20)</div>
-                        <div style="font-size:11px;color:var(--muted);">TRON network only · Minimum $50</div>
+                        <div style="font-size:13px;font-weight:800;" id="crypto-coin-title">Deposit with USDT (TRC20)</div>
+                        <div style="font-size:11px;color:var(--muted);" id="crypto-coin-sub">TRON network only · Minimum $50</div>
                     </div>
                 </div>
                 <div style="text-align:center;margin-bottom:12px;">
-                    <img id="usdt-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TDVNpxx14bcbj9XsedjL8rypmYP3HW2hfm" alt="USDT QR" style="width:140px;height:140px;border-radius:8px;background:#fff;padding:6px;" />
+                    <img id="usdt-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TDVNpxx14bcbj9XsedjL8rypmYP3HW2hfm" alt="Crypto QR" style="width:140px;height:140px;border-radius:8px;background:#fff;padding:6px;" />
                 </div>
                 <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:10px;">
-                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Deposit Address (TRC20)</div>
+                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;" id="crypto-addr-label">Deposit Address (TRC20)</div>
                     <div id="usdtAddress" style="font-size:12px;font-weight:600;word-break:break-all;color:var(--text);font-family:monospace;line-height:1.45;">Loading...</div>
                 </div>
-                <button onclick="copyUSDT()" style="width:100%;padding:13px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">📋 Copy Address</button>
-                <div style="background:var(--card2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px;font-size:11px;color:var(--muted);line-height:1.55;">
+                <button onclick="copyUSDT()" id="crypto-copy-btn" style="width:100%;padding:13px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">📋 Copy Address</button>
+                <div style="background:var(--card2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px;font-size:11px;color:var(--muted);line-height:1.55;" id="crypto-howto">
                     <strong style="color:var(--text);">How to deposit:</strong><br>
                     1. Copy the address or scan the QR<br>
-                    2. Send USDT on <strong>TRON (TRC20)</strong> only<br>
-                    3. Min $50 · Credited after 1 confirmation<br>
+                    2. Send <strong>USDT on TRON (TRC20)</strong> only<br>
+                    3. Min $50 · Credited after network confirmation<br>
                     4. Wrong network = permanent loss
                 </div>
                 <div style="border-top:1px solid var(--border);padding-top:12px;">
@@ -1505,7 +1527,7 @@
             <div id="dep-mpesa-panel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                     <div style="font-size:13px;font-weight:800;">📱 M-Pesa Deposit (KSh)</div>
-                    <button type="button" id="dm-crypto" onclick="setDepositMethod('crypto')" style="background:none;border:none;color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;">← Back to USDT</button>
+                    <button type="button" id="dm-crypto" onclick="setDepositMethod('crypto')" style="background:none;border:none;color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;">← Back to Crypto</button>
                 </div>
                 <div style="margin-bottom:13px;">
                     <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount (KSh)</label>
@@ -1540,10 +1562,16 @@
 
         <!-- CRYPTO WITHDRAW -->
         <div id="crypto-withdraw-section" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;display:none;">
-            <div style="font-size:13px;font-weight:800;margin-bottom:8px;">Withdraw to USDT (TRC20)</div>
-            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Your TRC20 Address</label>
+            <div style="font-size:13px;font-weight:800;margin-bottom:8px;">Withdraw Crypto</div>
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Coin / Network</label>
+            <select id="withdraw-coin" onchange="updateWithdrawPlaceholder()" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:13px;color:var(--text);background:var(--input-bg);outline:none;margin-bottom:10px;">
+                <option value="USDT">USDT (TRC20 – Tron)</option>
+                <option value="BTC">BTC (Bitcoin network)</option>
+                <option value="ETH">ETH (ERC20 – Ethereum)</option>
+            </select>
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Your Wallet Address</label>
             <input type="text" id="usdt-withdraw-addr" placeholder="T..." style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:13px;color:var(--text);background:var(--input-bg);outline:none;font-family:monospace;margin-bottom:8px;">
-            <div style="font-size:10px;color:var(--muted);">Processed within 1–24h · Min $20</div>
+            <div style="font-size:10px;color:var(--muted);" id="withdraw-coin-hint">Must be a TRC20 address starting with T · Processed 1–24h · Min $20</div>
         </div>
         <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Transaction History</div>
         <div id="tx-history"><div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div></div>
@@ -3983,30 +4011,109 @@ function renderFeatMoreMkts(m, mn) {
     }
 
 
-    // ===== USDT =====
-    const TELEGRAM_ESCROW_URL = "https://t.me/Chichi138"; // change to your escrow Telegram link
-    const USDT_ADDRESS = "TDVNpxx14bcbj9XsedjL8rypmYP3HW2hfm";
+    // ===== CRYPTO WALLETS =====
+    const TELEGRAM_ESCROW_URL = "https://t.me/Chichi138";
+    const CRYPTO_WALLETS = {
+        USDT: {
+            address: "TDVNpxx14bcbj9XsedjL8rypmYP3HW2hfm",
+            network: "TRC20 (Tron)",
+            icon: "₮",
+            title: "Deposit with USDT (TRC20)",
+            sub: "TRON network only · Minimum $50",
+            addrLabel: "Deposit Address (TRC20)",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>USDT on TRON (TRC20)</strong> only<br>3. Min $50 · Credited after network confirmation<br>4. Wrong network = permanent loss",
+            withdrawPlaceholder: "T...",
+            withdrawHint: "Must be a TRC20 address starting with T · Processed 1–24h · Min $20"
+        },
+        BTC: {
+            address: "15F2QcwkKMC6SSnPgDmmMBJ2cdoQDEZbTZ",
+            network: "Bitcoin",
+            icon: "₿",
+            title: "Deposit with Bitcoin (BTC)",
+            sub: "Bitcoin network only · Minimum $50",
+            addrLabel: "Deposit Address (BTC)",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>BTC on the Bitcoin network</strong> only<br>3. Min $50 · Credited after ~1–3 confirmations<br>4. Wrong network = permanent loss",
+            withdrawPlaceholder: "bc1... or 1...",
+            withdrawHint: "Bitcoin address only · Processed 1–24h · Min $20"
+        },
+        ETH: {
+            address: "0x7d5e7cfbf77925dd46388731689c218b70acda66",
+            network: "ERC20 (Ethereum)",
+            icon: "Ξ",
+            title: "Deposit with Ethereum (ETH)",
+            sub: "Ethereum ERC20 only · Minimum $50",
+            addrLabel: "Deposit Address (ERC20)",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>ETH on Ethereum (ERC20)</strong> only<br>3. Min $50 · Credited after network confirmation<br>4. Do not send tokens other than ETH · Wrong network = permanent loss",
+            withdrawPlaceholder: "0x...",
+            withdrawHint: "Must be an ERC20 address starting with 0x · Processed 1–24h · Min $20"
+        }
+    };
+    // Back-compat
+    const USDT_ADDRESS = CRYPTO_WALLETS.USDT.address;
+    let selectedCryptoCoin = "USDT";
+
+    function selectCryptoCoin(coin) {
+        if(!CRYPTO_WALLETS[coin]) return;
+        selectedCryptoCoin = coin;
+        // Style tabs
+        document.querySelectorAll('.crypto-coin-btn').forEach(btn => {
+            const active = btn.getAttribute('data-coin') === coin;
+            btn.style.borderColor = active ? 'var(--primary)' : 'var(--border)';
+            btn.style.background = active ? 'rgba(226,27,45,0.08)' : 'var(--card)';
+            btn.classList.toggle('active', active);
+        });
+        loadUSDT();
+    }
+    window.selectCryptoCoin = selectCryptoCoin;
 
     function loadUSDT(){
+        const w = CRYPTO_WALLETS[selectedCryptoCoin] || CRYPTO_WALLETS.USDT;
         const el = document.getElementById("usdtAddress");
-        if(el) el.innerText = USDT_ADDRESS;
+        if(el) el.innerText = w.address;
         const qr = document.getElementById('usdt-qr');
-        if(qr) qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(USDT_ADDRESS);
+        if(qr) qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(w.address);
+        const icon = document.getElementById('crypto-coin-icon');
+        if(icon) icon.textContent = w.icon;
+        const title = document.getElementById('crypto-coin-title');
+        if(title) title.textContent = w.title;
+        const sub = document.getElementById('crypto-coin-sub');
+        if(sub) sub.textContent = w.sub;
+        const lbl = document.getElementById('crypto-addr-label');
+        if(lbl) lbl.textContent = w.addrLabel;
+        const howto = document.getElementById('crypto-howto');
+        if(howto) howto.innerHTML = '<strong style="color:var(--text);">How to deposit:</strong><br>' + w.howto;
     }
+
+    function updateWithdrawPlaceholder() {
+        const sel = document.getElementById('withdraw-coin');
+        const coin = sel ? sel.value : 'USDT';
+        const w = CRYPTO_WALLETS[coin] || CRYPTO_WALLETS.USDT;
+        const inp = document.getElementById('usdt-withdraw-addr');
+        if(inp) {
+            inp.placeholder = w.withdrawPlaceholder;
+            inp.value = '';
+        }
+        const hint = document.getElementById('withdraw-coin-hint');
+        if(hint) hint.textContent = w.withdrawHint;
+    }
+    window.updateWithdrawPlaceholder = updateWithdrawPlaceholder;
+
     function showOtherPaymentMethods() {
         const methods = [
+            {n:'USDT (TRC20)', s:'Available now'},
+            {n:'Bitcoin (BTC)', s:'Available now'},
+            {n:'Ethereum (ETH)', s:'Available now'},
             {n:'Visa / Mastercard', s:'Coming Soon'},
             {n:'PayPal', s:'Coming Soon'},
             {n:'MTN MoMo', s:'Coming Soon'},
             {n:'Flutterwave', s:'Coming Soon'},
             {n:'Paystack', s:'Coming Soon'},
-            {n:'Wise', s:'Coming Soon'},
-            {n:'USDT (TRC20)', s:'Available now'}
+            {n:'Wise', s:'Coming Soon'}
         ];
         const body = `<input id="pay-search" type="text" placeholder="Search methods..." oninput="filterPayMethods(this.value)" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:13px;margin-bottom:10px;background:var(--input-bg);color:var(--text);outline:none;">
             <div id="pay-list">${methods.map(m => `<div class="pay-row" data-name="${m.n.toLowerCase()}" style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${m.n}</span><span style="color:${m.s==='Available now'?'#27AE60':'var(--muted)'};font-size:11px;font-weight:600;">${m.s}</span></div>`).join('')}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:10px;">Other methods are coming soon. Use USDT for instant deposits.</div>`;
-        openAppModal('Payment Methods', body, 'Back to USDT').then(() => setDepositMethod('crypto'));
+            <div style="font-size:11px;color:var(--muted);margin-top:10px;">Crypto deposits (USDT / BTC / ETH) are available now.</div>`;
+        openAppModal('Payment Methods', body, 'Back to Crypto').then(() => setDepositMethod('crypto'));
     }
     function filterPayMethods(q) {
         const rows = document.querySelectorAll('.pay-row');
@@ -4017,10 +4124,13 @@ function renderFeatMoreMkts(m, mn) {
     window.filterPayMethods = filterPayMethods;
 
     function copyUSDT(){
-        navigator.clipboard.writeText(USDT_ADDRESS).then(()=>{
-            const btn = document.querySelector('[onclick="copyUSDT()"]');
-            if(btn){ const t=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=t,110); }
-        }).catch(()=>prompt('Copy this address:', USDT_ADDRESS));
+        const w = CRYPTO_WALLETS[selectedCryptoCoin] || CRYPTO_WALLETS.USDT;
+        const addr = w.address;
+        navigator.clipboard.writeText(addr).then(()=>{
+            const btn = document.getElementById('crypto-copy-btn') || document.querySelector('[onclick="copyUSDT()"]');
+            if(btn){ const t=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=t,1200); }
+            appToast(selectedCryptoCoin + ' address copied', 'ok');
+        }).catch(()=>prompt('Copy this address:', addr));
     }
 
     // ===== CURRENCY HELPER =====
@@ -4513,3 +4623,4 @@ function switchTab(i){
 
 </body>
 </html>
+
