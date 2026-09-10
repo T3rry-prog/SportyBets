@@ -1100,13 +1100,13 @@
                 <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Stake ($)</div>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;">
                     <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                    <input class="stake-in" id="stake" type="number" value="100" min="50" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                    <input class="stake-in" id="stake" type="number" value="100" min="10" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;" id="qs-row">
                     <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1K</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2K</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">500</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">1K</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">2K</div>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;">
                     <span style="font-size:13px;color:var(--muted);">Potential Win</span>
@@ -1269,7 +1269,7 @@
         <div style="margin-bottom:13px;">
             <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Phone Number</label>
             <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
-                <div style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;">🇰🇪 +254</div>
+                <div style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;">🌍 Select</div>
                 <input type="tel" id="lp" placeholder="7XX XXX XXX" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
             </div>
         </div>
@@ -1463,7 +1463,7 @@
                         <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
                         <input type="number" id="wf-amt" placeholder="Min 100" min="100" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                     </div>
-                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh 100</div>
+                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh</div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:14px;">
                     <div class="qs" onclick="setWAmt(100)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">100</div>
@@ -1472,7 +1472,7 @@
                     <div class="qs" onclick="setWAmt(1000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
                 </div>
                 <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesaFromWallet()"><i class="fas fa-mobile-alt"></i> Send M-Pesa STK Push</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh 100</div>
+                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh</div>
             </div>
         </div>
 
@@ -2188,7 +2188,7 @@
         const err = document.getElementById('mpesa-min-err');
         if(!amt || amt < 100) {
             if(err) err.style.display = 'block';
-            appToast('Minimum M-Pesa deposit is KSh 100', 'err');
+            appToast('Minimum M-Pesa deposit is KSh', 'err');
             return;
         }
         if(err) err.style.display = 'none';
@@ -2876,9 +2876,9 @@ function renderFeatMoreMkts(m, mn) {
             const qsRow = document.getElementById('qs-row');
             if(qsRow) qsRow.innerHTML = `
                 <div class="qs" onclick="setStake(100)">100</div>
-                <div class="qs" onclick="setStake(500)">500</div>
-                <div class="qs" onclick="setStake(1000)">1K</div>
-                <div class="qs" onclick="setStake(2000)">2K</div>
+                <div class="qs" onclick="setStake(10)">500</div>
+                <div class="qs" onclick="setStake(20)">1K</div>
+                <div class="qs" onclick="setStake(50)">2K</div>
             `;
         }
         renderSlip();
@@ -2974,10 +2974,10 @@ function renderFeatMoreMkts(m, mn) {
         if(stakeEl && parseFloat(stakeEl.value) < 500) { stakeEl.value = 500; calcPayout(); }
         const qsRow = document.getElementById('qs-row');
         if(qsRow) qsRow.innerHTML = `
-            <div class="qs" onclick="setStake(500)">500</div>
-            <div class="qs" onclick="setStake(1000)">1K</div>
-            <div class="qs" onclick="setStake(2000)">2K</div>
-            <div class="qs" onclick="setStake(5000)">5K</div>
+            <div class="qs" onclick="setStake(10)">500</div>
+            <div class="qs" onclick="setStake(20)">1K</div>
+            <div class="qs" onclick="setStake(50)">2K</div>
+            <div class="qs" onclick="setStake(100)">5K</div>
         `;
         goPage('slip');
     }
@@ -4082,6 +4082,29 @@ function switchTab(i){
     contents.forEach(c=>c.classList.remove('active'));
     tabs[i].classList.add('active');
     contents[i].classList.add('active');
+}
+</script>
+
+
+<script>
+let EXCHANGE_RATE = 130;
+let userCurrency = "USD";
+
+function handleCountryChange(code){
+  userCurrency = (code === "+254") ? "KES" : "USD";
+  updateAll();
+}
+
+function formatMoney(usd){
+  return userCurrency === "KES"
+    ? "KSh " + (usd * EXCHANGE_RATE).toLocaleString()
+    : "$ " + parseFloat(usd).toFixed(2);
+}
+
+function updateAll(){
+  document.querySelectorAll('[id="stake-currency"]').forEach(el=>{
+    el.innerText = userCurrency === "KES" ? "KSh" : "$";
+  });
 }
 </script>
 
