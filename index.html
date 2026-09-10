@@ -2491,6 +2491,10 @@
             filterMatchesBySport();
             updateTicker(allMatches.filter(m=>m.status==='live'));
             startLiveClock();
+            // If any matches finished, settle this user's pending bets so My Bets shows WON/LOST
+            if(currentUser && typeof settleUserPendingBets === 'function') {
+                settleUserPendingBets().catch(()=>{});
+            }
         } catch(e) {
             console.error('Match load error:', e);
         }
@@ -2684,6 +2688,19 @@
                     <div class="feat-meta">${metaLine}</div>
                     ${isLive ? `<div style="margin:10px 0 6px;"><button type="button" onclick="goPage('live')" style="width:100%;padding:11px;border-radius:8px;border:none;background:#E21B2D;color:#fff;font-size:13px;font-weight:800;cursor:pointer;">● Watch match live</button></div>` : ''}
                     ${chips ? `<div class="feat-events">${chips}</div>` : ''}
+                    ${(isLive || isFinished) ? `
+                    <div style="text-align:center;padding:14px 10px;background:var(--card2);border-radius:var(--r);margin-top:8px;">
+                        <div style="font-size:13px;font-weight:800;color:${isFinished ? '#27AE60' : 'var(--live)'};margin-bottom:4px;">
+                            ${isFinished ? '✅ Full Time — Betting closed' : '🔴 Live — Betting closed'}
+                        </div>
+                        <div style="font-size:11px;color:var(--muted);">${isFinished ? (resultLabel || 'Match finished') : ('Minute ' + (m.minute||0) + "' · Watch live for updates")}</div>
+                    </div>
+                    <div class="feat-odds-section" style="opacity:0.4;pointer-events:none;">
+                        <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
+                        <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
+                        <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>
+                    </div>
+                    ` : `
                     <div class="feat-odds-section">
                         <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
                             <div class="odd-lbl">1 Home</div>
@@ -2698,15 +2715,18 @@
                             <div class="odd-val">${a?a.odds:'---'}</div>
                         </div>
                     </div>
+                    `}
                 </div>
                 <div class="feat-bottom">
-                    <div class="feat-min">Min bet: <strong>$10</strong></div>
+                    <div class="feat-min">${(isLive || isFinished) ? '<strong style="color:var(--muted);">Betting closed</strong>' : 'Min bet: <strong>$10</strong>'}</div>
                     <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')"><i class="fas fa-share-alt"></i> Share</button>
                 </div>
+                ${(isLive || isFinished) ? '' : `
                 <button class="btn-toggle-markets" onclick="toggleFeatMarkets()"><i class="fas fa-chevron-down"></i> More Markets</button>
                 <div class="feat-more-markets" id="feat-more-markets">
                     ${renderFeatMoreMkts(m, mn)}
                 </div>
+                `}
             </div>
         `;
 
@@ -2859,9 +2879,13 @@ function renderFeatMoreMkts(m, mn) {
                 <div class="odds-section">
                     <div class="odds-mkt-lbl">Match Result (1X2)</div>
                     <div class="odds-3">
-                        ${h ? `<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl">1 Home</div><div class="odd-val">${h.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">1</div><div class="odd-val">---</div></div>`}
+                        ${isLive || (m.status==='finished'||m.status==='ft')
+                          ? `<div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
+                             <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
+                             <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>`
+                          : `${h ? `<div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Home Win',${h.odds})"><div class="odd-lbl">1 Home</div><div class="odd-val">${h.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">1</div><div class="odd-val">---</div></div>`}
                         ${d ? `<div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Draw',${d.odds})"><div class="odd-lbl">X Draw</div><div class="odd-val">${d.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">X</div><div class="odd-val">---</div></div>`}
-                        ${a ? `<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl">2 Away</div><div class="odd-val">${a.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">2</div><div class="odd-val">---</div></div>`}
+                        ${a ? `<div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addOdd(this,'${m.id}','1x2','${mn}','Away Win',${a.odds})"><div class="odd-lbl">2 Away</div><div class="odd-val">${a.odds}</div></div>` : `<div class="odd-btn suspended"><div class="odd-lbl">2</div><div class="odd-val">---</div></div>`}`}
                     </div>
                 </div>
             </div>
@@ -2908,8 +2932,35 @@ function renderFeatMoreMkts(m, mn) {
         return html;
     }
 
+    // ===== BETTING RULES =====
+    function getMatchById(matchId) {
+        return (allMatches || []).find(m => m.id === matchId) || null;
+    }
+
+    function isMatchOpenForBetting(matchId) {
+        const m = getMatchById(matchId);
+        if(!m) return true; // unknown — allow (builder etc.)
+        const st = (m.status || '').toLowerCase();
+        if(st === 'live' || st === 'finished' || st === 'ft' || st === 'ended' || st === 'inplay') return false;
+        return true;
+    }
+
+    function bettingClosedMessage(matchId) {
+        const m = getMatchById(matchId);
+        if(!m) return 'Betting closed for this match';
+        const st = (m.status || '').toLowerCase();
+        if(st === 'live') return 'Match is live — betting closed';
+        if(st === 'finished' || st === 'ft' || st === 'ended') return 'Match finished — betting closed';
+        return 'Betting closed for this match';
+    }
+
     // ===== BET SLIP FUNCTIONS =====
     function addOdd(btn, matchId, marketType, matchName, selection, val) {
+        if(matchId && matchId !== 'builder' && !isMatchOpenForBetting(matchId)) {
+            appToast(bettingClosedMessage(matchId), 'err');
+            return;
+        }
+        if(btn && btn.classList.contains('suspended')) return;
         const decodedName = matchName.replace(/&#39;/g,"'");
         const was = btn.classList.contains('sel');
         slip = slip.filter(s => !(s.matchId===matchId && s.marketType===marketType));
@@ -3046,6 +3097,10 @@ function renderFeatMoreMkts(m, mn) {
     }
 
     function addFeaturedOdd(btn, matchId, marketType, matchName, selection, val) {
+        if(matchId && !isMatchOpenForBetting(matchId)) {
+            appToast(bettingClosedMessage(matchId), 'err');
+            return;
+        }
         if(!currentUser) {
             showAuthPrompt('Sign in to place your bet on ' + matchName);
             return;
@@ -3068,6 +3123,13 @@ function renderFeatMoreMkts(m, mn) {
     async function validateAndPlaceBet() {
         if(placingBet) return;
         if(!currentUser){ showAuthPrompt('Sign in to place your bet'); return; }
+        // Block if any selection is on a live/finished match
+        for(const s of slip) {
+            if(s.matchId && s.matchId !== 'builder' && !isMatchOpenForBetting(s.matchId)) {
+                appToast(bettingClosedMessage(s.matchId) + ' — remove it from your slip', 'err');
+                return;
+            }
+        }
         const displayStake=parseFloat(document.getElementById('stake')?.value)||0;
         const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
         const minBet = 10; // USD base minimum
@@ -3113,9 +3175,13 @@ function renderFeatMoreMkts(m, mn) {
             }).select().single();
             if(bet) {
                 await db.from('bet_selections').insert(slip.map(s=>({
-                    bet_id:bet.id,match_name:s.matchName,
-                    market_type:s.marketType,selection:s.selection,
-                    odds:s.val,status:'pending'
+                    bet_id:bet.id,
+                    match_id: s.matchId && s.matchId !== 'builder' ? s.matchId : null,
+                    match_name:s.matchName,
+                    market_type:s.marketType,
+                    selection:s.selection,
+                    odds:s.val,
+                    status:'pending'
                 })));
                 const newBal=(currentProfile.balance||0)-stake;
                 const newVip=(currentProfile.vip_points||0)+Math.floor(stake/10);
@@ -3471,12 +3537,112 @@ function renderFeatMoreMkts(m, mn) {
     }
 
     // ===== MY BETS =====
+    /**
+     * Client-side settlement fallback:
+     * For the current user's pending bets, if every selection's match is finished,
+     * mark the bet won/lost and credit balance on wins.
+     */
+    async function settleUserPendingBets() {
+        if(!currentUser) return;
+        try {
+            const { data: pending } = await db.from('bets')
+                .select('*,bet_selections(*)')
+                .eq('user_id', currentUser.id)
+                .eq('status', 'pending');
+            if(!pending || !pending.length) return;
+
+            const finished = (allMatches || []).filter(m => {
+                const st = (m.status || '').toLowerCase();
+                return st === 'finished' || st === 'ft' || st === 'ended';
+            });
+            if(!finished.length) return;
+
+            for(const bet of pending) {
+                const sels = bet.bet_selections || [];
+                if(!sels.length) continue;
+
+                let allResolved = true;
+                let anyLost = false;
+
+                for(const leg of sels) {
+                    const name = (leg.match_name || '').toLowerCase();
+                    // Prefer match_id, fall back to name match
+                    let m = null;
+                    if(leg.match_id) {
+                        m = finished.find(fm => fm.id === leg.match_id) || null;
+                    }
+                    if(!m) {
+                        m = finished.find(fm => {
+                            const label = ((fm.home_team || '') + ' vs ' + (fm.away_team || '')).toLowerCase();
+                            const h = (fm.home_team || '').toLowerCase();
+                            const a = (fm.away_team || '').toLowerCase();
+                            return name === label || (h && name.includes(h.split(' ')[0]) && a && name.includes(a.split(' ')[0]));
+                        }) || null;
+                    }
+                    if(!m) {
+                        // Match not finished yet (or not in list) — leave pending
+                        allResolved = false;
+                        break;
+                    }
+                    const hs = parseInt(m.home_score, 10) || 0;
+                    const as_ = parseInt(m.away_score, 10) || 0;
+                    let result = 'Draw';
+                    if(hs > as_) result = 'Home Win';
+                    else if(as_ > hs) result = 'Away Win';
+
+                    const sel = (leg.selection || '').toLowerCase();
+                    let legWon = false;
+                    if(sel.includes('home') || sel === '1' || sel.includes('1 home')) legWon = result === 'Home Win';
+                    else if(sel.includes('away') || sel === '2' || sel.includes('2 away')) legWon = result === 'Away Win';
+                    else if(sel.includes('draw') || sel === 'x') legWon = result === 'Draw';
+                    else {
+                        // Unknown market — skip settlement for whole bet
+                        allResolved = false;
+                        break;
+                    }
+                    if(!legWon) anyLost = true;
+                }
+
+                if(!allResolved) continue;
+
+                if(anyLost) {
+                    await db.from('bets').update({ status: 'lost', actual_win: 0 }).eq('id', bet.id);
+                } else {
+                    const payout = parseFloat(bet.potential_win || 0);
+                    await db.from('bets').update({ status: 'won', actual_win: payout }).eq('id', bet.id);
+                    // Credit user once
+                    const { data: user } = await db.from('users').select('balance').eq('id', currentUser.id).single();
+                    const bal = parseFloat(user?.balance || 0);
+                    const newBal = bal + payout;
+                    await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
+                    await db.from('transactions').insert({
+                        user_id: currentUser.id,
+                        type: 'win',
+                        amount: payout,
+                        balance_before: bal,
+                        balance_after: newBal,
+                        status: 'completed',
+                        description: 'Bet won · ' + (bet.reference || '') + ' · $' + payout.toFixed(2)
+                    });
+                    if(currentProfile) currentProfile.balance = newBal;
+                    try { updateProfileUI(); updateAuthUI(); } catch(e){}
+                }
+            }
+        } catch(e) {
+            console.error('settleUserPendingBets', e);
+        }
+    }
+    window.settleUserPendingBets = settleUserPendingBets;
+
     async function loadMyBets() {
         if(!currentUser) { goPage('login'); return; }
         const el = document.getElementById('mybets-list');
         if(!el) return;
         el.innerHTML = '<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
         try {
+            // Auto-settle any pending bets whose matches are finished
+            await settleUserPendingBets();
+
             let q = db.from('bets').select('*,bet_selections(*)').eq('user_id',currentUser.id).order('created_at',{ascending:false});
             if(myBetsFilter !== 'all') q = q.eq('status', myBetsFilter);
             const {data:bets} = await q;
