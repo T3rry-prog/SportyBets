@@ -1428,14 +1428,24 @@
                         <div style="font-size:11px;color:var(--muted);">TRON network only · Minimum $50</div>
                     </div>
                 </div>
+                <div style="text-align:center;margin-bottom:12px;">
+                    <img id="usdt-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TDVNpxx14bcbj9XsedjL8rypmYP3HW2hfm" alt="USDT QR" style="width:140px;height:140px;border-radius:8px;background:#fff;padding:6px;" />
+                </div>
                 <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:10px;">
-                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Deposit Address</div>
+                    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Deposit Address (TRC20)</div>
                     <div id="usdtAddress" style="font-size:12px;font-weight:600;word-break:break-all;color:var(--text);font-family:monospace;line-height:1.45;">Loading...</div>
                 </div>
                 <button onclick="copyUSDT()" style="width:100%;padding:13px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">📋 Copy Address</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin-bottom:12px;">Credited after 1 network confirmation</div>
+                <div style="background:var(--card2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px;font-size:11px;color:var(--muted);line-height:1.55;">
+                    <strong style="color:var(--text);">How to deposit:</strong><br>
+                    1. Copy the address or scan the QR<br>
+                    2. Send USDT on <strong>TRON (TRC20)</strong> only<br>
+                    3. Min $50 · Credited after 1 confirmation<br>
+                    4. Wrong network = permanent loss
+                </div>
                 <div style="border-top:1px solid var(--border);padding-top:12px;">
-                    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;text-align:center;">Or pay with</div>
+                    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;text-align:center;">Other methods</div>
+                    <button type="button" onclick="showOtherPaymentMethods()" style="width:100%;padding:10px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;">Search payment methods (Visa, PayPal, MoMo…)</button>
                     <button type="button" id="dm-mpesa" onclick="setDepositMethod('mpesa')" style="width:100%;padding:12px;border-radius:var(--r);border:1.5px solid #27AE60;background:rgba(39,174,96,0.08);color:#1B5E20;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
                         📱 M-Pesa <span style="font-size:11px;font-weight:600;opacity:0.85;">(Kenya)</span>
                     </button>
@@ -1444,24 +1454,25 @@
 
             <div id="dep-mpesa-panel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <div style="font-size:13px;font-weight:800;">📱 M-Pesa Deposit</div>
+                    <div style="font-size:13px;font-weight:800;">📱 M-Pesa Deposit (KSh)</div>
                     <button type="button" id="dm-crypto" onclick="setDepositMethod('crypto')" style="background:none;border:none;color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;">← Back to USDT</button>
                 </div>
                 <div style="margin-bottom:13px;">
-                    <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount ($)</label>
+                    <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount (KSh)</label>
                     <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;">
-                        <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                        <input type="number" id="wf-amt" placeholder="Enter amount" min="10" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                        <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
+                        <input type="number" id="wf-amt" placeholder="Min 100" min="100" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                     </div>
+                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh 100</div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:14px;">
-                    <div class="qs" onclick="setWAmt(10)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">10</div>
-                    <div class="qs" onclick="setWAmt(50)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">50</div>
                     <div class="qs" onclick="setWAmt(100)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">100</div>
+                    <div class="qs" onclick="setWAmt(200)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">200</div>
                     <div class="qs" onclick="setWAmt(500)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">500</div>
+                    <div class="qs" onclick="setWAmt(1000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
                 </div>
-                <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesa('deposit')"><i class="fas fa-mobile-alt"></i> Send M-Pesa STK Push</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only</div>
+                <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesaFromWallet()"><i class="fas fa-mobile-alt"></i> Send M-Pesa STK Push</button>
+                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh 100</div>
             </div>
         </div>
 
@@ -1517,22 +1528,22 @@
                 <div style="font-size:13px;font-weight:600;"><i class="fas fa-wallet"></i> Wallet & History</div>
                 <div style="font-size:12px;color:var(--muted);" id="acc-bal-row">→</div>
             </div>
-            <div class="acc-row" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
+            <div class="acc-row" onclick="openEditProfile()" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;">
                 <div style="font-size:13px;font-weight:600;"><i class="fas fa-user-edit"></i> Edit Profile</div>
                 <div style="font-size:12px;color:var(--muted);">→</div>
             </div>
-            <div class="acc-row" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;transition:background .1s;">
+            <div class="acc-row" onclick="toggleNotifications()" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;transition:background .1s;">
                 <div style="font-size:13px;font-weight:600;"><i class="fas fa-bell"></i> Notifications</div>
-                <div style="font-size:12px;color:var(--muted);">On →</div>
+                <div style="font-size:12px;color:var(--muted);" id="notif-status">On →</div>
             </div>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;">
             <div style="background:var(--primary);padding:9px 14px;font-size:10px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border);"><i class="fas fa-shield-alt"></i> Safe Play</div>
             <div style="padding:14px;">
                 <div style="display:flex;gap:7px;margin-bottom:10px;">
-                    <button style="flex:1;padding:9px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-sliders-h"></i> Set Limits</button>
-                    <button style="flex:1;padding:9px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-pause"></i> Take Break</button>
-                    <button style="flex:1;padding:9px;border-radius:var(--r);background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);color:var(--live);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-ban"></i> Exclude</button>
+                    <button onclick="safePlayAction('limits')" style="flex:1;padding:9px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-sliders-h"></i> Set Limits</button>
+                    <button onclick="safePlayAction('break')" style="flex:1;padding:9px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-pause"></i> Take Break</button>
+                    <button onclick="safePlayAction('exclude')" style="flex:1;padding:9px;border-radius:var(--r);background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);color:var(--live);font-size:11px;font-weight:700;cursor:pointer;"><i class="fas fa-ban"></i> Exclude</button>
                 </div>
                 <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;font-size:11px;color:var(--muted);line-height:1.6;">🆘 <strong style="color:var(--text);">Helpline: 0800 723 253</strong> — Free, 24/7</div>
             </div>
@@ -2171,7 +2182,22 @@
         }
     }
 
-    function setWAmt(v) { const i=document.getElementById('wf-amt'); if(i) i.value=v; }
+    function setWAmt(v) { const i=document.getElementById('wf-amt'); if(i) i.value=v; const err=document.getElementById('mpesa-min-err'); if(err) err.style.display='none'; }
+    function openMpesaFromWallet() {
+        const amt = parseFloat(document.getElementById('wf-amt')?.value);
+        const err = document.getElementById('mpesa-min-err');
+        if(!amt || amt < 100) {
+            if(err) err.style.display = 'block';
+            appToast('Minimum M-Pesa deposit is KSh 100', 'err');
+            return;
+        }
+        if(err) err.style.display = 'none';
+        // Store KSh amount; backend/conversion handled in openMpesa
+        const stakeEl = document.getElementById('stake');
+        if(stakeEl) stakeEl.value = amt; // reuse for flow
+        openMpesa('deposit');
+    }
+    window.openMpesaFromWallet = openMpesaFromWallet;
 
     function setMpesaAmt(v) { const i = document.getElementById('mpesa-amt-input'); if(i) i.value = v; }
 
@@ -2254,14 +2280,17 @@
         const agreed=document.getElementById('rterms')?.checked;
         const err=document.getElementById('reg-err');
         err.style.display='none';
+        const sel=document.getElementById('rcountry');
+        const countryVal = sel?.value || '';
+        if(!countryVal){err.textContent='Please select your country.';err.style.display='block';return;}
         if(!first){err.textContent='Please enter your first name.';err.style.display='block';return;}
         if(!phone||phone.length<6){err.textContent='Please enter a valid phone number.';err.style.display='block';return;}
         if(!pass||pass.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}
         if(!agreed){err.textContent='You must agree to the Terms & Conditions.';err.style.display='block';return;}
         const btn=document.getElementById('reg-btn');
         btn.textContent='Creating...'; btn.disabled=true;
-        const sel=document.getElementById('rcountry');
-        const dialCode=(sel?.options[sel.selectedIndex]?.getAttribute('data-code')||'+254').replace('+','');
+        const dialCode=(sel?.options[sel.selectedIndex]?.getAttribute('data-code')||'').replace('+','');
+        if(!dialCode){err.textContent='Please select a valid country.';err.style.display='block';btn.textContent='Create Account →';btn.disabled=false;return;}
         const cleanPhone=phone.replace(/^0/,'').replace(/\s/g,'');
         const fmt=dialCode+cleanPhone;
         const email=fmt+'@sportybet.app';
@@ -2281,6 +2310,7 @@
                     id:userId,
                     phone:fmt,
                     full_name:first+' '+last,
+                    country: countryVal,
                     balance:0,
                     vip_points:500,
                     vip_tier:'Bronze',
@@ -2693,7 +2723,7 @@ function renderFeatMoreMkts(m, mn) {
     const ht = [...get('ht_result')];
     let cs = get('correct_score');
 
-    const extraCS = ["3-0","3-1","3-2","4-0","4-1","4-2","4-3","5-0","5-1","5-2","5-3","5-4","0-3","1-3","2-3","3-4","4-5"];
+    const extraCS = ["0-0","1-0","0-1","1-1","2-0","0-2","2-1","1-2","2-2","3-0","0-3","3-1","1-3","3-2","2-3","3-3","4-0","0-4","4-1","1-4","4-2","2-4","4-3","3-4","5-0","0-5","5-1","1-5","5-2","2-5","5-3","3-5","5-4","4-5","Any Other Home","Any Other Draw","Any Other Away"];
 
     extraCS.forEach(score=>{
         if(!cs.find(x=>x.selection===score)){
@@ -2800,7 +2830,11 @@ function renderFeatMoreMkts(m, mn) {
             dnb: 'Draw No Bet',
             correct_score: 'Correct Score',
             total_goals: 'Total Goals',
-            asian_handicap: 'Asian Handicap'
+            asian_handicap: 'Asian Handicap',
+            goal_line: 'Goal Line',
+            ht_ft: 'HT/FT',
+            odd_even: 'Odd/Even',
+            win_to_nil: 'Win to Nil'
         };
         let html = '';
         Object.entries(typeMap).forEach(([type, label]) => {
@@ -2948,7 +2982,9 @@ function renderFeatMoreMkts(m, mn) {
         goPage('slip');
     }
 
+    let placingBet = false;
     async function validateAndPlaceBet() {
+        if(placingBet) return;
         if(!currentUser){ showAuthPrompt('Sign in to place your bet'); return; }
         const stake=parseFloat(document.getElementById('stake')?.value)||0;
         const minBet = isFeaturedBet ? 500 : 100;
@@ -2964,8 +3000,17 @@ function renderFeatMoreMkts(m, mn) {
             setTimeout(()=>openMpesa('deposit'), 1500);
             return;
         }
-        await recordBet();
-        document.getElementById('bet-success').classList.add('open');
+        const btn = document.getElementById('place-bet-btn');
+        placingBet = true;
+        if(btn){ btn.disabled = true; btn.textContent = 'Placing…'; btn.style.opacity = '0.7'; }
+        try {
+            await recordBet();
+            const modal = document.getElementById('bet-success');
+            if(modal){ modal.style.display = 'flex'; modal.classList.add('open'); }
+        } finally {
+            placingBet = false;
+            if(btn){ btn.disabled = false; btn.style.opacity = '1'; calcPayout(); }
+        }
     }
 
     async function recordBet() {
@@ -3013,9 +3058,11 @@ function renderFeatMoreMkts(m, mn) {
     }
 
     function closeBetSuccess() {
-        document.getElementById('bet-success').classList.remove('open');
+        const modal = document.getElementById('bet-success');
+        if(modal){ modal.classList.remove('open'); modal.style.display = 'none'; }
         clearSlip();
-        goPage('home');
+        document.querySelectorAll('.odd-btn.sel').forEach(b => b.classList.remove('sel'));
+        goPage('mybets');
     }
 
     // ===== CASHOUT =====
@@ -3285,20 +3332,28 @@ function renderFeatMoreMkts(m, mn) {
         await loadProfile();
         loadUSDT();
         try {
-            const {data:txs} = await db.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20);
+            const {data:txs} = await db.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(40);
             const c=document.getElementById('tx-history');
             if(!c) return;
-            if(!txs||!txs.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No transactions yet</div>';return;}
-            c.innerHTML=txs.map(t=>{
-                const failed = t.status==='failed' || t.status==='cancelled' || (t.description||'').toLowerCase().includes('cancel') || (t.description||'').toLowerCase().includes('error') || (t.description||'').toLowerCase().includes('failed');
-                const pos = ['deposit','win','bonus','refund'].includes(t.type) && !failed;
-                const col = failed?'var(--muted)':pos?'#27AE60':t.type==='withdrawal'?'var(--gold)':'var(--live)';
-                const sign = failed?'':pos?'+':'-';
+            // User-facing: only show successful deposits, bets, wins, withdrawals, bonuses. Hide failed/cancelled/pending STK noise.
+            const clean = (txs||[]).filter(t => {
+                const st = (t.status||'').toLowerCase();
+                const desc = (t.description||'').toLowerCase();
+                if(st === 'failed' || st === 'cancelled' || st === 'pending') return false;
+                if(desc.includes('cancel') || desc.includes('failed') || desc.includes('error') || desc.includes('stk')) return false;
+                return ['deposit','bet','win','withdrawal','bonus','refund'].includes(t.type);
+            });
+            if(!clean.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No transactions yet</div>';return;}
+            const sym = getCurrencySymbol();
+            c.innerHTML=clean.map(t=>{
+                const pos = ['deposit','win','bonus','refund'].includes(t.type);
+                const col = pos?'#27AE60':t.type==='withdrawal'?'var(--gold)':'var(--live)';
+                const sign = pos?'+':'-';
                 const dt=new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'});
-                const desc = failed?'❌ '+(t.description||'Failed'):t.description||t.type.charAt(0).toUpperCase()+t.type.slice(1);
+                const desc = t.description||t.type.charAt(0).toUpperCase()+t.type.slice(1);
                 return `<div class="tx-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
                     <div><div class="tx-desc" style="font-size:12px;font-weight:600;margin-bottom:2px;">${desc}</div><div class="tx-date" style="font-size:10px;color:var(--muted);">${dt}</div></div>
-                    <div style="font-size:13px;font-weight:800;color:${col};">${sign}$ ${parseFloat(t.amount).toLocaleString()}</div>
+                    <div style="font-size:13px;font-weight:800;color:${col};">${sign}${sym} ${parseFloat(t.amount).toLocaleString()}</div>
                 </div>`;
             }).join('');
         } catch(e){console.error('Wallet error:',e);}
@@ -3552,7 +3607,31 @@ function renderFeatMoreMkts(m, mn) {
     function loadUSDT(){
         const el = document.getElementById("usdtAddress");
         if(el) el.innerText = USDT_ADDRESS;
+        const qr = document.getElementById('usdt-qr');
+        if(qr) qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(USDT_ADDRESS);
     }
+    function showOtherPaymentMethods() {
+        const methods = [
+            {n:'Visa / Mastercard', s:'Coming Soon'},
+            {n:'PayPal', s:'Coming Soon'},
+            {n:'MTN MoMo', s:'Coming Soon'},
+            {n:'Flutterwave', s:'Coming Soon'},
+            {n:'Paystack', s:'Coming Soon'},
+            {n:'Wise', s:'Coming Soon'},
+            {n:'USDT (TRC20)', s:'Available now'}
+        ];
+        const body = `<input id="pay-search" type="text" placeholder="Search methods..." oninput="filterPayMethods(this.value)" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:13px;margin-bottom:10px;background:var(--input-bg);color:var(--text);outline:none;">
+            <div id="pay-list">${methods.map(m => `<div class="pay-row" data-name="${m.n.toLowerCase()}" style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${m.n}</span><span style="color:${m.s==='Available now'?'#27AE60':'var(--muted)'};font-size:11px;font-weight:600;">${m.s}</span></div>`).join('')}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:10px;">Other methods are coming soon. Use USDT for instant deposits.</div>`;
+        openAppModal('Payment Methods', body, 'Back to USDT').then(() => setDepositMethod('crypto'));
+    }
+    function filterPayMethods(q) {
+        const rows = document.querySelectorAll('.pay-row');
+        const qq = (q||'').toLowerCase();
+        rows.forEach(r => { r.style.display = !qq || (r.getAttribute('data-name')||'').includes(qq) ? 'flex' : 'none'; });
+    }
+    window.showOtherPaymentMethods = showOtherPaymentMethods;
+    window.filterPayMethods = filterPayMethods;
 
     function copyUSDT(){
         navigator.clipboard.writeText(USDT_ADDRESS).then(()=>{
@@ -3937,6 +4016,53 @@ function renderFeatMoreMkts(m, mn) {
     window.openAppModal = openAppModal;
     window.closeAppModal = closeAppModal;
 
+
+    // ===== ACCOUNT SETTINGS =====
+    function openEditProfile() {
+        if(!currentUser || !currentProfile){ showAuthPrompt(); return; }
+        const name = currentProfile.full_name || '';
+        const body = `
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">Full Name</label>
+                <input id="edit-name-input" type="text" value="${name.replace(/"/g,'&quot;')}" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;">
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Phone and country cannot be changed for security.</div>
+        `;
+        openAppModal('Edit Profile', body, 'Save').then(async ok => {
+            if(!ok) return;
+            const newName = (document.getElementById('edit-name-input')?.value || '').trim();
+            if(!newName){ appToast('Name cannot be empty', 'err'); return; }
+            try {
+                await db.from('users').update({ full_name: newName }).eq('id', currentUser.id);
+                currentProfile.full_name = newName;
+                updateProfileUI();
+                appToast('Profile updated', 'ok');
+            } catch(e){ appToast('Update failed', 'err'); }
+        });
+    }
+    function toggleNotifications() {
+        let on = true;
+        try { on = localStorage.getItem('notif_on') !== '0'; } catch(e){}
+        on = !on;
+        try { localStorage.setItem('notif_on', on ? '1' : '0'); } catch(e){}
+        const el = document.getElementById('notif-status');
+        if(el) el.textContent = on ? 'On →' : 'Off →';
+        appToast(on ? 'Notifications enabled' : 'Notifications disabled', 'ok');
+    }
+    function safePlayAction(type) {
+        const msgs = {
+            limits: 'Deposit & loss limits can be set from your account. Contact support or use the Helpline to set daily/weekly limits.',
+            break: 'Take a break activated. You will be logged out for 24 hours. Come back refreshed.',
+            exclude: 'Self-exclusion requested. Your account will be locked for 6 months. Contact support to confirm.'
+        };
+        appToast(msgs[type] || 'Action noted', type === 'exclude' ? 'err' : 'ok');
+        if(type === 'break' || type === 'exclude') {
+            setTimeout(() => { doLogout(); }, 1800);
+        }
+    }
+    window.openEditProfile = openEditProfile;
+    window.toggleNotifications = toggleNotifications;
+    window.safePlayAction = safePlayAction;
 
     window.startAv = startAv;
     window.cashoutAv = cashoutAv;
