@@ -1100,13 +1100,13 @@
                 <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Stake ($)</div>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;">
                     <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                    <input class="stake-in" id="stake" type="number" value="100" min="50" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/ value="10" min="10" oninput="calcPayout()">
+                    <input class="stake-in" id="stake" type="number" value="10" min="10" step="1" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;">
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;" id="qs-row">
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
                     <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">1K</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">2K</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;">
                     <span style="font-size:13px;color:var(--muted);">Potential Win</span>
@@ -1267,9 +1267,26 @@
         <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">Sign in to your account</div>
         <div class="err-box" id="login-err" style="background:var(--live-bg);border:1px solid rgba(232,0,45,0.3);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--live);margin-bottom:13px;display:none;"></div>
         <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Country</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
+                <select id="lcountry" style="background:var(--input-bg);color:var(--text);width:100%;border:none;outline:none;appearance:none;-webkit-appearance:none;padding:11px 12px;font-size:14px;" onchange="updateLoginDial(this)">
+                    <option value="" data-code="" data-flag="">🌍 Select Country</option>
+                    <option value="KE" data-code="+254" data-flag="🇰🇪">🇰🇪 Kenya</option>
+                    <option value="NG" data-code="+234" data-flag="🇳🇬">🇳🇬 Nigeria</option>
+                    <option value="GH" data-code="+233" data-flag="🇬🇭">🇬🇭 Ghana</option>
+                    <option value="TZ" data-code="+255" data-flag="🇹🇿">🇹🇿 Tanzania</option>
+                    <option value="UG" data-code="+256" data-flag="🇺🇬">🇺🇬 Uganda</option>
+                    <option value="ZA" data-code="+27" data-flag="🇿🇦">🇿🇦 South Africa</option>
+                    <option value="GB" data-code="+44" data-flag="🇬🇧">🇬🇧 United Kingdom</option>
+                    <option value="US" data-code="+1" data-flag="🇺🇸">🇺🇸 United States</option>
+                    <option value="OTHER" data-code="+" data-flag="🌍">🌍 Other</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-bottom:13px;">
             <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Phone Number</label>
             <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);transition:border-color .15s;">
-                <div style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;"></div>
+                <div id="login-dial" style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;">+254</div>
                 <input type="tel" id="lp" placeholder="7XX XXX XXX" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
             </div>
         </div>
@@ -2329,6 +2346,14 @@
         }
     }
 
+    function updateLoginDial(sel) {
+        const opt = sel.options[sel.selectedIndex];
+        const code = opt.getAttribute('data-code') || '+254';
+        const el = document.getElementById('login-dial');
+        if(el) el.textContent = code;
+    }
+    window.updateLoginDial = updateLoginDial;
+
     async function doLogin() {
         const phone=document.getElementById('lp')?.value.trim(), pass=document.getElementById('lpass')?.value;
         const err=document.getElementById('login-err');
@@ -2336,8 +2361,10 @@
         if(!phone||!pass){err.textContent='Please fill in all fields.';err.style.display='block';return;}
         const btn=document.getElementById('login-btn');
         btn.textContent='Signing in...'; btn.disabled=true;
+        const dialEl = document.getElementById('login-dial');
+        const dial = (dialEl?.textContent || '+254').replace('+','');
         const cleanPhone=phone.replace(/^0/,'').replace(/\s/g,'');
-        let fmt='254'+cleanPhone;
+        let fmt = dial + cleanPhone;
         try {
             const {data:udata} = await db.from('users').select('phone').like('phone','%'+cleanPhone).maybeSingle();
             if(udata?.phone) fmt=udata.phone;
@@ -2389,7 +2416,17 @@
         if(currentUser) {
             g.style.display='none';
             u.style.display='flex';
-            if(currentProfile) setEl('hdr-bal', parseFloat(currentProfile.balance||0).toLocaleString());
+            if(currentProfile) {
+                const bal = parseFloat(currentProfile.balance||0);
+                // Show converted amount for Kenyans, raw number for others
+                if (isKenyanUser()) {
+                    setEl('hdr-bal', Math.round(bal * EXCHANGE_RATE_KES).toLocaleString());
+                } else {
+                    setEl('hdr-bal', bal.toLocaleString());
+                }
+                const curEl = document.getElementById('hdr-currency');
+                if(curEl) curEl.textContent = getCurrencySymbol();
+            }
         } else {
             g.style.display='flex';
             u.style.display='none';
@@ -2404,7 +2441,11 @@
         setEl('dash-bal-display', fmtMoney(bal));
         setEl('dash-vip',pts.toLocaleString());
         setEl('wallet-bal-display', fmtMoney(bal));
-        setEl('hdr-bal', bal.toLocaleString());
+        if (isKenyanUser()) {
+            setEl('hdr-bal', Math.round(bal * EXCHANGE_RATE_KES).toLocaleString());
+        } else {
+            setEl('hdr-bal', bal.toLocaleString());
+        }
         const curEl = document.getElementById('hdr-currency');
         if(curEl) curEl.textContent = getCurrencySymbol();
         setEl('acc-bal-row', fmtMoney(bal)+' →');
@@ -2413,6 +2454,7 @@
         const tiers={Bronze:20,Silver:210,Gold:4000,Platinum:200,Diamond:99999};
         const next=Object.entries(tiers).find(([,v]) => pts<v);
         if(next){setEl('acc-vip-next',(next[1]-pts).toLocaleString()+' pts to '+next[0]);const bar=document.getElementById('acc-vip-bar');if(bar)bar.style.width=Math.min(100,(pts/next[1])*100)+'%';}
+        try { updateStakeUIForCurrency(); } catch(e){}
     }
 
     function showAuthPrompt(msg) {
@@ -2670,7 +2712,7 @@
         if(diff <= 0) return '🔴 LIVE';
         const h = Math.floor(diff/3600000);
         const m = Math.floor((diff%3600000)/60000);
-        const s = Math.floor((diff%60000)/20);
+        const s = Math.floor((diff%60000)/1000);
         if(h > 24) return `${Math.floor(h/24)}d ${h%24}h`;
         if(h > 0) return `${h}h ${m}m ${s}s`;
         return `${m}m ${s}s`;
@@ -2697,11 +2739,11 @@
             }
             const h = Math.floor(diff/3600000);
             const m = Math.floor((diff%3600000)/60000);
-            const s = Math.floor((diff%60000)/20);
+            const s = Math.floor((diff%60000)/1000);
             if(h > 24) el.textContent = `${Math.floor(h/24)}d ${h%24}h`;
             else if(h > 0) el.textContent = `${h}h ${m}m ${s}s`;
             else el.textContent = `${m}m ${s}s`;
-        }, 20);
+        }, 1000);
     }
 
     function toggleFeatMarkets() {
@@ -2937,24 +2979,28 @@ function renderFeatMoreMkts(m, mn) {
     }
 
     function calcPayout() {
-        const stake = parseFloat(document.getElementById('stake')?.value)||0;
+        const displayStake = parseFloat(document.getElementById('stake')?.value)||0;
+        const stakeUSD = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
         const odds = slipMode==='single'?(slip.length?slip[slip.length-1].val:1):slip.reduce((a,s)=>a*s.val,1);
         const sym = getCurrencySymbol();
         setEl('tot-odds', odds.toFixed(2));
-        setEl('pot-win', sym+' '+Math.round(stake*odds).toLocaleString());
+        // Potential win shown in user's display currency
+        const potDisplay = isKenyanUser() ? Math.round(stakeUSD * odds * EXCHANGE_RATE_KES) : Math.round(stakeUSD * odds);
+        setEl('pot-win', sym+' '+potDisplay.toLocaleString());
         setEl('sel-ct', slip.length);
         const btn = document.getElementById('place-bet-btn');
         if(btn) {
-            const bal = parseFloat(currentProfile?.balance||0);
+            const balUSD = parseFloat(currentProfile?.balance||0);
+            const balDisp = isKenyanUser() ? Math.round(balUSD * EXCHANGE_RATE_KES) : balUSD;
             if(!currentUser) btn.textContent = 'Sign In to Bet';
-            else if(bal >= stake) btn.textContent = `Place Bet — ${sym} ${stake.toLocaleString()}`;
-            else btn.textContent = `Deposit & Bet (Need ${sym} ${(stake-bal).toLocaleString()} more)`;
+            else if(balUSD >= stakeUSD) btn.textContent = `Place Bet — ${sym} ${Math.round(displayStake).toLocaleString()}`;
+            else btn.textContent = `Deposit & Bet (Need ${sym} ${Math.max(0, Math.round(displayStake - balDisp)).toLocaleString()} more)`;
         }
         const note = document.getElementById('bet-balance-note');
         if(note) {
-            const bal = parseFloat(currentProfile?.balance||0);
-            note.textContent = `Available balance: ${sym} ${bal.toLocaleString()}`;
-            note.style.color = bal >= stake ? 'var(--muted)' : 'var(--live)';
+            const balUSD = parseFloat(currentProfile?.balance||0);
+            note.textContent = `Available balance: ${fmtMoney(balUSD)}`;
+            note.style.color = balUSD >= stakeUSD ? 'var(--muted)' : 'var(--live)';
         }
     }
 
@@ -2974,10 +3020,10 @@ function renderFeatMoreMkts(m, mn) {
         if(stakeEl && parseFloat(stakeEl.value) < 10) { stakeEl.value = 10; calcPayout(); }
         const qsRow = document.getElementById('qs-row');
         if(qsRow) qsRow.innerHTML = `
-            <div class="qs" onclick="setStake(10)">10</div>
-            <div class="qs" onclick="setStake(20)">1K</div>
-            <div class="qs" onclick="setStake(50)">2K</div>
-            <div class="qs" onclick="setStake(100)">5K</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
         `;
         goPage('slip');
     }
@@ -2986,12 +3032,14 @@ function renderFeatMoreMkts(m, mn) {
     async function validateAndPlaceBet() {
         if(placingBet) return;
         if(!currentUser){ showAuthPrompt('Sign in to place your bet'); return; }
-        const stake=parseFloat(document.getElementById('stake')?.value)||0;
-        const minBet = isFeaturedBet ? 10 : 100;
+        const displayStake=parseFloat(document.getElementById('stake')?.value)||0;
+        const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
+        const minBet = 10; // USD base minimum
         if(stake < minBet){
             const inp=document.getElementById('stake');
-            if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',20); }
-            appToast('Minimum bet is ' + getCurrencySymbol() + ' ' + minBet, 'err');
+            const minDisp = isKenyanUser() ? minBet * EXCHANGE_RATE_KES : minBet;
+            if(inp){ inp.value=minDisp; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',200); }
+            appToast('Minimum bet is ' + getCurrencySymbol() + ' ' + (isKenyanUser() ? (minBet * EXCHANGE_RATE_KES) : minBet), 'err');
             return;
         }
         const balance = parseFloat(currentProfile?.balance||0);
@@ -3015,9 +3063,10 @@ function renderFeatMoreMkts(m, mn) {
 
     async function recordBet() {
         if(!currentUser||!currentProfile||!slip.length) return;
-        const stake=parseFloat(document.getElementById('stake')?.value)||100;
+        const displayStake=parseFloat(document.getElementById('stake')?.value)||10;
+        const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
         const totalOdds=slipMode==='acca'?slip.reduce((a,s)=>a*s.val,1):slip[slip.length-1].val;
-        const potWin=Math.round(stake*totalOdds);
+        const potWin=Math.round(stake*totalOdds * 100) / 100;
         const ref='#XO'+Math.floor(Math.random()*90000+200);
         try {
             const {data:bet}=await db.from('bets').insert({
@@ -3640,18 +3689,61 @@ function renderFeatMoreMkts(m, mn) {
         }).catch(()=>prompt('Copy this address:', USDT_ADDRESS));
     }
 
-    // ===== CURRENCY HELPER (USD default, $ only for Kenya) =====
-    function fmtMoney(amount, forceKE) {
-        const isKE = forceKE || (currentProfile && (currentProfile.country === 'KE' || (currentProfile.phone||'').startsWith('254')));
-        const n = parseFloat(amount) || 0;
-        if (isKE) return 'KSh ' + n.toLocaleString();
+    // ===== CURRENCY HELPER =====
+    // Internal balance is always stored in USD.
+    // Kenyan users (country KE or phone starts with 254) see KES at a live-ish rate.
+    const EXCHANGE_RATE_KES = 130; // 1 USD ≈ 130 KES (update as needed)
+
+    function isKenyanUser() {
+        return !!(currentProfile && (currentProfile.country === 'KE' || (currentProfile.phone||'').startsWith('254')));
+    }
+
+    function fmtMoney(amountUSD, forceKE) {
+        const n = parseFloat(amountUSD) || 0;
+        const showKE = forceKE === true || (forceKE !== false && isKenyanUser());
+        if (showKE) {
+            return 'KSh ' + Math.round(n * EXCHANGE_RATE_KES).toLocaleString();
+        }
         return '$' + n.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:2});
     }
 
     function getCurrencySymbol() {
-        const isKE = currentProfile && (currentProfile.country === 'KE' || (currentProfile.phone||'').startsWith('254'));
-        return isKE ? 'KSh' : '$';
+        return isKenyanUser() ? 'KSh' : '$';
     }
+
+    // Convert a display stake (what user typed) back to USD for DB
+    function stakeToUSD(displayVal) {
+        const v = parseFloat(displayVal) || 0;
+        if (isKenyanUser()) return Math.round((v / EXCHANGE_RATE_KES) * 100) / 100;
+        return v;
+    }
+
+    // Convert USD stake to display amount
+    function stakeToDisplay(usd) {
+        const v = parseFloat(usd) || 0;
+        if (isKenyanUser()) return Math.round(v * EXCHANGE_RATE_KES);
+        return v;
+    }
+
+    function updateStakeUIForCurrency() {
+        const prefix = document.getElementById('stake-prefix');
+        const label = document.getElementById('stake-label');
+        const inp = document.getElementById('stake');
+        if (prefix) prefix.textContent = getCurrencySymbol();
+        if (label) label.textContent = 'Stake (' + getCurrencySymbol() + ')';
+        if (inp) {
+            // keep min 10 USD equivalent
+            const minDisp = isKenyanUser() ? 10 * EXCHANGE_RATE_KES : 10;
+            inp.min = minDisp;
+            if (parseFloat(inp.value) < minDisp) inp.value = minDisp;
+        }
+        try { calcPayout(); } catch(e){}
+    }
+    window.updateStakeUIForCurrency = updateStakeUIForCurrency;
+    window.stakeToUSD = stakeToUSD;
+    window.stakeToDisplay = stakeToDisplay;
+    window.isKenyanUser = isKenyanUser;
+    window.EXCHANGE_RATE_KES = EXCHANGE_RATE_KES;
 
     // ===== AVIATOR =====
     let av = 1, avRun = false, avInterval = null, avHistory = [];
@@ -4085,58 +4177,6 @@ function switchTab(i){
 }
 </script>
 
-
-<script>
-let EXCHANGE_RATE = 130;
-let userCurrency = "USD";
-
-function handleCountryChange(){
-  let code = document.getElementById("country-code")?.value;
-  userCurrency = (code === "+254") ? "KES" : "USD";
-  initStake();
-  calcPayout();
-}
-
-function initStake(){
-  let base = 10;
-  let val = userCurrency === "KES" ? base * EXCHANGE_RATE : base;
-  let el = document.getElementById("stake");
-  if(el) el.value = val;
-}
-
-function calcPayout(){
-  let stakeInput = document.getElementById("stake");
-  if(!stakeInput) return;
-
-  let input = parseFloat(stakeInput.value) || 0;
-  let oddsEl = document.getElementById("tot-odds");
-  let odds = oddsEl ? parseFloat(oddsEl.innerText) : 1;
-
-  let stakeUSD = userCurrency === "KES" ? input / EXCHANGE_RATE : input;
-  if(stakeUSD < 10) stakeUSD = 10;
-
-  let winUSD = stakeUSD * odds;
-
-  let stakeDisplay = userCurrency === "KES" ? stakeUSD * EXCHANGE_RATE : stakeUSD;
-  let winDisplay = userCurrency === "KES" ? winUSD * EXCHANGE_RATE : winUSD;
-
-  let winEl = document.getElementById("pot-win");
-  if(winEl){
-    winEl.innerText = (userCurrency==="KES"?"KSh ":"$ ") + Math.round(winDisplay);
-  }
-
-  let btn = document.getElementById("place-bet-btn");
-  if(btn){
-    btn.innerText = "Place Bet — " + (userCurrency==="KES"?"KSh ":"$ ") + Math.round(stakeDisplay);
-  }
-}
-
-window.addEventListener("load", function(){
-  initStake();
-  calcPayout();
-});
-</script>
-
 </body>
-        </html>
+</html>
 
