@@ -1973,7 +1973,7 @@
     let currentUser = null;
     let currentProfile = null;
     let slip = [];
-    let slipMode = 'single';
+    let slipMode = 'acca';
     let currentSport = 'football';
     let isDark = false;
     let allMatches = [];
@@ -2147,6 +2147,14 @@
         slipMode = mode;
         document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
+        // Visual underline like original
+        document.querySelectorAll('.stab').forEach(t => {
+            t.style.color = '';
+            t.style.borderBottomColor = 'transparent';
+        });
+        el.style.color = 'var(--gold)';
+        el.style.borderBottomColor = 'var(--gold)';
+        renderSlip(); // refresh odds product + potential win
         calcPayout();
     }
 
@@ -2917,10 +2925,10 @@ function renderFeatMoreMkts(m, mn) {
             isFeaturedBet=false;
             const qsRow = document.getElementById('qs-row');
             if(qsRow) qsRow.innerHTML = `
-                <div class="qs" onclick="setStake(100)">100</div>
-                <div class="qs" onclick="setStake(10)">10</div>
-                <div class="qs" onclick="setStake(20)">1K</div>
-                <div class="qs" onclick="setStake(50)">2K</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
             `;
         }
         renderSlip();
@@ -2947,7 +2955,7 @@ function renderFeatMoreMkts(m, mn) {
                 </div>
                 <div style="text-align:right;">
                     <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:2px;">Potential Win</div>
-                    <div style="font-size:16px;font-weight:800;color:#fff;">$ ${Math.round((parseFloat(document.getElementById('stake')?.value)||100)*totalOdds).toLocaleString()}</div>
+                    <div style="font-size:16px;font-weight:800;color:#fff;">${(typeof getCurrencySymbol==='function'?getCurrencySymbol():'$')} ${Math.round((parseFloat(document.getElementById('stake')?.value)||10)*totalOdds).toLocaleString()}</div>
                 </div>
             </div>
         ` : '';
@@ -2978,29 +2986,57 @@ function renderFeatMoreMkts(m, mn) {
         renderSlip();
     }
 
-    function calcPayout() {
-        const displayStake = parseFloat(document.getElementById('stake')?.value)||0;
-        const stakeUSD = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
-        const odds = slipMode==='single'?(slip.length?slip[slip.length-1].val:1):slip.reduce((a,s)=>a*s.val,1);
-        const sym = getCurrencySymbol();
-        setEl('tot-odds', odds.toFixed(2));
-        // Potential win shown in user's display currency
-        const potDisplay = isKenyanUser() ? Math.round(stakeUSD * odds * EXCHANGE_RATE_KES) : Math.round(stakeUSD * odds);
-        setEl('pot-win', sym+' '+potDisplay.toLocaleString());
-        setEl('sel-ct', slip.length);
-        const btn = document.getElementById('place-bet-btn');
-        if(btn) {
-            const balUSD = parseFloat(currentProfile?.balance||0);
-            const balDisp = isKenyanUser() ? Math.round(balUSD * EXCHANGE_RATE_KES) : balUSD;
-            if(!currentUser) btn.textContent = 'Sign In to Bet';
-            else if(balUSD >= stakeUSD) btn.textContent = `Place Bet — ${sym} ${Math.round(displayStake).toLocaleString()}`;
-            else btn.textContent = `Deposit & Bet (Need ${sym} ${Math.max(0, Math.round(displayStake - balDisp)).toLocaleString()} more)`;
+    function getSlipTotalOdds() {
+        if(!slip || !slip.length) return 1;
+        if(slipMode === 'single') {
+            // Single = last selection only
+            return parseFloat(slip[slip.length - 1].val) || 1;
         }
-        const note = document.getElementById('bet-balance-note');
-        if(note) {
-            const balUSD = parseFloat(currentProfile?.balance||0);
-            note.textContent = `Available balance: ${fmtMoney(balUSD)}`;
-            note.style.color = balUSD >= stakeUSD ? 'var(--muted)' : 'var(--live)';
+        // Accumulator = product of all odds
+        return slip.reduce((acc, s) => acc * (parseFloat(s.val) || 1), 1);
+    }
+
+    function calcPayout() {
+        try {
+            const stakeEl = document.getElementById('stake');
+            let displayStake = parseFloat(stakeEl?.value);
+            if(isNaN(displayStake) || displayStake < 0) displayStake = 0;
+
+            // Total odds (multiplied for acca)
+            const odds = getSlipTotalOdds();
+
+            // Potential win in the SAME units the user typed as stake
+            // (for KE users stake is KSh; for others stake is USD)
+            // pot = stake × odds  (display currency)
+            const potDisplay = Math.round(displayStake * odds * 100) / 100;
+
+            const sym = (typeof getCurrencySymbol === 'function') ? getCurrencySymbol() : '$';
+            setEl('tot-odds', odds.toFixed(2));
+            setEl('pot-win', sym + ' ' + potDisplay.toLocaleString(undefined, {maximumFractionDigits: 2}));
+            setEl('sel-ct', String(slip.length));
+
+            // USD stake for balance checks / DB
+            const stakeUSD = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
+            const balUSD = parseFloat(currentProfile?.balance || 0);
+
+            const btn = document.getElementById('place-bet-btn');
+            if(btn) {
+                if(!currentUser) {
+                    btn.textContent = 'Sign In to Bet';
+                } else if(balUSD >= stakeUSD && stakeUSD > 0) {
+                    btn.textContent = 'Place Bet — ' + sym + ' ' + Math.round(displayStake).toLocaleString();
+                } else {
+                    const need = Math.max(0, displayStake - ((typeof stakeToDisplay === 'function') ? stakeToDisplay(balUSD) : balUSD));
+                    btn.textContent = 'Deposit & Bet (Need ' + sym + ' ' + Math.round(need).toLocaleString() + ' more)';
+                }
+            }
+            const note = document.getElementById('bet-balance-note');
+            if(note) {
+                note.textContent = 'Available balance: ' + ((typeof fmtMoney === 'function') ? fmtMoney(balUSD) : ('$ ' + balUSD));
+                note.style.color = balUSD >= stakeUSD ? 'var(--muted)' : 'var(--live)';
+            }
+        } catch(e) {
+            console.error('calcPayout error', e);
         }
     }
 
@@ -3065,8 +3101,8 @@ function renderFeatMoreMkts(m, mn) {
         if(!currentUser||!currentProfile||!slip.length) return;
         const displayStake=parseFloat(document.getElementById('stake')?.value)||10;
         const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
-        const totalOdds=slipMode==='acca'?slip.reduce((a,s)=>a*s.val,1):slip[slip.length-1].val;
-        const potWin=Math.round(stake*totalOdds * 100) / 100;
+        const totalOdds = (typeof getSlipTotalOdds === 'function') ? getSlipTotalOdds() : (slipMode==='acca'?slip.reduce((a,s)=>a*(parseFloat(s.val)||1),1):(slip.length?parseFloat(slip[slip.length-1].val)||1:1));
+        const potWin = Math.round(stake * totalOdds * 100) / 100;
         const ref='#XO'+Math.floor(Math.random()*90000+200);
         try {
             const {data:bet}=await db.from('bets').insert({
@@ -4179,4 +4215,3 @@ function switchTab(i){
 
 </body>
 </html>
-
