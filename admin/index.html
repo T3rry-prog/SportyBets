@@ -142,7 +142,8 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
     <div class="login-sub">Admin Dashboard · Restricted Access</div>
     <div class="login-badge">🔐 Authorised Personnel Only</div>
     <div class="f-row"><label class="f-label">Admin Password</label><input class="f-input" type="password" id="admin-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()"/></div>
-    <button class="btn-primary" onclick="doAdminLogin()">Access Dashboard →</button>
+    <button type="button" id="admin-login-btn" class="btn-primary" onclick="window.doAdminLogin && window.doAdminLogin()">Access Dashboard →</button>
+    <div id="login-err" style="display:none;margin-top:8px;font-size:12px;color:var(--red);text-align:center;font-weight:600;"></div>
   </div>
 </div>
 
@@ -526,29 +527,87 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
 <script>
 const SUPA_URL = 'https://nmcdwmmfdrazmufodirq.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tY2R3bW1mZHJhem11Zm9kaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODc0ODQsImV4cCI6MjEwMTM2MzQ4NH0.WA2IFshLUxmQ8C87dUhhAqOQggmvPttUqwl1IxVbOZk';
-const { createClient } = supabase;
-const db = createClient(SUPA_URL, SUPA_KEY);
+let db = null;
+try {
+  if(typeof supabase !== 'undefined' && supabase.createClient) {
+    db = supabase.createClient(SUPA_URL, SUPA_KEY);
+  } else if(typeof supabase !== 'undefined') {
+    const { createClient } = supabase;
+    db = createClient(SUPA_URL, SUPA_KEY);
+  }
+} catch(e) {
+  console.error('Supabase init failed', e);
+}
 
 const ADMIN_PASSWORD = 'sportybet2025';
 let selectedMatch = null;
 let selectedEvType = null;
 let currentStatus = 'upcoming';
 
-// ── LOGIN ──
+// ── LOGIN (must work even if Supabase fails) ──
 function doAdminLogin() {
-  const pass = document.getElementById('admin-pass').value;
-  if(pass === ADMIN_PASSWORD) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-wrap').style.display = 'block';
-    loadMatchSelector();
-    loadAllMatches();
-  } else {
-    document.getElementById('admin-pass').style.borderColor = 'var(--red)';
-    setTimeout(() => document.getElementById('admin-pass').style.borderColor = '', 1000);
+  try {
+    const passEl = document.getElementById('admin-pass');
+    const errEl = document.getElementById('login-err');
+    const pass = (passEl && passEl.value) ? passEl.value.trim() : '';
+    if(errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+    if(pass === ADMIN_PASSWORD) {
+      const login = document.getElementById('login-screen');
+      const wrap = document.getElementById('admin-wrap');
+      if(login) login.style.display = 'none';
+      if(wrap) {
+        wrap.style.display = 'block';
+        wrap.style.visibility = 'visible';
+      }
+      try { if(typeof loadMatchSelector === 'function') loadMatchSelector(); } catch(e) { console.warn(e); }
+      try { if(typeof loadAllMatches === 'function') loadAllMatches(); } catch(e) { console.warn(e); }
+    } else {
+      if(passEl) {
+        passEl.style.borderColor = 'var(--red)';
+        setTimeout(() => { if(passEl) passEl.style.borderColor = ''; }, 1200);
+      }
+      if(errEl) {
+        errEl.style.display = 'block';
+        errEl.textContent = pass ? 'Incorrect password' : 'Enter the admin password';
+      }
+    }
+  } catch(e) {
+    console.error('login error', e);
+    alert('Login error: ' + e.message);
   }
 }
-document.getElementById('admin-pass').addEventListener('keydown', e => { if(e.key === 'Enter') doAdminLogin(); });
-function adminLogout() { document.getElementById('login-screen').style.display='flex'; document.getElementById('admin-wrap').style.display='none'; }
+window.doAdminLogin = doAdminLogin;
+
+function adminLogout() {
+  const login = document.getElementById('login-screen');
+  const wrap = document.getElementById('admin-wrap');
+  if(login) login.style.display = 'flex';
+  if(wrap) wrap.style.display = 'none';
+  const passEl = document.getElementById('admin-pass');
+  if(passEl) passEl.value = '';
+}
+window.adminLogout = adminLogout;
+
+// Bind Enter key after DOM ready
+(function bindAdminLogin() {
+  function bind() {
+    const passEl = document.getElementById('admin-pass');
+    const btn = document.getElementById('admin-login-btn');
+    if(passEl) {
+      passEl.addEventListener('keydown', function(e) {
+        if(e.key === 'Enter') { e.preventDefault(); doAdminLogin(); }
+      });
+    }
+    if(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        doAdminLogin();
+      });
+    }
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+})();
 
 // ── TABS ──
 function setAdmTab(el, tab) {
@@ -1649,7 +1708,6 @@ async function adminSettleBet(betId, userId, payout, status) {
   }
 }
 window.adminSettleBet = adminSettleBet;
-}
 
 async function updateUserBalance() {
   if(!selectedUser) return;
@@ -1714,4 +1772,3 @@ async function updateVIP() {
 </script>
 </body>
 </html>
-
