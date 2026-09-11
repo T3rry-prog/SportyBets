@@ -655,7 +655,7 @@ async function loadDeposits() {
               <button onclick="openUserDetail('${t.user_id}')" style="margin-top:6px;background:none;border:none;color:var(--gold);font-size:11px;font-weight:700;cursor:pointer;padding:0;">👤 View full user →</button>
             </div>
             <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
-              <button onclick="confirmDeposit('${t.id}','${t.user_id}',${t.amount})" style="background:#27AE60;border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:800;padding:8px 12px;cursor:pointer;">✅ Confirm & Credit</button>
+              <button onclick="this.disabled=true;this.textContent='…';confirmDeposit('${t.id}','${t.user_id}',${t.amount})" style="background:#27AE60;border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:800;padding:8px 12px;cursor:pointer;">✅ Confirm & Credit</button>
               <button onclick="rejectDeposit('${t.id}')" style="background:var(--red2);border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:700;padding:7px 10px;cursor:pointer;">✕ Reject</button>
             </div>
           </div>
@@ -736,22 +736,53 @@ async function loadDeposits() {
 }
 
 async function confirmDeposit(txId, userId, amount) {
-  if(!confirm(`Confirm deposit of $ ${parseFloat(amount).toLocaleString()}? This will credit the user's balance.`)) return;
+  if(!confirm(`Confirm deposit of $ ${parseFloat(amount).toLocaleString()}? This will credit the user's balance once.`)) return;
   try {
-    const { data: user } = await db.from('users').select('balance').eq('id',userId).single();
-    const current = parseFloat(user?.balance||0);
-    const amt = parseFloat(amount);
+    // 1) Load transaction — only credit if still pending
+    const { data: tx, error: txErr } = await db.from('transactions')
+      .select('id,status,amount,user_id,description')
+      .eq('id', txId)
+      .single();
+    if(txErr) throw txErr;
+    if(!tx) { showToast('Transaction not found','err'); return; }
+    if(tx.status !== 'pending') {
+      showToast('Already processed (' + tx.status + ') — not credited again','err');
+      loadDeposits();
+      return;
+    }
+
+    const amt = parseFloat(tx.amount != null ? tx.amount : amount) || 0;
+    const uid = tx.user_id || userId;
+
+    // 2) Mark completed ONLY if still pending (prevents double confirm)
+    const { data: updated, error: upErr } = await db.from('transactions')
+      .update({
+        status: 'completed',
+        description: (tx.description || 'Deposit') + ' · confirmed by admin'
+      })
+      .eq('id', txId)
+      .eq('status', 'pending')
+      .select('id');
+    if(upErr) throw upErr;
+    if(!updated || !updated.length) {
+      showToast('Already confirmed by someone else — balance not changed','err');
+      loadDeposits();
+      return;
+    }
+
+    // 3) Credit balance once
+    const { data: user } = await db.from('users').select('balance').eq('id', uid).single();
+    const current = parseFloat(user?.balance || 0);
     const newBal = current + amt;
-    await db.from('users').update({balance:newBal}).eq('id',userId);
+    await db.from('users').update({ balance: newBal }).eq('id', uid);
     await db.from('transactions').update({
-      status:'completed',
       balance_before: current,
-      balance_after: newBal,
-      description:'Deposit confirmed by admin'
-    }).eq('id',txId);
-    showToast('✅ Deposit confirmed — $ '+amt.toLocaleString()+' credited','ok');
+      balance_after: newBal
+    }).eq('id', txId);
+
+    showToast('✅ Deposit confirmed — $ ' + amt.toLocaleString() + ' credited (once)','ok');
     loadDeposits();
-  } catch(e) { showToast('Error: '+e.message,'err'); }
+  } catch(e) { showToast('Error: ' + e.message, 'err'); }
 }
 
 async function rejectDeposit(txId) {
@@ -1594,7 +1625,7 @@ async function loadUserDeposits(userId) {
         </div>
         <div style="text-align:right;">
           <div style="font-size:11px;font-weight:800;color:${col};">${(t.status||'').toUpperCase()}</div>
-          ${st==='pending' ? `<button onclick="confirmDeposit('${t.id}','${userId}',${t.amount})" style="margin-top:4px;background:#27AE60;border:none;border-radius:6px;color:#fff;font-size:10px;font-weight:800;padding:5px 8px;cursor:pointer;">Confirm</button>` : ''}
+          ${st==='pending' ? `<button onclick="this.disabled=true;this.textContent='…';confirmDeposit('${t.id}','${userId}',${t.amount})" style="margin-top:4px;background:#27AE60;border:none;border-radius:6px;color:#fff;font-size:10px;font-weight:800;padding:5px 8px;cursor:pointer;">Confirm</button>` : ''}
         </div>
       </div>`;
     }).join('');
@@ -1772,3 +1803,4 @@ async function updateVIP() {
 </script>
 </body>
 </html>
+
