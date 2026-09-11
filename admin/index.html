@@ -576,21 +576,32 @@ async function loadDeposits() {
     if(!pending||!pending.length) {
       pel.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:16px;">No pending deposits</div>';
     } else {
-      pel.innerHTML = pending.map(t => `
+      pel.innerHTML = pending.map(t => {
+        const desc = t.description || '';
+        let coin = '📱 M-Pesa';
+        if(/BTC/i.test(desc)) coin = '₿ BTC';
+        else if(/ETH/i.test(desc)) coin = 'Ξ ETH';
+        else if(/USDT|TRC20|crypto/i.test(desc)) coin = '₮ USDT';
+        const ref = t.reference || t.mpesa_code || '—';
+        return `
         <div style="padding:12px 0;border-bottom:1px solid var(--border);">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-            <div>
-              <div style="font-size:13px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()}</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;">${t.users?.full_name||'User'} · ${t.users?.phone||''}</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:2px;">Ref: ${t.mpesa_code||t.reference||'—'} · ${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
-              <div style="font-size:10px;color:var(--muted);">${(t.description||'').includes('USDT')||(t.description||'').includes('crypto')?'₮ USDT':'📱 M-Pesa'}</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:15px;font-weight:800;color:#27AE60;">$ ${parseFloat(t.amount).toLocaleString()}</div>
+              <div style="font-size:12px;font-weight:700;margin-top:3px;">${t.users?.full_name||'User'}</div>
+              <div style="font-size:11px;color:var(--muted);">+${t.users?.phone||'—'} · ${coin}</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:3px;word-break:break-all;">${desc || 'Deposit request'}</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px;">Ref: ${ref}</div>
+              <div style="font-size:10px;color:var(--muted);">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
+              <button onclick="openUserDetail('${t.user_id}')" style="margin-top:6px;background:none;border:none;color:var(--gold);font-size:11px;font-weight:700;cursor:pointer;padding:0;">👤 View full user →</button>
             </div>
-            <div style="display:flex;gap:5px;">
-              <button onclick="confirmDeposit('${t.id}','${t.user_id}',${t.amount})" style="background:#27AE60;border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:800;padding:7px 12px;cursor:pointer;">✅ Confirm</button>
-              <button onclick="rejectDeposit('${t.id}')" style="background:var(--red2);border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:700;padding:7px 10px;cursor:pointer;">✕</button>
+            <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
+              <button onclick="confirmDeposit('${t.id}','${t.user_id}',${t.amount})" style="background:#27AE60;border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:800;padding:8px 12px;cursor:pointer;">✅ Confirm & Credit</button>
+              <button onclick="rejectDeposit('${t.id}')" style="background:var(--red2);border:none;border-radius:var(--r);color:#fff;font-size:11px;font-weight:700;padding:7px 10px;cursor:pointer;">✕ Reject</button>
             </div>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
 
     // Confirmed deposits
@@ -1467,32 +1478,177 @@ async function openUserDetail(userId) {
   document.getElementById('ud-joined').textContent = 'Joined: ' + joined;
   document.getElementById('ud-balance').textContent = '$ ' + parseFloat(selectedUser.balance||0).toLocaleString();
   document.getElementById('ud-vip').value = selectedUser.vip_points || 0;
-  // Scroll to detail
+  const countryEl = document.getElementById('ud-joined');
+  if(countryEl) {
+    const c = selectedUser.country ? ' · ' + selectedUser.country : '';
+    countryEl.textContent = 'Joined: ' + joined + c + ' · VIP ' + (selectedUser.vip_tier || 'Bronze');
+  }
+  // Ensure Users tab visible when opening from deposits
+  try {
+    document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
+    const tabs = document.querySelectorAll('.adm-tab');
+    tabs.forEach(t => { if((t.textContent||'').includes('Users')) t.classList.add('active'); });
+    ['tab-featured','tab-matches','tab-events','tab-deposits','tab-users'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.style.display = id === 'tab-users' ? 'block' : 'none';
+    });
+  } catch(_){}
   setTimeout(() => document.getElementById('user-detail').scrollIntoView({behavior:'smooth',block:'start'}), 100);
-  // Load bets
   loadUserBets(userId);
+  loadUserDeposits(userId);
+}
+
+async function loadUserDeposits(userId) {
+  // Optional: show pending deposits for this user under bets header if container exists
+  try {
+    const { data } = await db.from('transactions')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('type', 'deposit')
+      .order('created_at', { ascending: false })
+      .limit(8);
+    let box = document.getElementById('ud-deposits');
+    if(!box) {
+      const bets = document.getElementById('ud-bets');
+      if(!bets || !bets.parentNode) return;
+      box = document.createElement('div');
+      box.id = 'ud-deposits';
+      box.style.marginBottom = '14px';
+      bets.parentNode.insertBefore(box, bets);
+      const label = document.createElement('div');
+      label.style.cssText = 'font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;';
+      label.textContent = 'Deposits';
+      bets.parentNode.insertBefore(label, box);
+    }
+    if(!data || !data.length) {
+      box.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:6px 0;">No deposits yet</div>';
+      return;
+    }
+    box.innerHTML = data.map(t => {
+      const st = (t.status||'').toLowerCase();
+      const col = st === 'completed' ? '#27AE60' : st === 'pending' ? 'var(--gold)' : 'var(--red)';
+      return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--muted);word-break:break-all;">${t.description||t.reference||'—'}</div>
+          <div style="font-size:9px;color:var(--muted);">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;font-weight:800;color:${col};">${(t.status||'').toUpperCase()}</div>
+          ${st==='pending' ? `<button onclick="confirmDeposit('${t.id}','${userId}',${t.amount})" style="margin-top:4px;background:#27AE60;border:none;border-radius:6px;color:#fff;font-size:10px;font-weight:800;padding:5px 8px;cursor:pointer;">Confirm</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { console.error('user deposits', e); }
 }
 
 async function loadUserBets(userId) {
   try {
-    const { data } = await db.from('bets').select('*,bet_selections(*)').eq('user_id', userId).order('created_at',{ascending:false}).limit(5);
+    const { data } = await db.from('bets').select('*,bet_selections(*)').eq('user_id', userId).order('created_at',{ascending:false}).limit(30);
     const el = document.getElementById('ud-bets');
     if(!data||!data.length) { el.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px;">No bets placed yet</div>'; return; }
-    const sc = {won:'#27AE60',lost:'var(--red)',pending:'var(--gold)'};
-    el.innerHTML = data.map(b => {
-      const sel = b.bet_selections?.[0];
-      return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div style="font-size:11px;font-weight:700;">${sel?.match_name||'Bet'}</div>
-          <div style="font-size:10px;color:var(--muted);">${sel?.selection||''} · Odds ${b.total_odds}</div>
+
+    const pending = data.filter(b => b.status === 'pending');
+    const won = data.filter(b => b.status === 'won');
+    const lost = data.filter(b => b.status === 'lost');
+    const totalStaked = data.reduce((s,b)=>s+parseFloat(b.stake||0),0);
+    const pendingLiability = pending.reduce((s,b)=>s+parseFloat(b.potential_win||0),0);
+    const totalWon = won.reduce((s,b)=>s+parseFloat(b.actual_win||b.potential_win||0),0);
+
+    const sc = {won:'#27AE60',lost:'var(--red)',pending:'var(--gold)',void:'var(--muted)'};
+    let html = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
+        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);">Pending bets</div>
+          <div style="font-size:14px;font-weight:800;color:var(--gold);">${pending.length}</div>
         </div>
-        <div style="text-align:right;">
-          <div style="font-size:11px;font-weight:800;color:${sc[b.status]||'var(--gold)'};">${b.status.toUpperCase()}</div>
-          <div style="font-size:10px;color:var(--muted);">$ ${parseFloat(b.stake).toLocaleString()}</div>
+        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);">To win (open)</div>
+          <div style="font-size:14px;font-weight:800;color:#27AE60;">$ ${pendingLiability.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
         </div>
+        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);">Total staked</div>
+          <div style="font-size:13px;font-weight:700;">$ ${totalStaked.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+        </div>
+        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
+          <div style="font-size:10px;color:var(--muted);">Won / Lost</div>
+          <div style="font-size:13px;font-weight:700;"><span style="color:#27AE60;">${won.length}</span> / <span style="color:var(--red);">${lost.length}</span></div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">Total paid out on wins: $ ${totalWon.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+    `;
+
+    html += data.map(b => {
+      const sels = b.bet_selections || [];
+      const picks = sels.map(s => `${s.match_name||'Match'}: <strong>${s.selection||''}</strong> @ ${s.odds||''}`).join('<br>')
+        || (sels[0] ? `${sels[0].match_name||''} · ${sels[0].selection||''}` : 'Bet');
+      const pot = parseFloat(b.potential_win||0);
+      const stake = parseFloat(b.stake||0);
+      const status = (b.status||'pending').toLowerCase();
+      const settleBtns = status === 'pending' ? `
+        <div style="display:flex;gap:4px;margin-top:6px;">
+          <button onclick="adminSettleBet('${b.id}','${userId}',${pot},'won')" style="flex:1;padding:6px;border:none;border-radius:6px;background:#27AE60;color:#fff;font-size:10px;font-weight:800;cursor:pointer;">✅ Mark WON (+$${pot.toFixed(2)})</button>
+          <button onclick="adminSettleBet('${b.id}','${userId}',0,'lost')" style="flex:1;padding:6px;border:none;border-radius:6px;background:var(--red2);color:#fff;font-size:10px;font-weight:700;cursor:pointer;">✕ Lost</button>
+        </div>` : '';
+      return `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+          <div style="flex:1;min-width:0;font-size:11px;line-height:1.45;">${picks}</div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:11px;font-weight:800;color:${sc[status]||'var(--gold)'};">${status.toUpperCase()}</div>
+            <div style="font-size:10px;color:var(--muted);">Stake $ ${stake.toLocaleString()}</div>
+            <div style="font-size:10px;font-weight:700;color:#27AE60;">To win $ ${pot.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+            <div style="font-size:9px;color:var(--muted);">Odds ${b.total_odds||'—'} · ${b.reference||''}</div>
+          </div>
+        </div>
+        ${settleBtns}
       </div>`;
     }).join('');
-  } catch(e) { console.error('Bets error:', e); }
+
+    el.innerHTML = html;
+  } catch(e) {
+    console.error('Bets error:', e);
+    const el = document.getElementById('ud-bets');
+    if(el) el.innerHTML = '<div style="font-size:11px;color:var(--red);padding:10px;">Error loading bets</div>';
+  }
+}
+
+async function adminSettleBet(betId, userId, payout, status) {
+  const label = status === 'won' ? `Mark WON and credit $ ${parseFloat(payout).toFixed(2)}?` : 'Mark this bet as LOST?';
+  if(!confirm(label)) return;
+  try {
+    if(status === 'won') {
+      const { data: user } = await db.from('users').select('balance').eq('id', userId).single();
+      const current = parseFloat(user?.balance || 0);
+      const pay = parseFloat(payout) || 0;
+      const newBal = current + pay;
+      await db.from('bets').update({ status: 'won', actual_win: pay }).eq('id', betId);
+      await db.from('users').update({ balance: newBal }).eq('id', userId);
+      await db.from('transactions').insert({
+        user_id: userId,
+        type: 'win',
+        amount: pay,
+        balance_before: current,
+        balance_after: newBal,
+        status: 'completed',
+        description: 'Bet win settled by admin · bet ' + betId
+      });
+      if(selectedUser && selectedUser.id === userId) {
+        selectedUser.balance = newBal;
+        const balEl = document.getElementById('ud-balance');
+        if(balEl) balEl.textContent = '$ ' + newBal.toLocaleString();
+      }
+      showToast('✅ Bet settled WON — $ ' + pay.toFixed(2) + ' credited', 'ok');
+    } else {
+      await db.from('bets').update({ status: 'lost', actual_win: 0 }).eq('id', betId);
+      showToast('Bet marked LOST', 'ok');
+    }
+    loadUserBets(userId);
+    loadUsers();
+  } catch(e) {
+    showToast('Settle error: ' + e.message, 'err');
+  }
+}
+window.adminSettleBet = adminSettleBet;
 }
 
 async function updateUserBalance() {
@@ -1558,3 +1714,4 @@ async function updateVIP() {
 </script>
 </body>
 </html>
+
