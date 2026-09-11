@@ -1515,6 +1515,19 @@
                     3. Min $50 · Credited after network confirmation<br>
                     4. Wrong network = permanent loss
                 </div>
+
+                <!-- Confirm payment → notifies admin -->
+                <div style="background:var(--card);border:1.5px solid var(--primary);border-radius:var(--r);padding:12px;margin-bottom:12px;">
+                    <div style="font-size:12px;font-weight:800;margin-bottom:8px;">✅ Confirm your transfer</div>
+                    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.4;">Enter the amount transferred and optional transaction hash. Your balance will be credited after verification.</div>
+                    <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Amount sent (USD)</label>
+                    <input type="number" id="crypto-dep-amt" min="50" step="1" placeholder="e.g. 100" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;font-weight:700;color:var(--text);background:var(--input-bg);outline:none;margin-bottom:8px;"/>
+                    <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">TX Hash / Reference (optional)</label>
+                    <input type="text" id="crypto-dep-hash" placeholder="Paste transaction hash" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:12px;color:var(--text);background:var(--input-bg);outline:none;font-family:monospace;margin-bottom:10px;"/>
+                    <button type="button" id="crypto-confirm-btn" onclick="submitCryptoDeposit()" style="width:100%;padding:13px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">Submit for verification</button>
+                    <div id="crypto-dep-msg" style="display:none;font-size:11px;margin-top:8px;line-height:1.4;text-align:center;"></div>
+                </div>
+
                 <div style="border-top:1px solid var(--border);padding-top:12px;">
                     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;text-align:center;">Other methods</div>
                     <button type="button" onclick="showOtherPaymentMethods()" style="width:100%;padding:10px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;">Search payment methods (Visa, PayPal, MoMo…)</button>
@@ -4161,6 +4174,54 @@ function renderFeatMoreMkts(m, mn) {
     window.showOtherPaymentMethods = showOtherPaymentMethods;
     window.filterPayMethods = filterPayMethods;
 
+    
+    async function submitCryptoDeposit() {
+        if(!currentUser) {
+            appToast('Please sign in first', 'err');
+            goPage('login');
+            return;
+        }
+        const amtEl = document.getElementById('crypto-dep-amt');
+        const hashEl = document.getElementById('crypto-dep-hash');
+        const msg = document.getElementById('crypto-dep-msg');
+        const btn = document.getElementById('crypto-confirm-btn');
+        const amount = parseFloat(amtEl?.value || 0);
+        const hash = (hashEl?.value || '').trim();
+        const coin = selectedCryptoCoin || 'USDT';
+        const w = CRYPTO_WALLETS[coin] || CRYPTO_WALLETS.USDT;
+
+        if(!amount || amount < 50) {
+            if(msg){ msg.style.display='block'; msg.style.color='var(--live)'; msg.textContent='Minimum deposit is $50'; }
+            return;
+        }
+        if(btn){ btn.disabled=true; btn.textContent='Submitting...'; }
+        try {
+            const desc = coin + ' ' + (w.network || '') + ' deposit' + (hash ? ' · TX: ' + hash : '');
+            const { error } = await db.from('transactions').insert({
+                user_id: currentUser.id,
+                type: 'deposit',
+                amount: amount,
+                status: 'pending',
+                description: desc,
+                reference: hash || null,
+                mpesa_code: coin + (hash ? ':' + hash.slice(0, 16) : ''),
+                balance_before: parseFloat(currentProfile?.balance || 0),
+                balance_after: parseFloat(currentProfile?.balance || 0)
+            });
+            if(error) throw error;
+            if(msg){ msg.style.display='block'; msg.style.color='#27AE60'; msg.textContent='Transfer submitted for verification. Your balance will be updated shortly.'; }
+            if(amtEl) amtEl.value='';
+            if(hashEl) hashEl.value='';
+            appToast('Transfer submitted successfully', 'ok');
+            try { loadWallet(); } catch(_){}
+        } catch(e) {
+            if(msg){ msg.style.display='block'; msg.style.color='var(--live)'; msg.textContent = e.message || 'Failed to submit. Try again.'; }
+            appToast('Could not submit deposit notice', 'err');
+        }
+        if(btn){ btn.disabled=false; btn.textContent="Submit for verification"; }
+    }
+    window.submitCryptoDeposit = submitCryptoDeposit;
+
     function copyUSDT(){
         const w = CRYPTO_WALLETS[selectedCryptoCoin] || CRYPTO_WALLETS.USDT;
         const addr = w.address;
@@ -4661,3 +4722,4 @@ function switchTab(i){
 
 </body>
 </html>
+
