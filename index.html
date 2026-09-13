@@ -2668,7 +2668,11 @@
             startLiveClock();
             // If any matches finished, settle this user's pending bets so My Bets shows WON/LOST
             if(currentUser && typeof settleUserPendingBets === 'function') {
-                settleUserPendingBets().catch(()=>{});
+                settleUserPendingBets().then(() => {
+                    return loadProfile();
+                }).then(() => {
+                    try { updateAuthUI(); updateProfileUI(); } catch(_){}
+                }).catch(()=>{});
             }
         } catch(e) {
             console.error('Match load error:', e);
@@ -2764,9 +2768,34 @@
     }
 
     function subscribeRealtime() {
+        if(!db) return;
         db.channel('live-updates')
-            .on('postgres_changes',{event:'*',schema:'public',table:'matches'}, () => loadMatches())
+            .on('postgres_changes',{event:'*',schema:'public',table:'matches'}, () => {
+                loadMatches();
+                if(currentUser) settleUserPendingBets().then(() => {
+                    loadProfile().then(() => { updateAuthUI(); updateProfileUI(); }).catch(()=>{});
+                }).catch(()=>{});
+            })
             .on('postgres_changes',{event:'INSERT',schema:'public',table:'live_events'}, () => loadMatches())
+            .on('postgres_changes',{event:'UPDATE',schema:'public',table:'users'}, payload => {
+                // Balance changed (e.g. admin settled a win) → refresh header/wallet immediately
+                if(currentUser && payload.new && payload.new.id === currentUser.id) {
+                    if(currentProfile) currentProfile.balance = parseFloat(payload.new.balance || 0);
+                    else currentProfile = payload.new;
+                    try { updateAuthUI(); updateProfileUI(); } catch(_){}
+                }
+            })
+            .on('postgres_changes',{event:'UPDATE',schema:'public',table:'bets'}, payload => {
+                if(currentUser && payload.new && payload.new.user_id === currentUser.id) {
+                    const st = (payload.new.status || '').toLowerCase();
+                    if(st === 'won' || st === 'lost' || st === 'void') {
+                        loadProfile().then(() => { updateAuthUI(); updateProfileUI(); }).catch(()=>{});
+                        if(document.getElementById('page-mybets')?.classList.contains('active')) {
+                            try { loadMyBets(); } catch(_){}
+                        }
+                    }
+                }
+            })
             .subscribe();
     }
 
@@ -3753,8 +3782,74 @@ function renderFeatMoreMkts(m, mn) {
      * For the current user's pending bets, if every selection's match is finished,
      * mark the bet won/lost and credit balance on wins.
      */
+    function evaluateLegResult(leg, m) {
+        const hs = parseInt(m.home_score, 10) || 0;
+        const as_ = parseInt(m.away_score, 10) || 0;
+        const total = hs + as_;
+        const result1x2 = hs > as_ ? 'home' : (as_ > hs ? 'away' : 'draw');
+        const sel = (leg.selection || '').toLowerCase().trim();
+        const mkt = (leg.market_type || '').toLowerCase();
+
+        // 1X2 / main
+        if(mkt === '1x2' || sel === 'home win' || sel === '1 home' || sel === '1' || sel === 'home')
+            return result1x2 === 'home';
+        if(sel === 'away win' || sel === '2 away' || sel === '2' || sel === 'away')
+            return result1x2 === 'away';
+        if(sel === 'draw' || sel === 'x draw' || sel === 'x' || sel === 'xdraw')
+            return result1x2 === 'draw';
+        if(sel.includes('home win') || (sel.includes('home') && !sel.includes('away') && !sel.includes('dnb') && !sel.includes('1x') && !sel.includes('12')))
+            return result1x2 === 'home';
+        if(sel.includes('away win') || (sel.includes('away') && !sel.includes('home') && !sel.includes('dnb') && !sel.includes('x2') && !sel.includes('12')))
+            return result1x2 === 'away';
+        if(sel.includes('draw') && !sel.includes('other'))
+            return result1x2 === 'draw';
+
+        // Double chance
+        if(sel === '1x' || sel.includes('1x')) return result1x2 === 'home' || result1x2 === 'draw';
+        if(sel === 'x2' || sel.includes('x2')) return result1x2 === 'away' || result1x2 === 'draw';
+        if(sel === '12' || sel === '1/2') return result1x2 === 'home' || result1x2 === 'away';
+
+        // DNB
+        if(sel.includes('home dnb') || (sel.includes('dnb') && sel.includes('home'))) {
+            if(result1x2 === 'draw') return null; // void-ish — treat as not lost/not won → skip full settle
+            return result1x2 === 'home';
+        }
+        if(sel.includes('away dnb') || (sel.includes('dnb') && sel.includes('away'))) {
+            if(result1x2 === 'draw') return null;
+            return result1x2 === 'away';
+        }
+
+        // BTTS
+        if(mkt === 'btts' || sel === 'yes' || sel === 'btts yes') {
+            if(sel.includes('no')) return !(hs > 0 && as_ > 0);
+            return hs > 0 && as_ > 0;
+        }
+        if(sel === 'no' || sel === 'btts no') return !(hs > 0 && as_ > 0);
+
+        // Over/Under
+        const ou = sel.match(/over\s*([0-9.]+)/i) || sel.match(/under\s*([0-9.]+)/i);
+        if(ou || mkt === 'over_under' || mkt === 'total_goals') {
+            const line = ou ? parseFloat(ou[1]) : (sel.includes('2.5') ? 2.5 : sel.includes('1.5') ? 1.5 : sel.includes('3.5') ? 3.5 : 2.5);
+            if(sel.includes('over')) return total > line;
+            if(sel.includes('under')) return total < line;
+        }
+
+        // Correct score e.g. 0-3, 1-1
+        const cs = sel.match(/^(\d+)\s*[-:]\s*(\d+)$/);
+        if(cs || mkt === 'correct_score') {
+            if(cs) return hs === parseInt(cs[1],10) && as_ === parseInt(cs[2],10);
+            // "Any Other Home/Draw/Away"
+            if(sel.includes('any other home')) return result1x2 === 'home';
+            if(sel.includes('any other draw')) return result1x2 === 'draw';
+            if(sel.includes('any other away')) return result1x2 === 'away';
+        }
+
+        // Unknown — cannot resolve
+        return undefined;
+    }
+
     async function settleUserPendingBets() {
-        if(!currentUser) return;
+        if(!currentUser || !db) return;
         try {
             const { data: pending } = await db.from('bets')
                 .select('*,bet_selections(*)')
@@ -3762,10 +3857,33 @@ function renderFeatMoreMkts(m, mn) {
                 .eq('status', 'pending');
             if(!pending || !pending.length) return;
 
-            const finished = (allMatches || []).filter(m => {
+            // Collect match ids from legs
+            const matchIds = new Set();
+            pending.forEach(b => (b.bet_selections || []).forEach(s => { if(s.match_id) matchIds.add(s.match_id); }));
+
+            // Always fetch finished matches from DB (do not rely only on allMatches cache)
+            let finished = [];
+            if(matchIds.size) {
+                const { data } = await db.from('matches')
+                    .select('*')
+                    .in('id', Array.from(matchIds));
+                finished = (data || []).filter(m => {
+                    const st = (m.status || '').toLowerCase();
+                    return st === 'finished' || st === 'ft' || st === 'ended';
+                });
+            }
+            // Also merge any finished already in memory + recent finished
+            const { data: recentFin } = await db.from('matches')
+                .select('*')
+                .in('status', ['finished', 'ft', 'ended', 'Finished', 'FT'])
+                .order('kick_off', { ascending: false })
+                .limit(30);
+            const byId = {};
+            [...finished, ...(recentFin || []), ...((allMatches || []).filter(m => {
                 const st = (m.status || '').toLowerCase();
                 return st === 'finished' || st === 'ft' || st === 'ended';
-            });
+            }))].forEach(m => { if(m && m.id) byId[m.id] = m; });
+            finished = Object.values(byId);
             if(!finished.length) return;
 
             for(const bet of pending) {
@@ -3774,69 +3892,105 @@ function renderFeatMoreMkts(m, mn) {
 
                 let allResolved = true;
                 let anyLost = false;
+                let anyVoid = false;
 
                 for(const leg of sels) {
                     const name = (leg.match_name || '').toLowerCase();
-                    // Prefer match_id, fall back to name match
                     let m = null;
-                    if(leg.match_id) {
-                        m = finished.find(fm => fm.id === leg.match_id) || null;
-                    }
+                    if(leg.match_id) m = finished.find(fm => fm.id === leg.match_id) || null;
                     if(!m) {
                         m = finished.find(fm => {
                             const label = ((fm.home_team || '') + ' vs ' + (fm.away_team || '')).toLowerCase();
                             const h = (fm.home_team || '').toLowerCase();
                             const a = (fm.away_team || '').toLowerCase();
-                            return name === label || (h && name.includes(h.split(' ')[0]) && a && name.includes(a.split(' ')[0]));
+                            const h0 = h.split(/[\s-]/)[0];
+                            const a0 = a.split(/[\s-]/)[0];
+                            return name === label || (h0 && a0 && name.includes(h0) && name.includes(a0));
                         }) || null;
                     }
                     if(!m) {
-                        // Match not finished yet (or not in list) — leave pending
                         allResolved = false;
                         break;
                     }
-                    const hs = parseInt(m.home_score, 10) || 0;
-                    const as_ = parseInt(m.away_score, 10) || 0;
-                    let result = 'Draw';
-                    if(hs > as_) result = 'Home Win';
-                    else if(as_ > hs) result = 'Away Win';
-
-                    const sel = (leg.selection || '').toLowerCase();
-                    let legWon = false;
-                    if(sel.includes('home') || sel === '1' || sel.includes('1 home')) legWon = result === 'Home Win';
-                    else if(sel.includes('away') || sel === '2' || sel.includes('2 away')) legWon = result === 'Away Win';
-                    else if(sel.includes('draw') || sel === 'x') legWon = result === 'Draw';
-                    else {
-                        // Unknown market — skip settlement for whole bet
+                    const legWon = evaluateLegResult(leg, m);
+                    if(legWon === undefined) {
+                        // Unknown market — leave pending
                         allResolved = false;
                         break;
+                    }
+                    if(legWon === null) {
+                        anyVoid = true; // DNB draw etc.
+                        continue;
                     }
                     if(!legWon) anyLost = true;
+                    // Update leg status when possible
+                    try {
+                        await db.from('bet_selections').update({
+                            status: legWon ? 'won' : 'lost'
+                        }).eq('id', leg.id);
+                    } catch(_){}
                 }
 
                 if(!allResolved) continue;
 
+                // Idempotent: only settle if still pending
                 if(anyLost) {
-                    await db.from('bets').update({ status: 'lost', actual_win: 0 }).eq('id', bet.id);
+                    const { data: upd } = await db.from('bets')
+                        .update({ status: 'lost', actual_win: 0 })
+                        .eq('id', bet.id)
+                        .eq('status', 'pending')
+                        .select('id');
+                    if(upd && upd.length) {
+                        console.log('Bet settled LOST', bet.id);
+                    }
+                } else if(anyVoid) {
+                    // All void legs only — refund stake
+                    const { data: upd } = await db.from('bets')
+                        .update({ status: 'void', actual_win: parseFloat(bet.stake || 0) })
+                        .eq('id', bet.id)
+                        .eq('status', 'pending')
+                        .select('id');
+                    if(upd && upd.length) {
+                        const stake = parseFloat(bet.stake || 0);
+                        const { data: user } = await db.from('users').select('balance').eq('id', currentUser.id).single();
+                        const bal = parseFloat(user?.balance || 0);
+                        const newBal = bal + stake;
+                        await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
+                        if(currentProfile) currentProfile.balance = newBal;
+                        try { updateProfileUI(); updateAuthUI(); } catch(e){}
+                    }
                 } else {
                     const payout = parseFloat(bet.potential_win || 0);
-                    await db.from('bets').update({ status: 'won', actual_win: payout }).eq('id', bet.id);
-                    // Credit user once
+                    const { data: upd } = await db.from('bets')
+                        .update({ status: 'won', actual_win: payout })
+                        .eq('id', bet.id)
+                        .eq('status', 'pending')
+                        .select('id');
+                    if(!upd || !upd.length) continue; // already settled
                     const { data: user } = await db.from('users').select('balance').eq('id', currentUser.id).single();
                     const bal = parseFloat(user?.balance || 0);
-                    const newBal = bal + payout;
-                    await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
-                    await db.from('transactions').insert({
-                        user_id: currentUser.id,
-                        type: 'win',
-                        amount: payout,
-                        balance_before: bal,
-                        balance_after: newBal,
-                        status: 'completed',
-                        description: 'Bet won · ' + (bet.reference || '') + ' · $' + payout.toFixed(2)
-                    });
+                    const newBal = Math.round((bal + payout) * 100) / 100;
+                    const { error: balErr } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
+                    if(balErr) console.error('Balance credit failed', balErr);
+                    try {
+                        await db.from('transactions').insert({
+                            user_id: currentUser.id,
+                            type: 'win',
+                            amount: payout,
+                            balance_before: bal,
+                            balance_after: newBal,
+                            status: 'completed',
+                            description: 'Bet won · ' + (bet.reference || '') + ' · $' + payout.toFixed(2)
+                        });
+                    } catch(_){}
                     if(currentProfile) currentProfile.balance = newBal;
-                    try { updateProfileUI(); updateAuthUI(); } catch(e){}
+                    try {
+                        updateProfileUI();
+                        updateAuthUI();
+                        if(typeof appToast === 'function') appToast('You won $' + payout.toLocaleString() + ' — balance updated', 'ok');
+                        else if(typeof showToast === 'function') showToast('You won $' + payout.toLocaleString() + ' — balance updated', 'ok');
+                    } catch(e){}
+                    console.log('Bet settled WON', bet.id, payout, 'newBal', newBal);
                 }
             }
         } catch(e) {
@@ -3851,8 +4005,10 @@ function renderFeatMoreMkts(m, mn) {
         if(!el) return;
         el.innerHTML = '<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
         try {
-            // Auto-settle any pending bets whose matches are finished
+            // Auto-settle any pending bets whose matches are finished → credits wins to balance
             await settleUserPendingBets();
+            // Always refresh balance from DB after settlement
+            try { await loadProfile(); updateAuthUI(); updateProfileUI(); } catch(_){}
 
             let q = db.from('bets').select('*,bet_selections(*)').eq('user_id',currentUser.id).order('created_at',{ascending:false});
             if(myBetsFilter !== 'all') q = q.eq('status', myBetsFilter);
@@ -4722,4 +4878,3 @@ function switchTab(i){
 
 </body>
 </html>
-
