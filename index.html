@@ -350,9 +350,10 @@
 
         /* ===== FEATURED MATCH ===== */
         .featured-wrap {
+            overflow: visible;
             background: var(--surface);
             border-radius: var(--r);
-            overflow: hidden;
+            overflow: visible;
             margin-bottom: 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
@@ -461,8 +462,18 @@
         .feat-more-markets {
             padding: 8px 16px 16px;
             display: none;
+            max-height: none;
+            overflow: visible;
+            position: relative;
+            z-index: 5;
         }
-        .feat-more-markets.open { display: block; }
+        .feat-more-markets.open {
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
         .feat-more-markets .mkt-group { margin-bottom: 12px; }
         .feat-more-markets .mkt-title {
             font-size: 10px;
@@ -475,6 +486,7 @@
             border-bottom: 1px solid var(--border);
         }
         .feat-more-markets .odds-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .feat-more-markets .odds-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
         .feat-more-markets .odds-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
         .feat-more-markets .odd-btn {
             background: var(--card);
@@ -1092,7 +1104,7 @@
             <div class="stab active" style="flex:1;text-align:center;padding:10px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;border-bottom-color:var(--gold);" onclick="setSlipTab(this,'acca')">Accumulator</div>
         </div>
         <div id="slip-body"><div class="slip-empty" style="text-align:center;padding:50px 20px;"><div style="font-size:44px;margin-bottom:12px;">🎯</div><div style="font-size:13px;color:var(--muted);line-height:1.6;">Select odds from any match to build your slip</div></div></div>
-        <div id="slip-foot" style="display:none;">
+        <div id="slip-foot" style="pointer-events:auto;position:relative;z-index:6;" style="display:none;">
             <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-top:6px;">
                 <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:13px;"><span style="color:var(--muted);">Selections</span><span style="font-weight:700;" id="sel-ct">0</span></div>
                 <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:13px;"><span style="color:var(--muted);">Total Odds</span><span style="font-weight:700;" id="tot-odds">1.00</span></div>
@@ -1100,7 +1112,7 @@
                 <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Stake ($)</div>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;">
                     <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                    <input class="stake-in" id="stake" type="number" value="10" min="10" step="1" oninput="calcPayout()" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;">
+                    <input class="stake-in" id="stake" type="number" inputmode="decimal" value="10" min="10" step="any" oninput="calcPayout()" onchange="calcPayout()" onclick="this.focus();this.select();" ontouchstart="this.focus();" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;-webkit-user-select:text;user-select:text;pointer-events:auto;z-index:5;position:relative;">
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;" id="qs-row">
                     <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
@@ -1471,8 +1483,25 @@
             </div>
 
             <div id="dep-crypto-panel" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
-                <div style="font-size:13px;font-weight:800;margin-bottom:4px;">Crypto Deposit</div>
-                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Minimum $50 · Select coin & network carefully</div>
+                <div style="font-size:13px;font-weight:800;margin-bottom:4px;">Deposit</div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Crypto (USDT / BTC / ETH) · Min $50</div>
+
+                <button type="button" id="btn-show-crypto" onclick="toggleCryptoDetails(true)" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">
+                    💳 Pay with Crypto
+                </button>
+                <button type="button" id="dm-mpesa-top" onclick="setDepositMethod('mpesa')" style="width:100%;padding:12px;border-radius:var(--r);border:1.5px solid #27AE60;background:rgba(39,174,96,0.08);color:#1B5E20;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:8px;">
+                    📱 M-Pesa (Kenya)
+                </button>
+                <button type="button" onclick="showOtherPaymentMethods()" style="width:100%;padding:10px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;">
+                    Other methods
+                </button>
+
+                <div id="crypto-details" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <div style="font-size:13px;font-weight:800;">Crypto payment</div>
+                        <button type="button" onclick="toggleCryptoDetails(false)" style="background:none;border:none;color:var(--primary);font-size:12px;font-weight:700;cursor:pointer;">✕ Close</button>
+                    </div>
+                    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Select coin · send to the address · submit for verification</div>
 
                 <!-- Coin selector -->
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="crypto-coin-tabs">
@@ -1528,12 +1557,7 @@
                     <div id="crypto-dep-msg" style="display:none;font-size:11px;margin-top:8px;line-height:1.4;text-align:center;"></div>
                 </div>
 
-                <div style="border-top:1px solid var(--border);padding-top:12px;">
-                    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;text-align:center;">Other methods</div>
-                    <button type="button" onclick="showOtherPaymentMethods()" style="width:100%;padding:10px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;">Search payment methods (Visa, PayPal, MoMo…)</button>
-                    <button type="button" id="dm-mpesa" onclick="setDepositMethod('mpesa')" style="width:100%;padding:12px;border-radius:var(--r);border:1.5px solid #27AE60;background:rgba(39,174,96,0.08);color:#1B5E20;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-                        📱 M-Pesa <span style="font-size:11px;font-weight:600;opacity:0.85;">(Kenya)</span>
-                    </button>
+                
                 </div>
             </div>
 
@@ -2052,6 +2076,8 @@
     let isDark = false;
     let allMatches = [];
     let isFeaturedBet = false;
+    let featMarketsOpen = false;
+    let featActiveTab = 0;
     // Lock odds for featured match so re-renders don't change them
     let featuredOddsCache = {}; // matchId -> { selectionKey: odds }
     let jpPicks = {};
@@ -2262,13 +2288,23 @@
             if(wdPanel) wdPanel.style.display = 'none';
             if(cryptoSec) cryptoSec.style.display = 'none';
             setDepositMethod('crypto'); // crypto is default
-            loadUSDT();
+            try { toggleCryptoDetails(false); } catch(_){}
+            // Don't auto-load QR until user opens crypto details
         } else {
             if(depMethods) depMethods.style.display = 'none';
             if(wdPanel) wdPanel.style.display = 'block';
             if(cryptoSec) cryptoSec.style.display = 'block';
         }
     }
+
+    function toggleCryptoDetails(show) {
+        const det = document.getElementById('crypto-details');
+        const btn = document.getElementById('btn-show-crypto');
+        if(det) det.style.display = show ? 'block' : 'none';
+        if(btn) btn.style.display = show ? 'none' : 'block';
+        if(show) { try { loadUSDT(); } catch(_){} }
+    }
+    window.toggleCryptoDetails = toggleCryptoDetails;
 
     function setDepositMethod(method) {
         const cryptoPanel = document.getElementById('dep-crypto-panel');
@@ -2488,7 +2524,7 @@
             if(error) throw error;
             const userId = data?.user?.id;
             if(userId) {
-                await new Promise(r => setTimeout(r, 10));
+                /* no delay */
                 await db.from('users').insert({
                     id:userId,
                     phone:fmt,
@@ -2667,12 +2703,13 @@
             updateTicker(allMatches.filter(m=>m.status==='live'));
             startLiveClock();
             // If any matches finished, settle this user's pending bets so My Bets shows WON/LOST
+            // Settle in background — do not block UI
             if(currentUser && typeof settleUserPendingBets === 'function') {
-                settleUserPendingBets().then(() => {
-                    return loadProfile();
-                }).then(() => {
-                    try { updateAuthUI(); updateProfileUI(); } catch(_){}
-                }).catch(()=>{});
+                setTimeout(() => {
+                    settleUserPendingBets().then(() => loadProfile()).then(() => {
+                        try { updateAuthUI(); updateProfileUI(); } catch(_){}
+                    }).catch(()=>{});
+                }, 0);
             }
         } catch(e) {
             console.error('Match load error:', e);
@@ -2940,8 +2977,8 @@
                     <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')"><i class="fas fa-share-alt"></i> Share</button>
                 </div>
                 ${(isLive || isFinished) ? '' : `
-                <button class="btn-toggle-markets" onclick="toggleFeatMarkets()"><i class="fas fa-chevron-down"></i> More Markets</button>
-                <div class="feat-more-markets" id="feat-more-markets">
+                <button class="btn-toggle-markets" onclick="toggleFeatMarkets()">${featMarketsOpen ? '<i class="fas fa-chevron-up"></i> Less Markets' : '<i class="fas fa-chevron-down"></i> More Markets'}</button>
+                <div class="feat-more-markets${featMarketsOpen ? " open" : ""}" id="feat-more-markets">
                     ${renderFeatMoreMkts(m, mn)}
                 </div>
                 `}
@@ -2992,14 +3029,22 @@
         }, 1000);
     }
 
-    function toggleFeatMarkets() {
+        function toggleFeatMarkets() {
         const el = document.getElementById('feat-more-markets');
-        if(el) {
-            el.classList.toggle('open');
-            const btn = document.querySelector('.btn-toggle-markets');
-            if(btn) btn.innerHTML = el.classList.contains('open') ? '<i class="fas fa-chevron-up"></i> Less Markets' : '<i class="fas fa-chevron-down"></i> More Markets';
+        if(!el) return;
+        featMarketsOpen = !el.classList.contains('open');
+        el.classList.toggle('open', featMarketsOpen);
+        const btn = document.querySelector('.btn-toggle-markets');
+        if(btn) btn.innerHTML = featMarketsOpen
+            ? '<i class="fas fa-chevron-up"></i> Less Markets'
+            : '<i class="fas fa-chevron-down"></i> More Markets';
+        if(featMarketsOpen) {
+            // Keep visible — scroll into view slightly
+            setTimeout(() => { try { el.scrollIntoView({behavior:'smooth', block:'nearest'}); } catch(_){} }, 50);
         }
     }
+    window.toggleFeatMarkets = toggleFeatMarkets;
+
 
     
 function renderFeatMoreMkts(m, mn) {
@@ -3425,15 +3470,18 @@ function renderFeatMoreMkts(m, mn) {
                 })));
                 const newBal=(currentProfile.balance||0)-stake;
                 const newVip=(currentProfile.vip_points||0)+Math.floor(stake/10);
-                await db.from('users').update({balance:newBal,vip_points:newVip}).eq('id',currentUser.id);
-                await db.from('transactions').insert({
-                    user_id:currentUser.id,type:'bet',amount:stake,
-                    balance_before:currentProfile.balance,balance_after:newBal,
-                    status:'completed',description:'Bet placed: '+ref
-                });
+                // Run balance update + ledger in parallel for speed
+                await Promise.all([
+                    db.from('users').update({balance:newBal,vip_points:newVip}).eq('id',currentUser.id),
+                    db.from('transactions').insert({
+                        user_id:currentUser.id,type:'bet',amount:stake,
+                        balance_before:currentProfile.balance,balance_after:newBal,
+                        status:'completed',description:'Bet placed: '+ref
+                    })
+                ]);
                 currentProfile.balance=newBal;
                 currentProfile.vip_points=newVip;
-                updateProfileUI();
+                try { updateProfileUI(); updateAuthUI(); } catch(_){}
             }
             setEl('bet-ref', ref);
             setEl('bet-stake-display', '$ '+stake.toLocaleString());
@@ -4672,10 +4720,11 @@ function renderFeatMoreMkts(m, mn) {
             updateAuthUI();
             if(currentProfile) updateProfileUI();
         }
-        await loadMatches();
-        subscribeRealtime();
+        // Show shell first; load data without blocking first paint
+        loadMatches().catch(()=>{});
+        try { subscribeRealtime(); } catch(_){}
         renderWinners();
-        setInterval(async () => { await loadMatches(); }, 5 * 60 * 20);
+        setInterval(async () => { await loadMatches(); }, 90 * 1000);
         // Check for deep link
         const params = new URLSearchParams(window.location.search);
         const matchId = params.get('match');
@@ -4867,13 +4916,18 @@ function renderFeatMoreMkts(m, mn) {
 
 <script>
 function switchTab(i){
-    const tabs=document.querySelectorAll('.tab');
-    const contents=document.querySelectorAll('.tab-content');
-    tabs.forEach(t=>t.classList.remove('active'));
-    contents.forEach(c=>c.classList.remove('active'));
-    tabs[i].classList.add('active');
-    contents[i].classList.add('active');
+    featActiveTab = i;
+    const root = document.getElementById('feat-more-markets') || document;
+    const tabs = root.querySelectorAll('.market-tabs .tab');
+    const contents = root.querySelectorAll(':scope > .tab-content, .tab-content');
+    // Prefer direct children of feat-more-markets
+    const direct = document.querySelectorAll('#feat-more-markets > .tab-content');
+    const list = direct.length ? direct : contents;
+    tabs.forEach((t, idx) => t.classList.toggle('active', idx === i));
+    list.forEach((c, idx) => c.classList.toggle('active', idx === i));
 }
+window.switchTab = switchTab;
+
 </script>
 
 </body>
