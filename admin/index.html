@@ -1086,7 +1086,7 @@ async function adjustScore(team, delta) {
 
 // ── SET STATUS ──
 let minuteTimer = null;
-function setStatus(s) {
+async function setStatus(s) {
   currentStatus = s;
   ['upcoming','live','finished'].forEach(x => {
     const el = document.getElementById('sb-'+x);
@@ -1099,11 +1099,41 @@ function setStatus(s) {
       if(!selectedMatch) return;
       selectedMatch.minute = (selectedMatch.minute||0) + 1;
       document.getElementById('fe-minute').value = selectedMatch.minute;
-      await db.from('matches').update({minute:selectedMatch.minute}).eq('id',selectedMatch.id);
-    }, 60000); // every 60 seconds
+      try { await db.from('matches').update({minute:selectedMatch.minute}).eq('id',selectedMatch.id); } catch(_){}
+    }, 60000);
     showToast('⏱️ Minute auto-incrementing every 60s','ok');
   }
+
+  // Persist status to DB when a match is selected
+  if(!selectedMatch || !selectedMatch.id) return;
+  const minute = parseInt(document.getElementById('fe-minute')?.value, 10) || selectedMatch.minute || 0;
+  const homeScore = parseInt(selectedMatch.hs, 10) || 0;
+  const awayScore = parseInt(selectedMatch.as_, 10) || 0;
+  try {
+    const { error } = await db.from('matches').update({
+      status: s,
+      minute: minute,
+      home_score: homeScore,
+      away_score: awayScore
+    }).eq('id', selectedMatch.id);
+    if(error) throw error;
+    selectedMatch.status = s;
+    selectedMatch.minute = minute;
+    selectedMatch.hs = homeScore;
+    selectedMatch.as_ = awayScore;
+
+    if(s === 'finished') {
+      showToast('Match finished — settling bets…', 'ok');
+      await settleMatchBets(selectedMatch.id, homeScore, awayScore, selectedMatch.home, selectedMatch.away);
+    } else {
+      showToast('Status → ' + s, 'ok');
+    }
+    try { loadMatchSelector(); } catch(_){}
+  } catch(e) {
+    showToast('Status save error: ' + (e.message||e), 'err');
+  }
 }
+window.setStatus = setStatus;
 
 // ── SAVE SCORE ──
 async function saveScore() {
@@ -1861,4 +1891,3 @@ async function updateVIP() {
 </script>
 </body>
 </html>
-
