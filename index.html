@@ -3899,6 +3899,26 @@ function renderFeatMoreMkts(m, mn) {
     async function settleUserPendingBets() {
         if(!currentUser || !db) return;
         try {
+            // 1) Ask DB to settle any finished matches (SECURITY DEFINER RPC)
+            try {
+                const { data: finMatches } = await db.from('matches')
+                    .select('id,home_team,away_team,home_score,away_score,status')
+                    .in('status', ['finished','ft','ended','Finished','FT'])
+                    .order('kick_off', { ascending: false })
+                    .limit(15);
+                for(const m of (finMatches || [])) {
+                    try {
+                        await db.rpc('settle_match_bets', {
+                            p_match_id: m.id,
+                            p_home_score: parseInt(m.home_score,10)||0,
+                            p_away_score: parseInt(m.away_score,10)||0,
+                            p_home_name: m.home_team || '',
+                            p_away_name: m.away_team || ''
+                        });
+                    } catch(rpcE) { console.warn('settle rpc', rpcE); }
+                }
+            } catch(e) { console.warn('finished match settle pass', e); }
+
             const { data: pending } = await db.from('bets')
                 .select('*,bet_selections(*)')
                 .eq('user_id', currentUser.id)
