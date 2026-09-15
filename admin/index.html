@@ -290,6 +290,8 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
 
         <div style="margin-top:14px;">
           <button class="btn-primary" onclick="saveScore()">💾 Save Score & Status</button>
+          <button class="btn-gold" type="button" onclick="forceSettleSelected()" style="margin-top:8px;">🏁 Settle Bets Now (Won/Lost + Balance)</button>
+          <div id="settle-debug" style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;"></div>
         </div>
 
         <!-- AUTO MATCH ENGINE (does not replace manual controls) -->
@@ -1169,6 +1171,68 @@ async function saveScore() {
  * For multi-leg (accumulator) bets: only settle if ALL legs can be decided;
  * if any leg is still pending we leave the bet pending.
  */
+
+async function forceSettleSelected() {
+  if(!selectedMatch || !selectedMatch.id) {
+    showToast('Select a match first','err');
+    return;
+  }
+  const hs = parseInt(selectedMatch.hs, 10) || 0;
+  const as_ = parseInt(selectedMatch.as_, 10) || 0;
+  const dbg = document.getElementById('settle-debug');
+  if(dbg) dbg.innerHTML = 'Looking up pending bets for <b>' + selectedMatch.home + ' vs ' + selectedMatch.away + '</b> (' + hs + '-' + as_ + ')…';
+
+  // Mark finished first
+  try {
+    await db.from('matches').update({
+      status: 'finished',
+      home_score: hs,
+      away_score: as_,
+      minute: parseInt(document.getElementById('fe-minute')?.value,10) || selectedMatch.minute || 90
+    }).eq('id', selectedMatch.id);
+    currentStatus = 'finished';
+    selectedMatch.status = 'finished';
+    ['upcoming','live','finished'].forEach(x => {
+      const el = document.getElementById('sb-'+x);
+      if(el) el.className = 'status-btn' + (x==='finished'?' sel-finished':'');
+    });
+  } catch(e) {
+    if(dbg) dbg.innerHTML += '<br>Status save: ' + e.message;
+  }
+
+  // Debug: count pending bets + selections
+  try {
+    const { data: pending, error } = await db.from('bets').select('id,status,potential_win,user_id,bet_selections(id,match_id,match_name,selection,status)').eq('status','pending').limit(50);
+    if(error) {
+      if(dbg) dbg.innerHTML += '<br><span style="color:var(--red)">Read bets error: ' + error.message + '</span>';
+    } else {
+      const h0 = (selectedMatch.home||'').toLowerCase().split(/\s+/)[0];
+      const related = (pending||[]).filter(b => (b.bet_selections||[]).some(s => {
+        if(s.match_id && String(s.match_id) === String(selectedMatch.id)) return true;
+        const mn = (s.match_name||'').toLowerCase();
+        return h0 && mn.includes(h0);
+      }));
+      if(dbg) {
+        dbg.innerHTML += '<br>Pending bets total: ' + (pending||[]).length +
+          '<br>Matching this match: ' + related.length;
+        if(related[0]) {
+          const s0 = (related[0].bet_selections||[])[0];
+          dbg.innerHTML += '<br>Example: ' + (s0&&s0.match_name) + ' · ' + (s0&&s0.selection) + ' · match_id=' + (s0&&s0.match_id);
+        }
+        if(!related.length && (pending||[]).length) {
+          const sample = (pending[0].bet_selections||[])[0];
+          dbg.innerHTML += '<br>Sample pending leg: ' + (sample&&sample.match_name) + ' (id ' + (sample&&sample.match_id) + ')';
+        }
+      }
+    }
+  } catch(e) {
+    if(dbg) dbg.innerHTML += '<br>Debug error: ' + e.message;
+  }
+
+  await settleMatchBets(selectedMatch.id, hs, as_, selectedMatch.home, selectedMatch.away);
+}
+window.forceSettleSelected = forceSettleSelected;
+
 async function settleMatchBets(matchId, homeScore, awayScore, homeName, awayName) {
   const matchLabel = (homeName || '') + ' vs ' + (awayName || '');
   const hs = parseInt(homeScore, 10) || 0;
