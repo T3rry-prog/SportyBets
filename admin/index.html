@@ -1180,9 +1180,11 @@ async function forceSettleSelected() {
   const hs = parseInt(selectedMatch.hs, 10) || 0;
   const as_ = parseInt(selectedMatch.as_, 10) || 0;
   const dbg = document.getElementById('settle-debug');
-  if(dbg) dbg.innerHTML = 'Looking up pending bets for <b>' + selectedMatch.home + ' vs ' + selectedMatch.away + '</b> (' + hs + '-' + as_ + ')…';
+  const home = selectedMatch.home || '';
+  const away = selectedMatch.away || '';
+  if(dbg) dbg.innerHTML = 'Looking up pending bets for <b>' + home + ' vs ' + away + '</b> (' + hs + '-' + as_ + ')…';
 
-  // Mark finished first
+  // Mark finished
   try {
     await db.from('matches').update({
       status: 'finished',
@@ -1200,38 +1202,70 @@ async function forceSettleSelected() {
     if(dbg) dbg.innerHTML += '<br>Status save: ' + e.message;
   }
 
-  // Debug: count pending bets + selections
+  // Query selections DIRECTLY (nested bets→selections often blocked by RLS)
+  let allSels = [];
   try {
-    const { data: pending, error } = await db.from('bets').select('id,status,potential_win,user_id,bet_selections(id,match_id,match_name,selection,status)').eq('status','pending').limit(50);
+    const { data, error } = await db.from('bet_selections').select('*').limit(500);
     if(error) {
-      if(dbg) dbg.innerHTML += '<br><span style="color:var(--red)">Read bets error: ' + error.message + '</span>';
+      if(dbg) dbg.innerHTML += '<br><span style="color:var(--red)">bet_selections read error: ' + error.message + '</span><br>Run SQL policy to allow SELECT on bet_selections.';
     } else {
-      const h0 = (selectedMatch.home||'').toLowerCase().split(/\s+/)[0];
-      const related = (pending||[]).filter(b => (b.bet_selections||[]).some(s => {
-        if(s.match_id && String(s.match_id) === String(selectedMatch.id)) return true;
-        const mn = (s.match_name||'').toLowerCase();
-        return h0 && mn.includes(h0);
-      }));
-      if(dbg) {
-        dbg.innerHTML += '<br>Pending bets total: ' + (pending||[]).length +
-          '<br>Matching this match: ' + related.length;
-        if(related[0]) {
-          const s0 = (related[0].bet_selections||[])[0];
-          dbg.innerHTML += '<br>Example: ' + (s0&&s0.match_name) + ' · ' + (s0&&s0.selection) + ' · match_id=' + (s0&&s0.match_id);
-        }
-        if(!related.length && (pending||[]).length) {
-          const sample = (pending[0].bet_selections||[])[0];
-          dbg.innerHTML += '<br>Sample pending leg: ' + (sample&&sample.match_name) + ' (id ' + (sample&&sample.match_id) + ')';
-        }
-      }
+      allSels = data || [];
     }
   } catch(e) {
-    if(dbg) dbg.innerHTML += '<br>Debug error: ' + e.message;
+    if(dbg) dbg.innerHTML += '<br>Selections error: ' + e.message;
   }
 
-  await settleMatchBets(selectedMatch.id, hs, as_, selectedMatch.home, selectedMatch.away);
+  const h0 = home.toLowerCase().split(/\s+/)[0];
+  const a0 = away.toLowerCase().split(/\s+/)[0];
+  const related = allSels.filter(s => {
+    if(s.match_id && String(s.match_id) === String(selectedMatch.id)) return true;
+    const mn = (s.match_name || '').toLowerCase();
+    if(h0 && mn.includes(h0)) return true;
+    if(a0 && mn.includes(a0)) return true;
+    return false;
+  });
+
+  if(dbg) {
+    dbg.innerHTML += '<br>Selections in DB: ' + allSels.length +
+      '<br>Matching this match: ' + related.length;
+    if(related[0]) {
+      dbg.innerHTML += '<br>Example: <b>' + (related[0].match_name||'') + '</b> · ' + (related[0].selection||'') +
+        ' · match_id=' + (related[0].match_id||'null');
+    } else if(allSels[0]) {
+      dbg.innerHTML += '<br>Sample leg: <b>' + (allSels[0].match_name||'?') + '</b> · ' + (allSels[0].selection||'') +
+        ' · match_id=' + (allSels[0].match_id||'null');
+    } else {
+      dbg.innerHTML += '<br><span style="color:var(--red)">No rows in bet_selections — bets may have been saved without legs, or RLS blocks read.</span>';
+    }
+  }
+
+  // Prefer RPC (bypasses RLS)
+  try {
+    const { data: rpcData, error: rpcErr } = await db.rpc('settle_match_bets', {
+      p_match_id: selectedMatch.id,
+      p_home_score: hs,
+      p_away_score: as_,
+      p_home_name: home,
+      p_away_name: away
+    });
+    if(rpcErr) {
+      if(dbg) dbg.innerHTML += '<br><span style="color:var(--red)">RPC: ' + rpcErr.message + '</span>';
+      showToast('RPC error: ' + rpcErr.message, 'err');
+    } else {
+      const r = rpcData || {};
+      if(dbg) dbg.innerHTML += '<br>RPC result: settled=' + (r.settled||0) + ' won=' + (r.won||0) + ' lost=' + (r.lost||0);
+      showToast('Settled ' + (r.settled||0) + ' · Won ' + (r.won||0) + ' · Lost ' + (r.lost||0), (r.settled ? 'ok' : 'err'));
+      if(r.settled) return;
+    }
+  } catch(e) {
+    if(dbg) dbg.innerHTML += '<br>RPC exception: ' + e.message;
+  }
+
+  // JS fallback using direct selections
+  await settleMatchBets(selectedMatch.id, hs, as_, home, away);
 }
 window.forceSettleSelected = forceSettleSelected;
+
 
 async function settleMatchBets(matchId, homeScore, awayScore, homeName, awayName) {
   const matchLabel = (homeName || '') + ' vs ' + (awayName || '');
