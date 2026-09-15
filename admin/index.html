@@ -1170,147 +1170,141 @@ async function saveScore() {
  * if any leg is still pending we leave the bet pending.
  */
 async function settleMatchBets(matchId, homeScore, awayScore, homeName, awayName) {
+  const matchLabel = (homeName || '') + ' vs ' + (awayName || '');
+  const hs = parseInt(homeScore, 10) || 0;
+  const as_ = parseInt(awayScore, 10) || 0;
+
+  // 1) Prefer DB function (SECURITY DEFINER — bypasses RLS)
   try {
-    const matchLabel = (homeName || '') + ' vs ' + (awayName || '');
-    const hs = parseInt(homeScore, 10) || 0;
-    const as_ = parseInt(awayScore, 10) || 0;
+    const { data: rpcData, error: rpcErr } = await db.rpc('settle_match_bets', {
+      p_match_id: matchId || null,
+      p_home_score: hs,
+      p_away_score: as_,
+      p_home_name: homeName || '',
+      p_away_name: awayName || ''
+    });
+    if(!rpcErr && rpcData) {
+      const r = typeof rpcData === 'object' ? rpcData : {};
+      showToast('Settled ' + (r.settled||0) + ' · Won ' + (r.won||0) + ' · Lost ' + (r.lost||0), 'ok');
+      return;
+    }
+    if(rpcErr) console.warn('RPC settle failed, using JS fallback:', rpcErr.message);
+  } catch(e) {
+    console.warn('RPC not available, JS fallback', e);
+  }
+
+  // 2) JS fallback
+  try {
     let result1x2 = 'draw';
     if(hs > as_) result1x2 = 'home';
     else if(as_ > hs) result1x2 = 'away';
-
     const h0 = (homeName || '').toLowerCase().split(/[\s-]+/)[0] || '';
     const a0 = (awayName || '').toLowerCase().split(/[\s-]+/)[0] || '';
 
-    // Load ALL pending bets + selections (admin needs open RLS; works if policies allow)
-    const { data: pendingBets, error: betErr } = await db.from('bets')
-      .select('*, bet_selections(*)')
-      .eq('status', 'pending')
-      .limit(200);
-    if(betErr) {
-      showToast('Cannot read bets (RLS?): ' + betErr.message, 'err');
-      console.error(betErr);
+    // Fetch selections for this match by id OR name (two queries)
+    let allSels = [];
+    if(matchId) {
+      const { data, error } = await db.from('bet_selections').select('*').eq('match_id', matchId);
+      if(error) console.warn('sel by id', error);
+      if(data) allSels = allSels.concat(data);
+    }
+    if(h0) {
+      const { data, error } = await db.from('bet_selections').select('*').ilike('match_name', '%' + h0 + '%');
+      if(error) console.warn('sel by name', error);
+      (data || []).forEach(s => {
+        const mn = (s.match_name || '').toLowerCase();
+        if(a0 && !mn.includes(a0)) return;
+        if(!allSels.find(x => x.id === s.id)) allSels.push(s);
+      });
+    }
+
+    if(!allSels.length) {
+      showToast('No bet selections found for ' + matchLabel + ' — check match_id on bets', 'err');
       return;
     }
-    if(!pendingBets || !pendingBets.length) {
-      showToast('No pending bets in system', 'ok');
-      return;
-    }
 
-    function belongsToMatch(leg) {
-      if(matchId && leg.match_id && String(leg.match_id) === String(matchId)) return true;
-      const mn = (leg.match_name || '').toLowerCase();
-      if(!mn) return false;
-      if(h0 && a0 && mn.includes(h0) && mn.includes(a0)) return true;
-      if(h0 && mn.includes(h0) && (!a0 || mn.includes(a0))) return true;
-      return false;
-    }
+    // Group by bet_id
+    const betIds = [...new Set(allSels.map(s => s.bet_id).filter(Boolean))];
+    let settled = 0, won = 0, lost = 0;
 
-    function legWon(leg) {
-      const sel = (leg.selection || '').toLowerCase().trim();
-      const mkt = (leg.market_type || '').toLowerCase();
-      const total = hs + as_;
-      if(sel === 'home win' || sel === '1 home' || sel === '1' || mkt === '1x2' && (sel.includes('home') && !sel.includes('away')))
-        return result1x2 === 'home';
-      if(sel.includes('home win') || (sel.includes('home') && !sel.includes('away') && !sel.includes('dnb') && !sel.includes('1x') && !sel.includes('12')))
-        return result1x2 === 'home';
-      if(sel === 'away win' || sel === '2 away' || sel === '2' || sel.includes('away win') || (sel.includes('away') && !sel.includes('home') && !sel.includes('dnb') && !sel.includes('x2')))
-        return result1x2 === 'away';
-      if(sel === 'draw' || sel === 'x' || sel === 'x draw' || (sel.includes('draw') && !sel.includes('other')))
-        return result1x2 === 'draw';
-      if(sel === '1x' || sel.includes('1x')) return result1x2 === 'home' || result1x2 === 'draw';
-      if(sel === 'x2' || sel.includes('x2')) return result1x2 === 'away' || result1x2 === 'draw';
-      if(sel === '12') return result1x2 === 'home' || result1x2 === 'away';
-      const cs = sel.match(/^(\d+)\s*[-:]\s*(\d+)$/);
-      if(cs) return hs === parseInt(cs[1],10) && as_ === parseInt(cs[2],10);
-      if(sel.includes('over')) {
-        const line = parseFloat((sel.match(/([0-9.]+)/) || [])[1] || '2.5');
-        return total > line;
+    for(const betId of betIds) {
+      const { data: bet, error: bErr } = await db.from('bets').select('*').eq('id', betId).single();
+      if(bErr || !bet) { console.warn('bet load', bErr); continue; }
+      if((bet.status || '').toLowerCase() !== 'pending') continue;
+
+      // All legs of this bet
+      const { data: legs } = await db.from('bet_selections').select('*').eq('bet_id', betId);
+      const legsAll = legs || allSels.filter(s => s.bet_id === betId);
+
+      function belongs(leg) {
+        if(matchId && leg.match_id && String(leg.match_id) === String(matchId)) return true;
+        const mn = (leg.match_name || '').toLowerCase();
+        return h0 && mn.includes(h0) && (!a0 || mn.includes(a0));
       }
-      if(sel.includes('under')) {
-        const line = parseFloat((sel.match(/([0-9.]+)/) || [])[1] || '2.5');
-        return total < line;
+      function wonLeg(leg) {
+        const sel = (leg.selection || '').toLowerCase().trim();
+        const total = hs + as_;
+        if(sel.includes('home') && !sel.includes('away') && !sel.includes('dnb') && !sel.includes('1x')) return result1x2 === 'home';
+        if(sel.includes('away') && !sel.includes('home') && !sel.includes('dnb') && !sel.includes('x2')) return result1x2 === 'away';
+        if(sel.includes('draw') || sel === 'x') return result1x2 === 'draw';
+        if(sel === '1x' || sel.includes('1x')) return result1x2 === 'home' || result1x2 === 'draw';
+        if(sel === 'x2' || sel.includes('x2')) return result1x2 === 'away' || result1x2 === 'draw';
+        if(sel === '12') return result1x2 === 'home' || result1x2 === 'away';
+        const cs = sel.match(/^(\d+)\s*[-:]\s*(\d+)$/);
+        if(cs) return hs === parseInt(cs[1],10) && as_ === parseInt(cs[2],10);
+        if(sel.includes('over')) return total > parseFloat((sel.match(/([0-9.]+)/)||[])[1]||2.5);
+        if(sel.includes('under')) return total < parseFloat((sel.match(/([0-9.]+)/)||[])[1]||2.5);
+        if(sel === 'yes') return hs > 0 && as_ > 0;
+        if(sel === 'no') return !(hs > 0 && as_ > 0);
+        return null;
       }
-      if(sel === 'yes' || (mkt === 'btts' && !sel.includes('no'))) return hs > 0 && as_ > 0;
-      if(sel === 'no' || (mkt === 'btts' && sel.includes('no'))) return !(hs > 0 && as_ > 0);
-      // Default: if selection text unclear, treat 1x2-like home/away/draw words
-      if(sel.includes('home')) return result1x2 === 'home';
-      if(sel.includes('away')) return result1x2 === 'away';
-      return null;
-    }
 
-    let settled = 0, won = 0, lost = 0, skipped = 0;
-    for(const bet of pendingBets) {
-      const legs = bet.bet_selections || [];
-      if(!legs.length) { skipped++; continue; }
-      // Only settle bets that include this match
-      const relevant = legs.filter(belongsToMatch);
-      if(!relevant.length) continue;
-
-      let allResolved = true;
-      let anyLost = false;
-      for(const leg of legs) {
-        if(belongsToMatch(leg)) {
-          const w = legWon(leg);
+      let allResolved = true, anyLost = false;
+      for(const leg of legsAll) {
+        if(belongs(leg)) {
+          const w = wonLeg(leg);
           if(w === null) { allResolved = false; break; }
           if(!w) anyLost = true;
-          try { await db.from('bet_selections').update({ status: w ? 'won' : 'lost' }).eq('id', leg.id); } catch(_){}
-        } else {
-          // Other match still pending → cannot settle whole acca
-          const lst = (leg.status || 'pending').toLowerCase();
-          if(lst === 'pending') { allResolved = false; break; }
-          if(lst === 'lost') anyLost = true;
-        }
+          await db.from('bet_selections').update({ status: w ? 'won' : 'lost' }).eq('id', leg.id);
+        } else if((leg.status || 'pending') === 'pending') {
+          allResolved = false; break;
+        } else if((leg.status || '') === 'lost') anyLost = true;
       }
-      if(!allResolved) { skipped++; continue; }
+      if(!allResolved) continue;
 
       if(anyLost) {
-        const { data: upd, error: uerr } = await db.from('bets')
-          .update({ status: 'lost', actual_win: 0 })
-          .eq('id', bet.id)
-          .select('id');
-        if(uerr) { console.error('lost update', uerr); showToast('Bet update blocked: ' + uerr.message, 'err'); }
-        if(upd && upd.length) { lost++; settled++; }
-        else if(!uerr) { skipped++; }
+        const { data: u, error: e1 } = await db.from('bets').update({ status: 'lost', actual_win: 0 }).eq('id', betId).select('id');
+        if(e1) { showToast('LOST update failed: ' + e1.message, 'err'); continue; }
+        if(u && u.length) { lost++; settled++; }
       } else {
         const payout = parseFloat(bet.potential_win || 0);
-        const { data: upd, error: uerr } = await db.from('bets')
-          .update({ status: 'won', actual_win: payout })
-          .eq('id', bet.id)
-          .select('id');
-        if(uerr) { console.error('won update', uerr); showToast('Bet update blocked: ' + uerr.message, 'err'); continue; }
-        if(!upd || !upd.length) { skipped++; continue; }
+        const { data: u, error: e1 } = await db.from('bets').update({ status: 'won', actual_win: payout }).eq('id', betId).select('id');
+        if(e1) { showToast('WON update failed: ' + e1.message, 'err'); continue; }
+        if(!u || !u.length) continue;
 
-        // Credit balance
-        const { data: user, error: uErr2 } = await db.from('users').select('balance').eq('id', bet.user_id).single();
-        if(uErr2) { console.error(uErr2); showToast('Balance read failed: ' + uErr2.message, 'err'); }
+        const { data: user } = await db.from('users').select('balance').eq('id', bet.user_id).single();
         const bal = parseFloat(user?.balance || 0);
         const newBal = Math.round((bal + payout) * 100) / 100;
-        const { error: balErr } = await db.from('users').update({ balance: newBal }).eq('id', bet.user_id);
-        if(balErr) {
-          console.error(balErr);
-          showToast('Balance update blocked (RLS): ' + balErr.message, 'err');
-        }
+        const { error: e2 } = await db.from('users').update({ balance: newBal }).eq('id', bet.user_id);
+        if(e2) showToast('Balance credit failed: ' + e2.message, 'err');
         try {
           await db.from('transactions').insert({
-            user_id: bet.user_id,
-            type: 'win',
-            amount: payout,
-            balance_before: bal,
-            balance_after: newBal,
-            status: 'completed',
+            user_id: bet.user_id, type: 'win', amount: payout,
+            balance_before: bal, balance_after: newBal, status: 'completed',
             description: 'Bet won · ' + matchLabel + ' · $' + payout.toFixed(2)
           });
-        } catch(txe) { console.warn(txe); }
+        } catch(_){}
         won++; settled++;
       }
     }
-    showToast('Settled ' + settled + ' · Won ' + won + ' · Lost ' + lost + (skipped ? ' · Skipped ' + skipped : ''), settled ? 'ok' : 'err');
+    showToast('Settled ' + settled + ' · Won ' + won + ' · Lost ' + lost, settled ? 'ok' : 'err');
   } catch(e) {
     console.error('settleMatchBets', e);
     showToast('Settlement error: ' + (e.message||e), 'err');
   }
 }
 window.settleMatchBets = settleMatchBets;
+
 
 // ── EVENT TYPE ──
 function setEvType(type, el) {
