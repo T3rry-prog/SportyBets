@@ -3790,7 +3790,9 @@ function renderFeatMoreMkts(m, mn) {
                 const desc = (t.description||'').toLowerCase();
                 if(st === 'failed' || st === 'cancelled' || st === 'pending') return false;
                 if(desc.includes('cancel') || desc.includes('failed') || desc.includes('error') || desc.includes('stk')) return false;
-                return ['deposit','bet','win','withdrawal','bonus','refund'].includes(t.type);
+                // Always include aviator + normal money moves
+                if((t.description||'').toLowerCase().includes('aviator')) return true;
+                return ['deposit','bet','win','withdrawal','bonus','refund','deduction'].includes(t.type);
             });
             if(!clean.length){c.innerHTML='<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No transactions yet</div>';return;}
             const sym = getCurrencySymbol();
@@ -4633,7 +4635,7 @@ function renderFeatMoreMkts(m, mn) {
                 balance_before: bal,
                 balance_after: newBal,
                 status: 'completed',
-                description: 'Aviator bet $' + stake.toFixed(2)
+                description: '✈️ Aviator bet $' + stake.toFixed(2)
             });
             if(currentProfile) currentProfile.balance = newBal;
             avStakeLocked = stake;
@@ -4721,7 +4723,7 @@ function renderFeatMoreMkts(m, mn) {
                     balance_before: bal,
                     balance_after: newBal,
                     status: 'completed',
-                    description: 'Aviator cashout ' + mult.toFixed(2) + 'x · $' + payout.toFixed(2)
+                    description: '✈️ Aviator cashout ' + mult.toFixed(2) + 'x · $' + payout.toFixed(2)
                 });
                 if(currentProfile) currentProfile.balance = newBal;
                 try {
