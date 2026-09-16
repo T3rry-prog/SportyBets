@@ -446,6 +446,15 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
 
   <!-- TAB: USERS -->
   <div id="tab-users" style="display:none;animation:fadeUp .2s ease;">
+
+    <!-- Global pending bets across all users -->
+    <div class="adm-section">
+      <div class="adm-section-hd">🎯 Open Bets (waiting to win)</div>
+      <div class="adm-panel" id="all-open-bets">
+        <div style="text-align:center;padding:16px;"><div class="spinner"></div></div>
+      </div>
+    </div>
+
     <div class="adm-section">
       <div class="adm-section-hd">👥 All Users</div>
       <div class="adm-panel" style="padding:10px 0;">
@@ -458,26 +467,42 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
       </div>
     </div>
 
-    <!-- USER DETAIL MODAL -->
+    <!-- USER DETAIL -->
     <div id="user-detail" style="display:none;" class="adm-section">
-      <div class="adm-section-hd" id="user-detail-title">Edit User</div>
+      <div class="adm-section-hd" id="user-detail-title">User profile</div>
       <div class="adm-panel">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-          <div style="width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👤</div>
-          <div>
-            <div style="font-size:14px;font-weight:800;" id="ud-name">—</div>
-            <div style="font-size:11px;color:var(--muted);" id="ud-phone">—</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👤</div>
+          <div style="min-width:0;flex:1;">
+            <div style="font-size:15px;font-weight:800;" id="ud-name">—</div>
+            <div style="font-size:12px;color:var(--muted);" id="ud-phone">—</div>
             <div style="font-size:10px;color:var(--muted);margin-top:2px;" id="ud-joined">—</div>
           </div>
         </div>
 
-        <!-- BALANCE -->
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Balance Management</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <span style="font-size:12px;color:var(--muted);">Current Balance</span>
-            <span style="font-size:18px;font-weight:800;color:var(--green);" id="ud-balance">$ 0</span>
+        <!-- Snapshot cards -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;" id="ud-snapshot">
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Balance</div>
+            <div style="font-size:16px;font-weight:800;color:#27AE60;" id="ud-balance">$ 0</div>
           </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Open liability</div>
+            <div style="font-size:16px;font-weight:800;color:var(--gold);" id="ud-liability">$ 0</div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Pending bets</div>
+            <div style="font-size:16px;font-weight:800;" id="ud-pending-count">0</div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Won / Lost</div>
+            <div style="font-size:16px;font-weight:800;" id="ud-wl">0 / 0</div>
+          </div>
+        </div>
+
+        <!-- BALANCE TOOLS -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Adjust balance</div>
           <div style="display:flex;gap:6px;margin-bottom:8px;">
             <input class="f-input" type="number" id="ud-amt" placeholder="Amount (USD)" style="flex:1;margin-bottom:0;"/>
             <select class="f-select" id="ud-type" style="width:100px;flex-shrink:0;">
@@ -486,38 +511,36 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
               <option value="set">= Set</option>
             </select>
           </div>
-          <div class="f-row" style="margin-bottom:8px;">
-            <input class="f-input" type="text" id="ud-reason" placeholder="Reason (e.g. Manual deposit, Bonus, Correction)" style="margin-bottom:0;"/>
-          </div>
+          <input class="f-input" type="text" id="ud-reason" placeholder="Reason (deposit, bonus, correction…)" style="margin-bottom:8px;"/>
           <button class="btn-gold" style="width:100%;" onclick="updateUserBalance()">💰 Update Balance</button>
         </div>
 
-        <!-- STATUS -->
+        <!-- STATUS + VIP -->
         <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Account Status</div>
-          <div style="display:flex;gap:8px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Account</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
             <button onclick="setUserStatus(true)" style="flex:1;padding:9px;border-radius:var(--r);background:rgba(39,174,96,.15);border:1.5px solid #27AE60;color:#27AE60;font-size:12px;font-weight:700;cursor:pointer;">✅ Active</button>
             <button onclick="setUserStatus(false)" style="flex:1;padding:9px;border-radius:var(--r);background:rgba(196,30,30,.15);border:1.5px solid var(--red);color:var(--red);font-size:12px;font-weight:700;cursor:pointer;">🚫 Block</button>
           </div>
-          <div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5;">Blocking prevents the user from logging in or placing bets.</div>
-        </div>
-
-        <!-- VIP POINTS -->
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
-          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">VIP Points</div>
           <div style="display:flex;gap:6px;">
-            <input class="f-input" type="number" id="ud-vip" placeholder="New VIP points" style="flex:1;margin-bottom:0;"/>
-            <button onclick="updateVIP()" style="padding:10px 14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0;">Set</button>
+            <input class="f-input" type="number" id="ud-vip" placeholder="VIP points" style="flex:1;margin-bottom:0;"/>
+            <button onclick="updateVIP()" style="padding:10px 14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:12px;font-weight:800;cursor:pointer;">Set VIP</button>
           </div>
         </div>
 
-        <!-- BET HISTORY -->
-        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Recent Bets</div>
-        <div id="ud-bets">
-          <div style="font-size:12px;color:var(--muted);text-align:center;padding:10px;">Loading...</div>
-        </div>
+        <div style="font-size:11px;font-weight:800;margin-bottom:6px;color:var(--gold);">⏳ Waiting to win (open bets)</div>
+        <div id="ud-open-bets" style="margin-bottom:14px;"><div style="font-size:12px;color:var(--muted);padding:8px;">Loading…</div></div>
 
-        <button class="btn-outline" style="margin-top:10px;" onclick="document.getElementById('user-detail').style.display='none'">← Back to Users</button>
+        <div style="font-size:11px;font-weight:800;margin-bottom:6px;">📋 All bets</div>
+        <div id="ud-bets" style="margin-bottom:14px;"><div style="font-size:12px;color:var(--muted);padding:8px;">Loading…</div></div>
+
+        <div style="font-size:11px;font-weight:800;margin-bottom:6px;">💸 Deposits & withdrawals</div>
+        <div id="ud-deposits" style="margin-bottom:14px;"><div style="font-size:12px;color:var(--muted);padding:8px;">Loading…</div></div>
+
+        <div style="font-size:11px;font-weight:800;margin-bottom:6px;">📜 Full activity</div>
+        <div id="ud-activity" style="margin-bottom:12px;"><div style="font-size:12px;color:var(--muted);padding:8px;">Loading…</div></div>
+
+        <button class="btn-outline" style="margin-top:6px;" onclick="document.getElementById('user-detail').style.display='none'">← Back to Users</button>
       </div>
     </div>
   </div>
@@ -1701,7 +1724,75 @@ async function loadUsers() {
     if(error) throw error;
     allUsers = data || [];
     renderUsers(allUsers);
+    loadAllOpenBets();
   } catch(e) { showToast('Error loading users: '+e.message,'err'); }
+}
+
+async function loadAllOpenBets() {
+  const el = document.getElementById('all-open-bets');
+  if(!el) return;
+  try {
+    const { data: bets, error } = await db.from('bets')
+      .select('*, bet_selections(*), users(full_name, phone)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(40);
+    if(error) {
+      // Fallback without users join
+      const { data: bets2, error: e2 } = await db.from('bets')
+        .select('*, bet_selections(*)')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(40);
+      if(e2) { el.innerHTML = '<div style="padding:12px;font-size:12px;color:var(--red);">'+e2.message+'</div>'; return; }
+      return renderOpenBetsList(el, bets2 || [], true);
+    }
+    renderOpenBetsList(el, bets || [], false);
+  } catch(e) {
+    el.innerHTML = '<div style="padding:12px;font-size:12px;color:var(--muted);">'+e.message+'</div>';
+  }
+}
+
+function renderOpenBetsList(el, bets, noUserJoin) {
+  if(!bets.length) {
+    el.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--muted);text-align:center;">No open bets right now</div>';
+    return;
+  }
+  const totalLiab = bets.reduce((s,b)=>s+parseFloat(b.potential_win||0),0);
+  el.innerHTML = `
+    <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;">
+      <b>${bets.length}</b> open bets · total to win <b style="color:#27AE60;">$ ${totalLiab.toLocaleString(undefined,{maximumFractionDigits:2})}</b>
+    </div>
+    ${bets.map(b => {
+      const legs = b.bet_selections || [];
+      const picks = legs.length
+        ? legs.map(l => (l.match_name||'Match') + ' → <b>' + (l.selection||'') + '</b> @' + (l.odds||'')).join('<br>')
+        : '<span style="color:var(--red);">No picks saved (leg missing)</span>';
+      let uname = 'User';
+      if(!noUserJoin && b.users) uname = (b.users.full_name||'') + ' · +' + (b.users.phone||'');
+      else {
+        const u = allUsers.find(x => x.id === b.user_id);
+        if(u) uname = (u.full_name||'') + ' · +' + (u.phone||'');
+      }
+      const pot = parseFloat(b.potential_win||0);
+      const stake = parseFloat(b.stake||0);
+      return `<div style="padding:12px 14px;border-bottom:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;">
+          <div style="font-size:12px;font-weight:700;cursor:pointer;color:var(--gold);" onclick="openUserDetail('${b.user_id}')">${uname}</div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:11px;color:var(--muted);">Stake $ ${stake.toLocaleString()}</div>
+            <div style="font-size:13px;font-weight:800;color:#27AE60;">To win $ ${pot.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+          </div>
+        </div>
+        <div style="font-size:11px;line-height:1.45;color:var(--text);">${picks}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Odds ${b.total_odds||'—'} · ${b.reference||''} · ${b.created_at ? new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'}) : ''}</div>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <button onclick="adminSettleBet('${b.id}','${b.user_id}',${pot},'won')" style="flex:1;padding:7px;border:none;border-radius:8px;background:#27AE60;color:#fff;font-size:11px;font-weight:800;cursor:pointer;">✅ Mark WON</button>
+          <button onclick="adminSettleBet('${b.id}','${b.user_id}',0,'lost')" style="flex:1;padding:7px;border:none;border-radius:8px;background:var(--red2);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">✕ Lost</button>
+        </div>
+      </div>`;
+    }).join('')}
+  `;
 }
 
 function renderUsers(users) {
@@ -1717,10 +1808,10 @@ function renderUsers(users) {
         <div style="width:36px;height:36px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">👤</div>
         <div style="flex:1;min-width:0;">
           <div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.full_name||'Unknown'}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:1px;">+${u.phone} · Joined ${joined}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px;">+${u.phone||'—'} · ${joined}</div>
         </div>
         <div style="text-align:right;flex-shrink:0;">
-          <div style="font-size:12px;font-weight:800;color:#27AE60;">$ ${parseFloat(u.balance||0).toLocaleString()}</div>
+          <div style="font-size:13px;font-weight:800;color:#27AE60;">$ ${parseFloat(u.balance||0).toLocaleString()}</div>
           <div style="font-size:9px;font-weight:700;color:${statusColor};margin-top:2px;">${statusText}</div>
         </div>
       </div>
@@ -1739,59 +1830,143 @@ function searchUsers(query) {
 
 async function openUserDetail(userId) {
   selectedUser = allUsers.find(u => u.id === userId);
-  if(!selectedUser) return;
+  if(!selectedUser) {
+    // fetch if not in list
+    try {
+      const { data } = await db.from('users').select('*').eq('id', userId).single();
+      selectedUser = data;
+      if(data && !allUsers.find(u => u.id === userId)) allUsers.push(data);
+    } catch(_){}
+  }
+  if(!selectedUser) { showToast('User not found','err'); return; }
+
   const joined = new Date(selectedUser.created_at).toLocaleString('en-KE', {dateStyle:'medium',timeStyle:'short'});
   document.getElementById('user-detail').style.display = 'block';
   document.getElementById('user-detail-title').textContent = selectedUser.full_name || 'User';
   document.getElementById('ud-name').textContent = selectedUser.full_name || 'Unknown';
-  document.getElementById('ud-phone').textContent = '+' + selectedUser.phone;
-  document.getElementById('ud-joined').textContent = 'Joined: ' + joined;
+  document.getElementById('ud-phone').textContent = '+' + (selectedUser.phone || '—');
+  const c = selectedUser.country ? ' · ' + selectedUser.country : '';
+  document.getElementById('ud-joined').textContent = 'Joined ' + joined + c + ' · VIP ' + (selectedUser.vip_tier || 'Bronze');
   document.getElementById('ud-balance').textContent = '$ ' + parseFloat(selectedUser.balance||0).toLocaleString();
-  document.getElementById('ud-vip').value = selectedUser.vip_points || 0;
-  const countryEl = document.getElementById('ud-joined');
-  if(countryEl) {
-    const c = selectedUser.country ? ' · ' + selectedUser.country : '';
-    countryEl.textContent = 'Joined: ' + joined + c + ' · VIP ' + (selectedUser.vip_tier || 'Bronze');
-  }
-  // Ensure Users tab visible when opening from deposits
+  const vipEl = document.getElementById('ud-vip');
+  if(vipEl) vipEl.value = selectedUser.vip_points || 0;
+
+  // Show users tab
   try {
     document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
-    const tabs = document.querySelectorAll('.adm-tab');
-    tabs.forEach(t => { if((t.textContent||'').includes('Users')) t.classList.add('active'); });
+    document.querySelectorAll('.adm-tab').forEach(t => { if((t.textContent||'').includes('Users')) t.classList.add('active'); });
     ['tab-featured','tab-matches','tab-events','tab-deposits','tab-users'].forEach(id => {
       const el = document.getElementById(id);
       if(el) el.style.display = id === 'tab-users' ? 'block' : 'none';
     });
   } catch(_){}
-  setTimeout(() => document.getElementById('user-detail').scrollIntoView({behavior:'smooth',block:'start'}), 100);
+
+  setTimeout(() => document.getElementById('user-detail').scrollIntoView({behavior:'smooth',block:'start'}), 80);
   loadUserBets(userId);
   loadUserDeposits(userId);
+  loadUserActivity(userId);
+}
+
+async function loadUserBets(userId) {
+  try {
+    const { data } = await db.from('bets').select('*,bet_selections(*)').eq('user_id', userId).order('created_at',{ascending:false}).limit(50);
+    const openEl = document.getElementById('ud-open-bets');
+    const el = document.getElementById('ud-bets');
+    const list = data || [];
+
+    const pending = list.filter(b => (b.status||'').toLowerCase() === 'pending');
+    const won = list.filter(b => (b.status||'').toLowerCase() === 'won');
+    const lost = list.filter(b => (b.status||'').toLowerCase() === 'lost');
+    const pendingLiability = pending.reduce((s,b)=>s+parseFloat(b.potential_win||0),0);
+    const totalStaked = list.reduce((s,b)=>s+parseFloat(b.stake||0),0);
+
+    const setTxt = (id, v) => { const n = document.getElementById(id); if(n) n.textContent = v; };
+    setTxt('ud-liability', '$ ' + pendingLiability.toLocaleString(undefined,{maximumFractionDigits:2}));
+    setTxt('ud-pending-count', String(pending.length));
+    setTxt('ud-wl', won.length + ' / ' + lost.length);
+
+    // Open bets section
+    if(openEl) {
+      if(!pending.length) {
+        openEl.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;text-align:center;">No open bets</div>';
+      } else {
+        openEl.innerHTML = pending.map(b => {
+          const legs = b.bet_selections || [];
+          const picks = legs.length
+            ? legs.map(l => `<div style="font-size:11px;margin-bottom:2px;">${l.match_name||'Match'}: <b>${l.selection||''}</b> @ ${l.odds||''}</div>`).join('')
+            : '<div style="font-size:11px;color:var(--red);">No picks on this bet</div>';
+          const pot = parseFloat(b.potential_win||0);
+          const stake = parseFloat(b.stake||0);
+          return `<div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.35);border-radius:var(--r);padding:10px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:10px;font-weight:800;color:var(--gold);">ACTIVE</span>
+              <span style="font-size:10px;color:var(--muted);">${b.reference||''}</span>
+            </div>
+            ${picks}
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;">
+              <span>Stake <b>$ ${stake.toLocaleString()}</b> · Odds <b>${b.total_odds||'—'}</b></span>
+              <span style="color:#27AE60;font-weight:800;">To win $ ${pot.toLocaleString(undefined,{maximumFractionDigits:2})}</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <button onclick="adminSettleBet('${b.id}','${userId}',${pot},'won')" style="flex:1;padding:7px;border:none;border-radius:8px;background:#27AE60;color:#fff;font-size:11px;font-weight:800;cursor:pointer;">✅ Won +$${pot.toFixed(2)}</button>
+              <button onclick="adminSettleBet('${b.id}','${userId}',0,'lost')" style="flex:1;padding:7px;border:none;border-radius:8px;background:var(--red2);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Lost</button>
+            </div>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    // All bets
+    if(el) {
+      if(!list.length) {
+        el.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:10px;">No bets yet</div>';
+      } else {
+        const sc = {won:'#27AE60',lost:'var(--red)',pending:'var(--gold)',void:'var(--muted)',cashed_out:'#2F80ED'};
+        el.innerHTML = `<div style="font-size:10px;color:var(--muted);margin-bottom:8px;">Total staked: $ ${totalStaked.toLocaleString(undefined,{maximumFractionDigits:2})}</div>` +
+          list.map(b => {
+            const legs = b.bet_selections || [];
+            const picks = legs.length
+              ? legs.map(l => (l.match_name||'') + ' · ' + (l.selection||'')).join(' | ')
+              : 'No picks';
+            const st = (b.status||'pending').toLowerCase();
+            const pot = parseFloat(b.potential_win||0);
+            const stake = parseFloat(b.stake||0);
+            return `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+              <div style="display:flex;justify-content:space-between;gap:8px;">
+                <div style="font-size:11px;line-height:1.4;flex:1;">${picks}</div>
+                <div style="text-align:right;flex-shrink:0;">
+                  <div style="font-size:11px;font-weight:800;color:${sc[st]||'var(--gold)'};">${st.toUpperCase()}</div>
+                  <div style="font-size:10px;color:var(--muted);">$ ${stake.toLocaleString()}</div>
+                  <div style="font-size:10px;font-weight:700;color:#27AE60;">${st==='won'?'Paid':'To win'} $ ${(st==='won'?parseFloat(b.actual_win||pot):pot).toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+                </div>
+              </div>
+              ${st==='pending' ? `<div style="display:flex;gap:4px;margin-top:6px;">
+                <button onclick="adminSettleBet('${b.id}','${userId}',${pot},'won')" style="flex:1;padding:5px;border:none;border-radius:6px;background:#27AE60;color:#fff;font-size:10px;font-weight:800;cursor:pointer;">Won</button>
+                <button onclick="adminSettleBet('${b.id}','${userId}',0,'lost')" style="flex:1;padding:5px;border:none;border-radius:6px;background:var(--red2);color:#fff;font-size:10px;font-weight:700;cursor:pointer;">Lost</button>
+              </div>` : ''}
+            </div>`;
+          }).join('');
+      }
+    }
+  } catch(e) {
+    console.error('Bets error:', e);
+    const el = document.getElementById('ud-bets');
+    if(el) el.innerHTML = '<div style="font-size:11px;color:var(--red);padding:10px;">Error loading bets</div>';
+  }
 }
 
 async function loadUserDeposits(userId) {
-  // Optional: show pending deposits for this user under bets header if container exists
   try {
     const { data } = await db.from('transactions')
       .select('*')
       .eq('user_id', userId)
-      .eq('type', 'deposit')
+      .in('type', ['deposit','withdrawal'])
       .order('created_at', { ascending: false })
-      .limit(8);
-    let box = document.getElementById('ud-deposits');
-    if(!box) {
-      const bets = document.getElementById('ud-bets');
-      if(!bets || !bets.parentNode) return;
-      box = document.createElement('div');
-      box.id = 'ud-deposits';
-      box.style.marginBottom = '14px';
-      bets.parentNode.insertBefore(box, bets);
-      const label = document.createElement('div');
-      label.style.cssText = 'font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;';
-      label.textContent = 'Deposits';
-      bets.parentNode.insertBefore(label, box);
-    }
+      .limit(20);
+    const box = document.getElementById('ud-deposits');
+    if(!box) return;
     if(!data || !data.length) {
-      box.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:6px 0;">No deposits yet</div>';
+      box.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;text-align:center;">No deposits/withdrawals</div>';
       return;
     }
     box.innerHTML = data.map(t => {
@@ -1799,86 +1974,45 @@ async function loadUserDeposits(userId) {
       const col = st === 'completed' ? '#27AE60' : st === 'pending' ? 'var(--gold)' : 'var(--red)';
       return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;">
         <div>
-          <div style="font-size:12px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()}</div>
+          <div style="font-size:12px;font-weight:700;">${(t.type||'').toUpperCase()} · $ ${parseFloat(t.amount).toLocaleString()}</div>
           <div style="font-size:10px;color:var(--muted);word-break:break-all;">${t.description||t.reference||'—'}</div>
           <div style="font-size:9px;color:var(--muted);">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:11px;font-weight:800;color:${col};">${(t.status||'').toUpperCase()}</div>
-          ${st==='pending' ? `<button onclick="this.disabled=true;this.textContent='…';confirmDeposit('${t.id}','${userId}',${t.amount})" style="margin-top:4px;background:#27AE60;border:none;border-radius:6px;color:#fff;font-size:10px;font-weight:800;padding:5px 8px;cursor:pointer;">Confirm</button>` : ''}
+          ${st==='pending' && t.type==='deposit' ? `<button onclick="confirmDeposit('${t.id}','${userId}',${t.amount})" style="margin-top:4px;background:#27AE60;border:none;border-radius:6px;color:#fff;font-size:10px;font-weight:800;padding:5px 8px;cursor:pointer;">Confirm</button>` : ''}
         </div>
       </div>`;
     }).join('');
   } catch(e) { console.error('user deposits', e); }
 }
 
-async function loadUserBets(userId) {
+async function loadUserActivity(userId) {
+  const box = document.getElementById('ud-activity');
+  if(!box) return;
   try {
-    const { data } = await db.from('bets').select('*,bet_selections(*)').eq('user_id', userId).order('created_at',{ascending:false}).limit(30);
-    const el = document.getElementById('ud-bets');
-    if(!data||!data.length) { el.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:10px;">No bets placed yet</div>'; return; }
-
-    const pending = data.filter(b => b.status === 'pending');
-    const won = data.filter(b => b.status === 'won');
-    const lost = data.filter(b => b.status === 'lost');
-    const totalStaked = data.reduce((s,b)=>s+parseFloat(b.stake||0),0);
-    const pendingLiability = pending.reduce((s,b)=>s+parseFloat(b.potential_win||0),0);
-    const totalWon = won.reduce((s,b)=>s+parseFloat(b.actual_win||b.potential_win||0),0);
-
-    const sc = {won:'#27AE60',lost:'var(--red)',pending:'var(--gold)',void:'var(--muted)'};
-    let html = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
-        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
-          <div style="font-size:10px;color:var(--muted);">Pending bets</div>
-          <div style="font-size:14px;font-weight:800;color:var(--gold);">${pending.length}</div>
+    const { data } = await db.from('transactions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(40);
+    if(!data || !data.length) {
+      box.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;text-align:center;">No activity yet</div>';
+      return;
+    }
+    box.innerHTML = data.map(t => {
+      const pos = ['deposit','win','bonus','refund'].includes(t.type);
+      return `<div style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;">
+        <div>
+          <div style="font-weight:700;">${(t.type||'').toUpperCase()} · ${(t.status||'')}</div>
+          <div style="color:var(--muted);font-size:10px;">${t.description||''}</div>
+          <div style="color:var(--muted);font-size:9px;">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
         </div>
-        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
-          <div style="font-size:10px;color:var(--muted);">To win (open)</div>
-          <div style="font-size:14px;font-weight:800;color:#27AE60;">$ ${pendingLiability.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
-        </div>
-        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
-          <div style="font-size:10px;color:var(--muted);">Total staked</div>
-          <div style="font-size:13px;font-weight:700;">$ ${totalStaked.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
-        </div>
-        <div style="background:var(--card);border-radius:var(--r);padding:8px;text-align:center;">
-          <div style="font-size:10px;color:var(--muted);">Won / Lost</div>
-          <div style="font-size:13px;font-weight:700;"><span style="color:#27AE60;">${won.length}</span> / <span style="color:var(--red);">${lost.length}</span></div>
-        </div>
-      </div>
-      <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">Total paid out on wins: $ ${totalWon.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
-    `;
-
-    html += data.map(b => {
-      const sels = b.bet_selections || [];
-      const picks = sels.map(s => `${s.match_name||'Match'}: <strong>${s.selection||''}</strong> @ ${s.odds||''}`).join('<br>')
-        || (sels[0] ? `${sels[0].match_name||''} · ${sels[0].selection||''}` : 'Bet');
-      const pot = parseFloat(b.potential_win||0);
-      const stake = parseFloat(b.stake||0);
-      const status = (b.status||'pending').toLowerCase();
-      const settleBtns = status === 'pending' ? `
-        <div style="display:flex;gap:4px;margin-top:6px;">
-          <button onclick="adminSettleBet('${b.id}','${userId}',${pot},'won')" style="flex:1;padding:6px;border:none;border-radius:6px;background:#27AE60;color:#fff;font-size:10px;font-weight:800;cursor:pointer;">✅ Mark WON (+$${pot.toFixed(2)})</button>
-          <button onclick="adminSettleBet('${b.id}','${userId}',0,'lost')" style="flex:1;padding:6px;border:none;border-radius:6px;background:var(--red2);color:#fff;font-size:10px;font-weight:700;cursor:pointer;">✕ Lost</button>
-        </div>` : '';
-      return `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-          <div style="flex:1;min-width:0;font-size:11px;line-height:1.45;">${picks}</div>
-          <div style="text-align:right;flex-shrink:0;">
-            <div style="font-size:11px;font-weight:800;color:${sc[status]||'var(--gold)'};">${status.toUpperCase()}</div>
-            <div style="font-size:10px;color:var(--muted);">Stake $ ${stake.toLocaleString()}</div>
-            <div style="font-size:10px;font-weight:700;color:#27AE60;">To win $ ${pot.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
-            <div style="font-size:9px;color:var(--muted);">Odds ${b.total_odds||'—'} · ${b.reference||''}</div>
-          </div>
-        </div>
-        ${settleBtns}
+        <div style="font-weight:800;color:${pos?'#27AE60':'var(--red)'};">${pos?'+':'-'}$ ${parseFloat(t.amount||0).toLocaleString()}</div>
       </div>`;
     }).join('');
-
-    el.innerHTML = html;
   } catch(e) {
-    console.error('Bets error:', e);
-    const el = document.getElementById('ud-bets');
-    if(el) el.innerHTML = '<div style="font-size:11px;color:var(--red);padding:10px;">Error loading bets</div>';
+    box.innerHTML = '<div style="font-size:11px;color:var(--red);">'+e.message+'</div>';
   }
 }
 
@@ -1890,35 +2024,41 @@ async function adminSettleBet(betId, userId, payout, status) {
       const { data: user } = await db.from('users').select('balance').eq('id', userId).single();
       const current = parseFloat(user?.balance || 0);
       const pay = parseFloat(payout) || 0;
-      const newBal = current + pay;
-      await db.from('bets').update({ status: 'won', actual_win: pay }).eq('id', betId);
-      await db.from('users').update({ balance: newBal }).eq('id', userId);
-      await db.from('transactions').insert({
-        user_id: userId,
-        type: 'win',
-        amount: pay,
-        balance_before: current,
-        balance_after: newBal,
-        status: 'completed',
-        description: 'Bet win settled by admin · bet ' + betId
-      });
+      const newBal = Math.round((current + pay) * 100) / 100;
+      const { error: bErr } = await db.from('bets').update({ status: 'won', actual_win: pay }).eq('id', betId);
+      if(bErr) throw bErr;
+      const { error: uErr } = await db.from('users').update({ balance: newBal }).eq('id', userId);
+      if(uErr) throw uErr;
+      try {
+        await db.from('transactions').insert({
+          user_id: userId, type: 'win', amount: pay,
+          balance_before: current, balance_after: newBal, status: 'completed',
+          description: 'Bet win settled by admin · bet ' + betId
+        });
+      } catch(_){}
       if(selectedUser && selectedUser.id === userId) {
         selectedUser.balance = newBal;
         const balEl = document.getElementById('ud-balance');
         if(balEl) balEl.textContent = '$ ' + newBal.toLocaleString();
       }
-      showToast('✅ Bet settled WON — $ ' + pay.toFixed(2) + ' credited', 'ok');
+      showToast('✅ WON — $ ' + pay.toFixed(2) + ' credited', 'ok');
     } else {
-      await db.from('bets').update({ status: 'lost', actual_win: 0 }).eq('id', betId);
+      const { error } = await db.from('bets').update({ status: 'lost', actual_win: 0 }).eq('id', betId);
+      if(error) throw error;
       showToast('Bet marked LOST', 'ok');
     }
     loadUserBets(userId);
+    loadUserActivity(userId);
+    loadAllOpenBets();
     loadUsers();
   } catch(e) {
     showToast('Settle error: ' + e.message, 'err');
   }
 }
 window.adminSettleBet = adminSettleBet;
+window.openUserDetail = openUserDetail;
+window.loadAllOpenBets = loadAllOpenBets;
+
 
 async function updateUserBalance() {
   if(!selectedUser) return;
