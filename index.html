@@ -3438,6 +3438,9 @@ function renderFeatMoreMkts(m, mn) {
             await recordBet();
             const modal = document.getElementById('bet-success');
             if(modal){ modal.style.display = 'flex'; modal.classList.add('open'); }
+        } catch(err) {
+            console.error(err);
+            appToast(err.message || 'Bet failed', 'err');
         } finally {
             placingBet = false;
             if(btn){ btn.disabled = false; btn.style.opacity = '1'; calcPayout(); }
@@ -3459,15 +3462,22 @@ function renderFeatMoreMkts(m, mn) {
                 potential_win:potWin,status:'pending',reference:ref
             }).select().single();
             if(bet) {
-                await db.from('bet_selections').insert(slip.map(s=>({
-                    bet_id:bet.id,
+                const legs = slip.map(s=>({
+                    bet_id: bet.id,
                     match_id: s.matchId && s.matchId !== 'builder' ? s.matchId : null,
-                    match_name:s.matchName,
-                    market_type:s.marketType,
-                    selection:s.selection,
-                    odds:s.val,
-                    status:'pending'
-                })));
+                    match_name: s.matchName,
+                    market_type: s.marketType,
+                    selection: s.selection,
+                    odds: s.val,
+                    status: 'pending'
+                }));
+                const { error: legErr } = await db.from('bet_selections').insert(legs);
+                if(legErr) {
+                    console.error('bet_selections insert failed', legErr);
+                    // Rollback bet so we don't leave orphans without legs
+                    try { await db.from('bets').delete().eq('id', bet.id); } catch(_){}
+                    throw new Error('Could not save bet picks: ' + legErr.message + ' — run INSERT policy on bet_selections');
+                }
                 const newBal=(currentProfile.balance||0)-stake;
                 const newVip=(currentProfile.vip_points||0)+Math.floor(stake/10);
                 // Run balance update + ledger in parallel for speed
