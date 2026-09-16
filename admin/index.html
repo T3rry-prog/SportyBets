@@ -484,7 +484,7 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;" id="ud-snapshot">
           <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
             <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Balance</div>
-            <div style="font-size:16px;font-weight:800;color:#27AE60;" id="ud-balance">$ 0</div>
+            <div style="font-size:16px;font-weight:800;color:#27AE60;" id="ud-balance">KSh 0</div>
           </div>
           <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;">
             <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Open liability</div>
@@ -504,7 +504,7 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
         <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px;">
           <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Adjust balance</div>
           <div style="display:flex;gap:6px;margin-bottom:8px;">
-            <input class="f-input" type="number" id="ud-amt" placeholder="Amount (USD)" style="flex:1;margin-bottom:0;"/>
+            <input class="f-input" type="number" id="ud-amt" placeholder="Amount (KSh)" style="flex:1;margin-bottom:0;"/>
             <select class="f-select" id="ud-type" style="width:100px;flex-shrink:0;">
               <option value="add">➕ Add</option>
               <option value="subtract">➖ Deduct</option>
@@ -1847,7 +1847,7 @@ async function openUserDetail(userId) {
   document.getElementById('ud-phone').textContent = '+' + (selectedUser.phone || '—');
   const c = selectedUser.country ? ' · ' + selectedUser.country : '';
   document.getElementById('ud-joined').textContent = 'Joined ' + joined + c + ' · VIP ' + (selectedUser.vip_tier || 'Bronze');
-  document.getElementById('ud-balance').textContent = '$ ' + parseFloat(selectedUser.balance||0).toLocaleString();
+  document.getElementById('ud-balance').textContent = 'KSh ' + parseFloat(selectedUser.balance||0).toLocaleString();
   const vipEl = document.getElementById('ud-vip');
   if(vipEl) vipEl.value = selectedUser.vip_points || 0;
 
@@ -2083,7 +2083,7 @@ async function adminSettleBet(betId, userId, payout, status) {
       if(selectedUser && selectedUser.id === userId) {
         selectedUser.balance = newBal;
         const balEl = document.getElementById('ud-balance');
-        if(balEl) balEl.textContent = '$ ' + newBal.toLocaleString();
+        if(balEl) balEl.textContent = 'KSh ' + newBal.toLocaleString();
       }
       showToast('✅ WON — $ ' + pay.toFixed(2) + ' credited', 'ok');
     } else {
@@ -2131,7 +2131,7 @@ async function updateUserBalance() {
       description: `Admin: ${reason}`,
     });
     selectedUser.balance = newBal;
-    document.getElementById('ud-balance').textContent = '$ ' + newBal.toLocaleString();
+    document.getElementById('ud-balance').textContent = 'KSh ' + newBal.toLocaleString();
     document.getElementById('ud-amt').value = '';
     // Update in allUsers array
     const idx = allUsers.findIndex(u => u.id === selectedUser.id);
