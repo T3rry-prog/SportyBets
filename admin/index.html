@@ -1987,6 +1987,26 @@ async function loadUserDeposits(userId) {
   } catch(e) { console.error('user deposits', e); }
 }
 
+function labelActivity(t) {
+  const desc = (t.description || '').toLowerCase();
+  const type = (t.type || '').toLowerCase();
+  if(desc.includes('aviator')) {
+    if(type === 'win' || desc.includes('cashout')) return { title: '✈️ AVIATOR WIN', kind: 'in' };
+    return { title: '✈️ AVIATOR BET', kind: 'out' };
+  }
+  if(type === 'deposit' || desc.includes('deposit')) {
+    if(desc.includes('admin')) return { title: '💰 ADMIN CREDIT', kind: 'in' };
+    return { title: '💰 DEPOSIT', kind: 'in' };
+  }
+  if(type === 'withdrawal') return { title: '🏦 WITHDRAWAL', kind: 'out' };
+  if(type === 'win') return { title: '🏆 BET WIN', kind: 'in' };
+  if(type === 'bet') return { title: '🎯 SPORTS BET', kind: 'out' };
+  if(type === 'bonus') return { title: '🎁 BONUS', kind: 'in' };
+  if(type === 'refund') return { title: '↩️ REFUND', kind: 'in' };
+  if(type === 'deduction' || desc.includes('admin')) return { title: '⚙️ ADMIN ADJUST', kind: desc.includes('add') || type === 'deposit' ? 'in' : 'out' };
+  return { title: (t.type || 'TX').toUpperCase(), kind: ['deposit','win','bonus','refund'].includes(type) ? 'in' : 'out' };
+}
+
 async function loadUserActivity(userId) {
   const box = document.getElementById('ud-activity');
   if(!box) return;
@@ -1995,20 +2015,44 @@ async function loadUserActivity(userId) {
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
-      .limit(40);
+      .limit(60);
     if(!data || !data.length) {
       box.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;text-align:center;">No activity yet</div>';
       return;
     }
-    box.innerHTML = data.map(t => {
-      const pos = ['deposit','win','bonus','refund'].includes(t.type);
-      return `<div style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;">
-        <div>
-          <div style="font-weight:700;">${(t.type||'').toUpperCase()} · ${(t.status||'')}</div>
-          <div style="color:var(--muted);font-size:10px;">${t.description||''}</div>
+    // Summary strip
+    let avIn = 0, avOut = 0, dep = 0, sportsOut = 0, sportsIn = 0;
+    data.forEach(t => {
+      const d = (t.description||'').toLowerCase();
+      const a = parseFloat(t.amount||0);
+      const st = (t.status||'').toLowerCase();
+      if(st === 'failed' || st === 'cancelled') return;
+      if(d.includes('aviator')) {
+        if(t.type === 'win') avIn += a; else avOut += a;
+      } else if(t.type === 'deposit') dep += a;
+      else if(t.type === 'bet') sportsOut += a;
+      else if(t.type === 'win') sportsIn += a;
+    });
+    const summary = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;font-size:10px;">
+      <div style="background:var(--card);border-radius:8px;padding:8px;"><div style="color:var(--muted);">Deposits</div><div style="font-weight:800;color:#27AE60;">+$ ${dep.toLocaleString(undefined,{maximumFractionDigits:2})}</div></div>
+      <div style="background:var(--card);border-radius:8px;padding:8px;"><div style="color:var(--muted);">Aviator</div><div style="font-weight:800;">-$ ${avOut.toLocaleString(undefined,{maximumFractionDigits:2})} / +$ ${avIn.toLocaleString(undefined,{maximumFractionDigits:2})}</div></div>
+      <div style="background:var(--card);border-radius:8px;padding:8px;"><div style="color:var(--muted);">Sports stakes</div><div style="font-weight:800;color:var(--red);">-$ ${sportsOut.toLocaleString(undefined,{maximumFractionDigits:2})}</div></div>
+      <div style="background:var(--card);border-radius:8px;padding:8px;"><div style="color:var(--muted);">Sports wins</div><div style="font-weight:800;color:#27AE60;">+$ ${sportsIn.toLocaleString(undefined,{maximumFractionDigits:2})}</div></div>
+    </div>`;
+
+    box.innerHTML = summary + data.map(t => {
+      const lab = labelActivity(t);
+      const pos = lab.kind === 'in';
+      const st = (t.status||'').toLowerCase();
+      const muted = st === 'failed' || st === 'cancelled';
+      const balAfter = t.balance_after != null ? (' · bal $ ' + parseFloat(t.balance_after).toLocaleString(undefined,{maximumFractionDigits:2})) : '';
+      return `<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;font-size:11px;opacity:${muted?0.55:1};">
+        <div style="min-width:0;">
+          <div style="font-weight:800;">${lab.title}${st && st !== 'completed' ? ' · ' + st.toUpperCase() : ''}</div>
+          <div style="color:var(--muted);font-size:10px;word-break:break-word;">${t.description||''}${balAfter}</div>
           <div style="color:var(--muted);font-size:9px;">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
         </div>
-        <div style="font-weight:800;color:${pos?'#27AE60':'var(--red)'};">${pos?'+':'-'}$ ${parseFloat(t.amount||0).toLocaleString()}</div>
+        <div style="font-weight:800;flex-shrink:0;color:${muted?'var(--muted)':(pos?'#27AE60':'var(--red)')};">${pos?'+':'-'}$ ${parseFloat(t.amount||0).toLocaleString(undefined,{maximumFractionDigits:2})}</div>
       </div>`;
     }).join('');
   } catch(e) {
@@ -2093,6 +2137,7 @@ async function updateUserBalance() {
     const idx = allUsers.findIndex(u => u.id === selectedUser.id);
     if(idx >= 0) allUsers[idx].balance = newBal;
     showToast(`✅ Balance updated to $ ${newBal.toLocaleString()}`, 'ok');
+    loadUserActivity(selectedUser.id);
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
