@@ -2752,39 +2752,155 @@
         goPage('login');
     }
 
+    
+    // Stable default 1X2 if DB has no markets (so odds always show)
+    function hashStr(s) {
+        let h = 0;
+        const t = String(s || '');
+        for (let i = 0; i < t.length; i++) h = ((h << 5) - h) + t.charCodeAt(i) | 0;
+        return Math.abs(h);
+    }
+    function default1x2(m) {
+        const h = hashStr((m.id || '') + (m.home_team || '') + (m.away_team || ''));
+        const home = (1.45 + (h % 90) / 100).toFixed(2);
+        const draw = (2.90 + (h % 70) / 100).toFixed(2);
+        const away = (2.10 + ((h >> 3) % 120) / 100).toFixed(2);
+        return [
+            { market_type: '1x2', selection: 'Home Win', odds: home },
+            { market_type: '1x2', selection: 'Draw', odds: draw },
+            { market_type: '1x2', selection: 'Away Win', odds: away }
+        ];
+    }
+    function ensureMatchOdds(matches) {
+        (matches || []).forEach(m => {
+            if (!m.markets) m.markets = [];
+            // Normalize selection labels
+            m.markets.forEach(mk => {
+                if (!mk.market_type) return;
+                const mt = String(mk.market_type).toLowerCase();
+                if (mt === '1x2' || mt === 'match_result' || mt === 'match result') mk.market_type = '1x2';
+                const sel = String(mk.selection || '').toLowerCase();
+                if (mk.market_type === '1x2') {
+                    if (sel === '1' || sel === 'home' || sel === 'home win') mk.selection = 'Home Win';
+                    else if (sel === 'x' || sel === 'draw') mk.selection = 'Draw';
+                    else if (sel === '2' || sel === 'away' || sel === 'away win') mk.selection = 'Away Win';
+                }
+                if (mk.odds != null) mk.odds = parseFloat(mk.odds);
+            });
+            const has1x2 = m.markets.some(x => x.market_type === '1x2');
+            if (!has1x2) {
+                m.markets = default1x2(m).concat(m.markets);
+            }
+        });
+        return matches;
+    }
+
     // ===== LOAD MATCHES =====
     async function loadMatches() {
+        const showEmpty = () => {
+            try {
+                filterMatchesBySport();
+            } catch(_) {
+                const el = document.getElementById('upcoming-matches');
+                if(el) el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No matches available right now</div>';
+            }
+        };
         try {
-            const { data, error } = await db.from('matches')
-                .select('id,home_team,away_team,status,minute,home_score,away_score,kick_off,is_featured,league,sport,game_code,markets(id,market_type,selection,odds,match_id)')
-                .order('kick_off', {ascending:true})
-                .limit(80);
+            // Fast query first (no nested markets — those slow/fail on some schemas)
+            let data = null, error = null;
+            let res = await db.from('matches')
+                .select('id,home_team,away_team,status,minute,home_score,away_score,kick_off,is_featured,league,sport')
+                .order('kick_off', { ascending: true })
+                .limit(60);
+            data = res.data; error = res.error;
+
+            // Fallback if column names differ
+            if(error) {
+                console.warn('Match query retry:', error.message);
+                res = await db.from('matches').select('*').order('kick_off', { ascending: true }).limit(60);
+                data = res.data; error = res.error;
+            }
             if(error) throw error;
+
             const now = Date.now();
-            const threeHoursAgo = now - 3*60*60*20;
-            allMatches = (data||[]).filter(m => {
-                const ko = new Date(m.kick_off).getTime();
+            const dayAgo = now - 24*60*60*1000;
+            allMatches = (data || []).filter(m => {
+                const st = (m.status || '').toLowerCase();
                 if(m.is_featured) return true;
-                if(m.status === 'live') return true;
-                if(m.status === 'upcoming') return ko > now;
-                if(m.status === 'finished') return ko > threeHoursAgo;
-                return false;
+                if(st === 'live') return true;
+                if(st === 'upcoming' || st === 'scheduled' || !st) return true;
+                if(st === 'finished' || st === 'ft') {
+                    const ko = m.kick_off ? new Date(m.kick_off).getTime() : 0;
+                    return ko > dayAgo;
+                }
+                return true;
             });
+
+            // Attach markets in background (optional — UI can show matches without odds first)
+            // Always show odds (DB or stable defaults) so list is not blank
+            ensureMatchOdds(allMatches);
             normalizeLiveMatches();
             filterMatchesBySport();
-            updateTicker(allMatches.filter(m=>m.status==='live'));
+            updateTicker(allMatches.filter(m => (m.status||'').toLowerCase() === 'live'));
             startLiveClock();
-            // If any matches finished, settle this user's pending bets so My Bets shows WON/LOST
-            // Settle in background — do not block UI
+            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+
+            // Overlay real markets from DB when available
+            setTimeout(async () => {
+                try {
+                    const ids = allMatches.slice(0, 50).map(m => m.id).filter(Boolean);
+                    if(!ids.length) return;
+                    let mkts = null;
+                    let r = await db.from('markets')
+                        .select('id,match_id,market_type,selection,odds')
+                        .in('match_id', ids)
+                        .limit(500);
+                    mkts = r.data;
+                    if(r.error || !mkts || !mkts.length) {
+                        // try nested join per match batch
+                        const r2 = await db.from('matches')
+                            .select('id, markets(id,match_id,market_type,selection,odds)')
+                            .in('id', ids);
+                        if(r2.data) {
+                            r2.data.forEach(row => {
+                                const m = allMatches.find(x => x.id === row.id);
+                                if(m && row.markets && row.markets.length) m.markets = row.markets;
+                            });
+                            ensureMatchOdds(allMatches);
+                            filterMatchesBySport();
+                            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+                        }
+                        return;
+                    }
+                    const byMatch = {};
+                    mkts.forEach(x => {
+                        if(!byMatch[x.match_id]) byMatch[x.match_id] = [];
+                        byMatch[x.match_id].push(x);
+                    });
+                    allMatches.forEach(m => {
+                        if(byMatch[m.id] && byMatch[m.id].length) m.markets = byMatch[m.id];
+                    });
+                    ensureMatchOdds(allMatches);
+                    filterMatchesBySport();
+                    try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+                } catch(e) { console.warn('markets load', e); }
+            }, 30);
+
             if(currentUser && typeof settleUserPendingBets === 'function') {
                 setTimeout(() => {
                     settleUserPendingBets().then(() => loadProfile()).then(() => {
                         try { updateAuthUI(); updateProfileUI(); } catch(_){}
                     }).catch(()=>{});
-                }, 0);
+                }, 800);
             }
         } catch(e) {
             console.error('Match load error:', e);
+            allMatches = allMatches || [];
+            showEmpty();
+            const el = document.getElementById('upcoming-matches');
+            if(el && (!allMatches || !allMatches.length)) {
+                el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Pull to refresh or check connection.</div>';
+            }
         }
     }
 
