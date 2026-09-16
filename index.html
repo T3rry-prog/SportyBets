@@ -1653,7 +1653,7 @@
                 <button type="button" onclick="document.getElementById('wd-amt').value=5000" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">5,000</button>
             </div>
             <button onclick="handleMpesaWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> Withdraw via M-Pesa</button>
-            <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.4;">Your request is processed and sent to M-Pesa shortly.</div>
+            <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.4;">Amount will be deposited to your M-Pesa within 12 hours.</div>
         </div>
 
         <!-- CRYPTO WITHDRAW -->
@@ -1881,7 +1881,7 @@
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:16px;display:flex;gap:12px;">
             <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">5</div>
-            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-trophy"></i> Win and withdraw</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Balance updates instantly. Withdraw to M-Pesa in under 30 seconds, any time.</div></div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-trophy"></i> Win and withdraw</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Balance updates instantly. Withdraw to M-Pesa any time — funds arrive within 12 hours.</div></div>
         </div>
         <button class="btn-hero" onclick="goPage('register')" style="width:100%;padding:14px;font-size:14px;background:var(--gold);color:#000;border:none;border-radius:var(--r);font-weight:800;cursor:pointer;">Get Started Free</button>
     </div>
@@ -4999,7 +4999,7 @@ function renderFeatMoreMkts(m, mn) {
               <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--muted);">M-Pesa number</span><strong>${phone}</strong></div>
               <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:8px;"><span style="color:var(--muted);">Status</span><strong style="color:#27AE60;">Processing</strong></div>
             </div>
-            <p style="margin:0;font-size:12px;line-height:1.55;color:var(--muted);">The amount will be deducted from your available balance and sent to the M-Pesa number above. You will receive an M-Pesa confirmation message once the transfer is complete.</p>
+            <p style="margin:0;font-size:12px;line-height:1.55;color:var(--muted);">The amount will be deducted from your available balance. Funds will be deposited to the M-Pesa number above in <strong>less than 12 hours</strong>.</p>
         `;
         const confirmed = await openAppModal('Withdraw to M-Pesa', body, 'Confirm Withdrawal');
         if(!confirmed) return;
@@ -5024,7 +5024,7 @@ function renderFeatMoreMkts(m, mn) {
             }
             if(currentProfile) currentProfile.balance = newBal;
             try { updateProfileUI(); updateAuthUI(); loadWallet(); } catch(e){}
-            appToast('Withdrawal successful · check your M-Pesa shortly', 'ok');
+            appToast('Withdrawal submitted · funds will reach your M-Pesa within 12 hours', 'ok');
             const a = document.getElementById('wd-amt'); if(a) a.value = '';
         } catch(e) {
             appToast('Withdrawal failed: ' + (e.message||e), 'err');
