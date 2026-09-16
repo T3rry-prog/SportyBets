@@ -161,11 +161,10 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
   </div>
 
   <!-- TABS -->
-  <div class="adm-tabs" style="overflow-x:auto;white-space:nowrap;">
-    <div class="adm-tab active" onclick="setAdmTab(this,'tab-featured')">⭐ Featured</div>
-    <div class="adm-tab" onclick="setAdmTab(this,'tab-matches')">📋 Matches</div>
-    <div class="adm-tab" onclick="setAdmTab(this,'tab-events')">⚡ Events</div>
-    <div class="adm-tab" onclick="setAdmTab(this,'tab-deposits')">💰 Deposits</div>
+  <div class="adm-tabs" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+    <div class="adm-tab active" onclick="setAdmTab(this,'tab-featured')">🔴 Live</div>
+    <div class="adm-tab" onclick="setAdmTab(this,'tab-matches')">⚽ Matches</div>
+    <div class="adm-tab" onclick="setAdmTab(this,'tab-orders')">📦 Orders</div>
     <div class="adm-tab" onclick="setAdmTab(this,'tab-users')">👥 Users</div>
   </div>
 
@@ -174,7 +173,7 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
 
     <!-- CREATE MANUAL MATCH -->
     <div class="adm-section">
-      <div class="adm-section-hd">➕ Create & Feature a Match Manually</div>
+      <div class="adm-section-hd">➕ Create match</div>
       <div class="adm-panel">
         <div class="two-col">
           <div class="f-row" style="margin-bottom:0;">
@@ -226,7 +225,7 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
     </div>
 
     <div class="adm-section">
-      <div class="adm-section-hd">Select from Existing Matches</div>
+      <div class="adm-section-hd">Select match to control</div>
       <div class="adm-panel">
         <div id="match-selector">
           <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
@@ -235,7 +234,7 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
     </div>
 
     <div class="adm-section" id="feat-editor" style="display:none;">
-      <div class="adm-section-hd" id="feat-editor-title">Edit Featured Match</div>
+      <div class="adm-section-hd" id="feat-editor-title">Live match control</div>
       <div class="adm-panel">
 
         <!-- SCORE -->
@@ -416,44 +415,70 @@ body{background:#0F1115;color:#F0F2F5;font-family:'Inter',system-ui,sans-serif;f
     </div>
   </div>
 
-  <!-- TAB: DEPOSITS -->
-  <div id="tab-deposits" style="display:none;animation:fadeUp .2s ease;">
+  <!-- TAB: ORDERS (money + tickets) -->
+  <div id="tab-orders" style="display:none;animation:fadeUp .2s ease;">
     <div class="adm-section">
-      <div class="adm-section-hd">💰 Pending Deposits</div>
+      <div class="adm-section-hd">📦 Orders overview</div>
+      <div class="adm-panel" style="padding:12px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="orders-summary">
+          <div style="background:var(--card);border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Deposits</div>
+            <div style="font-size:18px;font-weight:800;color:var(--gold);" id="ord-dep-count">—</div>
+          </div>
+          <div style="background:var(--card);border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Withdrawals</div>
+            <div style="font-size:18px;font-weight:800;color:var(--red);" id="ord-wit-count">—</div>
+          </div>
+          <div style="background:var(--card);border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">Open tickets</div>
+            <div style="font-size:18px;font-weight:800;color:#27AE60;" id="ord-bet-count">—</div>
+          </div>
+          <div style="background:var(--card);border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;">To pay (open)</div>
+            <div style="font-size:16px;font-weight:800;color:var(--gold);" id="ord-liab">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="adm-section" style="margin-top:10px;">
+      <div class="adm-section-hd">💰 Pending deposits</div>
       <div class="adm-panel" id="deposits-list">
         <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
       </div>
     </div>
+
     <div class="adm-section" style="margin-top:10px;">
-      <div class="adm-section-hd">✅ Recently Confirmed Deposits</div>
-      <div class="adm-panel" id="confirmed-list">
-        <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
-      </div>
-    </div>
-    <div class="adm-section" style="margin-top:10px;">
-      <div class="adm-section-hd">💸 Pending Withdrawals</div>
+      <div class="adm-section-hd">📲 Pending M-Pesa / crypto withdrawals</div>
       <div class="adm-panel" id="withdrawals-list">
         <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
       </div>
     </div>
+
     <div class="adm-section" style="margin-top:10px;">
-      <div class="adm-section-hd">✅ Recent Withdrawals</div>
-      <div class="adm-panel" id="confirmed-withdrawals-list">
+      <div class="adm-section-hd">🎫 Open bet tickets</div>
+      <div class="adm-panel" id="all-open-bets">
         <div style="text-align:center;padding:20px;"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <div class="adm-section" style="margin-top:10px;">
+      <div class="adm-section-hd">✅ Recent deposits</div>
+      <div class="adm-panel" id="confirmed-list">
+        <div style="text-align:center;padding:16px;"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <div class="adm-section" style="margin-top:10px;">
+      <div class="adm-section-hd">✅ Recent withdrawals</div>
+      <div class="adm-panel" id="confirmed-withdrawals-list">
+        <div style="text-align:center;padding:16px;"><div class="spinner"></div></div>
       </div>
     </div>
   </div>
 
   <!-- TAB: USERS -->
   <div id="tab-users" style="display:none;animation:fadeUp .2s ease;">
-
-    <!-- Global pending bets across all users -->
-    <div class="adm-section">
-      <div class="adm-section-hd">🎯 Open Bets (waiting to win)</div>
-      <div class="adm-panel" id="all-open-bets">
-        <div style="text-align:center;padding:16px;"><div class="spinner"></div></div>
-      </div>
-    </div>
 
     <div class="adm-section">
       <div class="adm-section-hd">👥 All Users</div>
@@ -637,15 +662,37 @@ window.adminLogout = adminLogout;
 // ── TABS ──
 function setAdmTab(el, tab) {
   document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  ['tab-featured','tab-matches','tab-events','tab-deposits','tab-users'].forEach(t => {
-    const el = document.getElementById(t); if(el) el.style.display = 'none';
+  if(el) el.classList.add('active');
+  ['tab-featured','tab-matches','tab-events','tab-orders','tab-deposits','tab-users'].forEach(t => {
+    const node = document.getElementById(t); if(node) node.style.display = 'none';
   });
-  document.getElementById(tab).style.display = 'block';
+  const show = document.getElementById(tab);
+  if(show) show.style.display = 'block';
   if(tab === 'tab-matches') loadAllMatches();
-  if(tab === 'tab-deposits') loadDeposits();
+  if(tab === 'tab-orders' || tab === 'tab-deposits') loadOrders();
   if(tab === 'tab-users') loadUsers();
 }
+
+async function loadOrders() {
+  await loadDeposits();
+  await loadAllOpenBets();
+  // Summary counts
+  try {
+    const [{ count: depC }, { count: witC }, { data: openBets }] = await Promise.all([
+      db.from('transactions').select('id', { count: 'exact', head: true }).eq('type','deposit').eq('status','pending'),
+      db.from('transactions').select('id', { count: 'exact', head: true }).eq('type','withdrawal').eq('status','pending'),
+      db.from('bets').select('potential_win').eq('status','pending').limit(200)
+    ]);
+    const set = (id, v) => { const n = document.getElementById(id); if(n) n.textContent = v; };
+    set('ord-dep-count', depC != null ? String(depC) : '0');
+    set('ord-wit-count', witC != null ? String(witC) : '0');
+    const bets = openBets || [];
+    set('ord-bet-count', String(bets.length));
+    const liab = bets.reduce((s,b)=>s+parseFloat(b.potential_win||0),0);
+    set('ord-liab', 'KSh ' + Math.round(liab).toLocaleString());
+  } catch(e) { console.warn('orders summary', e); }
+}
+window.loadOrders = loadOrders;
 
 // ── DEPOSITS ──
 async function loadDeposits() {
@@ -671,7 +718,7 @@ async function loadDeposits() {
         <div style="padding:12px 0;border-bottom:1px solid var(--border);">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
             <div style="flex:1;min-width:0;">
-              <div style="font-size:15px;font-weight:800;color:#27AE60;">$ ${parseFloat(t.amount).toLocaleString()}</div>
+              <div style="font-size:15px;font-weight:800;color:#27AE60;">KSh ${parseFloat(t.amount).toLocaleString()}</div>
               <div style="font-size:12px;font-weight:700;margin-top:3px;">${t.users?.full_name||'User'}</div>
               <div style="font-size:11px;color:var(--muted);">+${t.users?.phone||'—'} · ${coin}</div>
               <div style="font-size:10px;color:var(--muted);margin-top:3px;word-break:break-all;">${desc || 'Deposit request'}</div>
@@ -701,7 +748,7 @@ async function loadDeposits() {
       cel.innerHTML = confirmed.map(t => `
         <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <div>
-            <div style="font-size:12px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()} · ${t.users?.full_name||'User'}</div>
+            <div style="font-size:12px;font-weight:700;">KSh ${parseFloat(t.amount).toLocaleString()} · ${t.users?.full_name||'User'}</div>
             <div style="font-size:10px;color:var(--muted);">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
           </div>
           <div style="font-size:11px;font-weight:700;color:#27AE60;">✓ Done</div>
@@ -750,7 +797,7 @@ async function loadDeposits() {
         cwel.innerHTML = confW.map(t => `
           <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
             <div>
-              <div style="font-size:12px;font-weight:700;">$ ${parseFloat(t.amount).toLocaleString()} · ${t.users?.full_name||'User'}</div>
+              <div style="font-size:12px;font-weight:700;">KSh ${parseFloat(t.amount).toLocaleString()} · ${t.users?.full_name||'User'}</div>
               <div style="font-size:10px;color:var(--muted);">${new Date(t.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'})}</div>
             </div>
             <div style="font-size:11px;font-weight:700;color:#27AE60;">✓ Paid</div>
@@ -1724,7 +1771,6 @@ async function loadUsers() {
     if(error) throw error;
     allUsers = data || [];
     renderUsers(allUsers);
-    loadAllOpenBets();
   } catch(e) { showToast('Error loading users: '+e.message,'err'); }
 }
 
@@ -1761,7 +1807,7 @@ function renderOpenBetsList(el, bets, noUserJoin) {
   const totalLiab = bets.reduce((s,b)=>s+parseFloat(b.potential_win||0),0);
   el.innerHTML = `
     <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;">
-      <b>${bets.length}</b> open bets · total to win <b style="color:#27AE60;">$ ${totalLiab.toLocaleString(undefined,{maximumFractionDigits:2})}</b>
+      <b>${bets.length}</b> open tickets · liability <b style="color:#27AE60;">KSh ${Math.round(totalLiab).toLocaleString()}</b>
     </div>
     ${bets.map(b => {
       const legs = b.bet_selections || [];
@@ -1777,15 +1823,19 @@ function renderOpenBetsList(el, bets, noUserJoin) {
       const pot = parseFloat(b.potential_win||0);
       const stake = parseFloat(b.stake||0);
       return `<div style="padding:12px 14px;border-bottom:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:4px;">
+          <div style="font-size:12px;font-weight:800;color:var(--gold);">Ticket ${b.reference||'—'}</div>
+          <div style="font-size:10px;color:var(--muted);">${b.created_at ? new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'}) : ''}</div>
+        </div>
         <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;">
-          <div style="font-size:12px;font-weight:700;cursor:pointer;color:var(--gold);" onclick="openUserDetail('${b.user_id}')">${uname}</div>
+          <div style="font-size:12px;font-weight:700;cursor:pointer;color:var(--text);" onclick="openUserDetail('${b.user_id}')">${uname}</div>
           <div style="text-align:right;flex-shrink:0;">
-            <div style="font-size:11px;color:var(--muted);">Stake $ ${stake.toLocaleString()}</div>
-            <div style="font-size:13px;font-weight:800;color:#27AE60;">To win $ ${pot.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+            <div style="font-size:11px;color:var(--muted);">Stake KSh ${Math.round(stake).toLocaleString()}</div>
+            <div style="font-size:13px;font-weight:800;color:#27AE60;">To win KSh ${Math.round(pot).toLocaleString()}</div>
           </div>
         </div>
         <div style="font-size:11px;line-height:1.45;color:var(--text);">${picks}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Odds ${b.total_odds||'—'} · ${b.reference||''} · ${b.created_at ? new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short'}) : ''}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Odds ${b.total_odds||'—'} · ${b.bet_type||''}</div>
         <div style="display:flex;gap:6px;margin-top:8px;">
           <button onclick="adminSettleBet('${b.id}','${b.user_id}',${pot},'won')" style="flex:1;padding:7px;border:none;border-radius:8px;background:#27AE60;color:#fff;font-size:11px;font-weight:800;cursor:pointer;">✅ Mark WON</button>
           <button onclick="adminSettleBet('${b.id}','${b.user_id}',0,'lost')" style="flex:1;padding:7px;border:none;border-radius:8px;background:var(--red2);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">✕ Lost</button>
@@ -1811,7 +1861,7 @@ function renderUsers(users) {
           <div style="font-size:10px;color:var(--muted);margin-top:1px;">+${u.phone||'—'} · ${joined}</div>
         </div>
         <div style="text-align:right;flex-shrink:0;">
-          <div style="font-size:13px;font-weight:800;color:#27AE60;">$ ${parseFloat(u.balance||0).toLocaleString()}</div>
+          <div style="font-size:13px;font-weight:800;color:#27AE60;">KSh ${parseFloat(u.balance||0).toLocaleString()}</div>
           <div style="font-size:9px;font-weight:700;color:${statusColor};margin-top:2px;">${statusText}</div>
         </div>
       </div>
@@ -1855,7 +1905,7 @@ async function openUserDetail(userId) {
   try {
     document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.adm-tab').forEach(t => { if((t.textContent||'').includes('Users')) t.classList.add('active'); });
-    ['tab-featured','tab-matches','tab-events','tab-deposits','tab-users'].forEach(id => {
+    ['tab-featured','tab-matches','tab-events','tab-orders','tab-deposits','tab-users'].forEach(id => {
       const el = document.getElementById(id);
       if(el) el.style.display = id === 'tab-users' ? 'block' : 'none';
     });
