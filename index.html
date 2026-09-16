@@ -955,7 +955,7 @@
             <button class="btn-join" onclick="goPage('register')">Join Free</button>
         </div>
         <div id="hdr-user" style="display:none;gap:7px;align-items:center;">
-            <div class="bal-chip" onclick="goPage('wallet')"><span id="hdr-currency">$</span> <strong id="hdr-bal">0</strong></div>
+            <div class="bal-chip" onclick="goPage('wallet')"><span id="hdr-currency">KSh</span> <strong id="hdr-bal">0</strong></div>
             <button class="btn-login" onclick="goPage('account')"><i class="fas fa-user"></i></button>
         </div>
     </div>
@@ -1056,7 +1056,7 @@
                 <div style="font-size:28px;margin-bottom:8px;">🔒</div>
                 <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;">Watch Live Matches</div>
                 <div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:14px;max-width:280px;margin-left:auto;margin-right:auto;">
-                    One-time <strong style="color:#27AE60;">$50</strong> subscription unlocks live streams.<br>
+                    Pay <strong style="color:#27AE60;">KSh 500</strong> once from your wallet to unlock live streams.<br>
                     In partnership with <strong style="color:#fff;">SuperSport</strong> &amp; <strong style="color:#fff;">DStv</strong>.
                 </div>
                 <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;">
@@ -1064,9 +1064,9 @@
                     <span style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:#fff;">DStv</span>
                 </div>
                 <button onclick="subscribeLive()" style="width:100%;max-width:260px;padding:13px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">
-                    Subscribe · $50 once
+                    Unlock Live · KSh 500
                 </button>
-                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:8px;">One-time access · SuperSport & DStv partners</div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:8px;">Charged from wallet balance · One-time access</div>
             </div>
         </div>
         <div id="live-player-unlocked" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
@@ -1112,13 +1112,13 @@
                 <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Stake ($)</div>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;">
                     <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                    <input class="stake-in" id="stake" type="number" inputmode="decimal" value="10" min="10" step="any" oninput="calcPayout()" onchange="calcPayout()" onclick="this.focus();this.select();" ontouchstart="this.focus();" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;-webkit-user-select:text;user-select:text;pointer-events:auto;z-index:5;position:relative;">
+                    <input class="stake-in" id="stake" type="number" inputmode="decimal" value="500" min="500" step="any" oninput="calcPayout()" onchange="calcPayout()" onclick="this.focus();this.select();" ontouchstart="this.focus();" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;-webkit-user-select:text;user-select:text;pointer-events:auto;z-index:5;position:relative;">
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;" id="qs-row">
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1,000</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2,000</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(5000)">5,000</div>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;">
                     <span style="font-size:13px;color:var(--muted);">Potential Win</span>
@@ -1264,7 +1264,7 @@
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
             <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">03</div>
-            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min $10). Confirm on your phone to complete payment.</div></div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min KSh 500 for sports). Confirm on your phone to complete payment.</div></div>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:10px;display:flex;gap:12px;">
             <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">04</div>
@@ -1325,10 +1325,56 @@
                 <div class="pass-eye" onclick="toggleEye('lpass',this)" style="padding:11px 12px;color:var(--muted);cursor:pointer;font-size:16px;">👁️</div>
             </div>
         </div>
-        <div style="text-align:right;margin-bottom:16px;"><span style="font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;">Forgot password?</span></div>
+        <div style="text-align:right;margin-bottom:16px;"><span style="font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;" onclick="goPage('forgot')">Forgot password?</span></div>
         <button class="btn-auth" id="login-btn" onclick="doLogin()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">Sign In</button>
         <div style="text-align:center;font-size:13px;color:var(--muted);">No account? <span class="auth-link" style="color:var(--gold);font-weight:700;cursor:pointer;" onclick="goPage('register')">Register free</span></div>
         <div style="text-align:center;margin-top:10px;"><span style="font-size:12px;color:var(--muted);cursor:pointer;" onclick="goPage('home')">← Back to Home</span></div>
+    </div>
+</div>
+
+
+<!-- ===== FORGOT / RESET PASSWORD ===== -->
+<div id="page-forgot" class="page">
+    <div style="padding:20px 16px 80px;">
+        <div style="text-align:center;font-size:26px;font-weight:800;color:var(--gold);margin-bottom:4px;">SportyBet</div>
+        <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">Reset your password</div>
+        <div id="forgot-err" style="display:none;background:rgba(226,27,45,0.1);border:1px solid rgba(226,27,45,0.3);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--live);margin-bottom:12px;"></div>
+        <div id="forgot-ok" style="display:none;background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:var(--r);padding:10px 12px;font-size:12px;color:#27AE60;margin-bottom:12px;"></div>
+
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Country</label>
+            <div style="border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);">
+                <select id="fcountry" style="background:var(--input-bg);color:var(--text);width:100%;border:none;outline:none;appearance:none;-webkit-appearance:none;padding:11px 12px;font-size:14px;" onchange="updateForgotDial(this)">
+                    <option value="KE" data-code="+254" data-flag="🇰🇪">🇰🇪 Kenya</option>
+                    <option value="NG" data-code="+234" data-flag="🇳🇬">🇳🇬 Nigeria</option>
+                    <option value="GH" data-code="+233" data-flag="🇬🇭">🇬🇭 Ghana</option>
+                    <option value="UG" data-code="+256" data-flag="🇺🇬">🇺🇬 Uganda</option>
+                    <option value="TZ" data-code="+255" data-flag="🇹🇿">🇹🇿 Tanzania</option>
+                    <option value="OTHER" data-code="+" data-flag="🌍">🌍 Other</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Phone Number</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);">
+                <div id="forgot-dial" style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;">+254</div>
+                <input type="tel" id="fp" inputmode="numeric" placeholder="7XX XXX XXX" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
+            </div>
+        </div>
+        <div style="margin-bottom:13px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">New Password</label>
+            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);">
+                <input type="password" id="fpass" placeholder="Min. 6 characters" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
+                <div class="pass-eye" onclick="toggleEye('fpass',this)" style="padding:11px 12px;color:var(--muted);cursor:pointer;font-size:16px;">👁️</div>
+            </div>
+        </div>
+        <div style="margin-bottom:16px;">
+            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Confirm New Password</label>
+            <input type="password" id="fpass2" placeholder="Repeat new password" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;"/>
+        </div>
+        <button class="btn-auth" id="forgot-btn" onclick="doResetPassword()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">Reset Password</button>
+        <div style="text-align:center;font-size:13px;color:var(--muted);">Remembered it? <span style="color:var(--gold);font-weight:700;cursor:pointer;" onclick="goPage('login')">Sign in</span></div>
+        <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5;">Need help? <a href="https://wa.me/254700000000" target="_blank" style="color:var(--gold);">WhatsApp support</a></div>
     </div>
 </div>
 
@@ -1585,16 +1631,29 @@
             </div>
         </div>
 
-        <!-- WITHDRAW FORM (shown when withdraw tab active) -->
+        <!-- WITHDRAW FORM -->
         <div id="withdraw-form-panel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;">
-            <div style="margin-bottom:13px;">
-                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Withdrawal Amount ($)</label>
+            <div style="font-size:13px;font-weight:800;margin-bottom:10px;">Withdraw to M-Pesa</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Min KSh 100 · Sent to your Safaricom number after admin approval</div>
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">M-Pesa Phone</label>
+                <input type="tel" id="wd-mpesa-phone" placeholder="07XX XXX XXX" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;"/>
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount (KSh)</label>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;">
-                    <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                    <input type="number" id="wd-amt" placeholder="Enter amount" min="10" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                    <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
+                    <input type="number" id="wd-amt" placeholder="Min 100" min="100" step="1" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                 </div>
             </div>
-            <button onclick="handleWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;">📤 Request Withdrawal</button>
+            <div style="display:flex;gap:6px;margin-bottom:12px;">
+                <button type="button" onclick="document.getElementById('wd-amt').value=100" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">100</button>
+                <button type="button" onclick="document.getElementById('wd-amt').value=500" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">500</button>
+                <button type="button" onclick="document.getElementById('wd-amt').value=1000" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">1,000</button>
+                <button type="button" onclick="document.getElementById('wd-amt').value=5000" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">5,000</button>
+            </div>
+            <button onclick="handleMpesaWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> Withdraw via M-Pesa</button>
+            <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.4;">Balance is held when you request. Paid after admin confirms.</div>
         </div>
 
         <!-- CRYPTO WITHDRAW -->
@@ -1905,24 +1964,24 @@
             <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;">
                 <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 14px;min-width:90px;">
                     <div style="font-size:9px;color:var(--muted);">STAKE</div>
-                    <div style="font-size:14px;font-weight:800;color:#fff;">$ <span id="av-stake-lbl">1</span></div>
+                    <div style="font-size:14px;font-weight:800;color:#fff;">KSh <span id="av-stake-lbl">50</span></div>
                 </div>
                 <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 14px;min-width:90px;">
                     <div style="font-size:9px;color:var(--muted);">PROFIT</div>
-                    <div style="font-size:14px;font-weight:800;color:#27AE60;" id="av-profit">$ 0.00</div>
+                    <div style="font-size:14px;font-weight:800;color:#27AE60;" id="av-profit">KSh 0</div>
                 </div>
             </div>
 
             <div style="display:flex;gap:8px;margin-bottom:10px;">
-                <input type="number" id="av-stake" value="1" min="1" step="1" style="flex:1;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);font-size:15px;font-weight:700;outline:none;text-align:center;"/>
+                <input type="number" id="av-stake" value="50" min="50" step="10" style="flex:1;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);font-size:15px;font-weight:700;outline:none;text-align:center;"/>
                 <button onclick="startAv()" id="av-start-btn" style="flex:1.2;padding:12px;border-radius:8px;background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">BET</button>
                 <button onclick="cashoutAv()" id="av-cash-btn" style="flex:1.2;padding:12px;border-radius:8px;background:#E21B2D;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;opacity:0.45;" disabled>CASH OUT</button>
             </div>
             <div style="display:flex;gap:6px;justify-content:center;">
-                <button onclick="setAvStake(1)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$1</button>
-                <button onclick="setAvStake(5)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$5</button>
-                <button onclick="setAvStake(10)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$10</button>
-                <button onclick="setAvStake(50)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$50</button>
+                <button onclick="setAvStake(50)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">50</button>
+                <button onclick="setAvStake(100)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">100</button>
+                <button onclick="setAvStake(200)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">200</button>
+                <button onclick="setAvStake(500)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">500</button>
             </div>
             <div style="font-size:10px;color:var(--muted);margin-top:12px;">Min bet $1 · Stake taken from your balance</div>
         </div>
@@ -2106,7 +2165,7 @@
         {home:'Crystal Palace', away:'Fulham', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:2.50, d:3.20, a:2.85}
     ];
 
-    const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets','jackpot','aviator'];
+    const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','forgot','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets','jackpot','aviator'];
     const BN_MAP = {home:'bn-home', live:'bn-live', slip:'bn-slip', mybets:'bn-mybets', account:'bn-account', dashboard:'bn-account', wallet:'bn-account'};
 
     function goPage(p) {
@@ -2294,6 +2353,10 @@
             if(depMethods) depMethods.style.display = 'none';
             if(wdPanel) wdPanel.style.display = 'block';
             if(cryptoSec) cryptoSec.style.display = 'block';
+            try {
+                const ph = document.getElementById('wd-mpesa-phone');
+                if(ph && !ph.value && currentProfile?.phone) ph.value = currentProfile.phone;
+            } catch(_){}
         }
     }
 
@@ -2594,6 +2657,10 @@
             if(error) throw error;
             btn.textContent='Sign In'; btn.disabled=false;
             currentUser=data.user; await loadProfile(); updateAuthUI();
+            try {
+                if(currentProfile && (currentProfile.live_sub === true || currentProfile.live_sub === '1'))
+                    localStorage.setItem('live_sub', '1');
+            } catch(_){}
             goPage('dashboard');
         } catch(e) {
             btn.textContent='Sign In'; btn.disabled=false;
@@ -2639,7 +2706,7 @@
                 const bal = parseFloat(currentProfile.balance||0);
                 // Show converted amount for Kenyans, raw number for others
                 if (isKenyanUser()) {
-                    setEl('hdr-bal', Math.round(bal * EXCHANGE_RATE_KES).toLocaleString());
+                    setEl('hdr-bal', Math.round(bal).toLocaleString());
                 } else {
                     setEl('hdr-bal', bal.toLocaleString());
                 }
@@ -2661,7 +2728,7 @@
         setEl('dash-vip',pts.toLocaleString());
         setEl('wallet-bal-display', fmtMoney(bal));
         if (isKenyanUser()) {
-            setEl('hdr-bal', Math.round(bal * EXCHANGE_RATE_KES).toLocaleString());
+            setEl('hdr-bal', Math.round(bal).toLocaleString());
         } else {
             setEl('hdr-bal', bal.toLocaleString());
         }
@@ -2973,7 +3040,7 @@
                     `}
                 </div>
                 <div class="feat-bottom">
-                    <div class="feat-min">${(isLive || isFinished) ? '<strong style="color:var(--muted);">Betting closed</strong>' : 'Min bet: <strong>$10</strong>'}</div>
+                    <div class="feat-min">${(isLive || isFinished) ? '<strong style="color:var(--muted);">Betting closed</strong>' : 'Min bet: <strong>KSh 500</strong>'}</div>
                     <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')"><i class="fas fa-share-alt"></i> Share</button>
                 </div>
                 ${(isLive || isFinished) ? '' : `
@@ -3261,10 +3328,10 @@ function renderFeatMoreMkts(m, mn) {
             isFeaturedBet=false;
             const qsRow = document.getElementById('qs-row');
             if(qsRow) qsRow.innerHTML = `
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1,000</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2,000</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(5000)">5,000</div>
             `;
         }
         renderSlip();
@@ -3393,13 +3460,13 @@ function renderFeatMoreMkts(m, mn) {
         isFeaturedBet = true;
         addOdd(btn, matchId, marketType, matchName, selection, val);
         const stakeEl = document.getElementById('stake');
-        if(stakeEl && parseFloat(stakeEl.value) < 10) { stakeEl.value = 10; calcPayout(); }
+        if(stakeEl && parseFloat(stakeEl.value) < (typeof MIN_BET_SPORTS!=='undefined'?MIN_BET_SPORTS:500)) { stakeEl.value = (typeof MIN_BET_SPORTS!=='undefined'?MIN_BET_SPORTS:500); calcPayout(); }
         const qsRow = document.getElementById('qs-row');
         if(qsRow) qsRow.innerHTML = `
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1,000</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2,000</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(5000)">5,000</div>
         `;
         goPage('slip');
     }
@@ -3417,12 +3484,11 @@ function renderFeatMoreMkts(m, mn) {
         }
         const displayStake=parseFloat(document.getElementById('stake')?.value)||0;
         const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
-        const minBet = 10; // USD base minimum
+        const minBet = (typeof MIN_BET_SPORTS !== 'undefined' ? MIN_BET_SPORTS : 500); // KSh
         if(stake < minBet){
             const inp=document.getElementById('stake');
-            const minDisp = isKenyanUser() ? minBet * EXCHANGE_RATE_KES : minBet;
-            if(inp){ inp.value=minDisp; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',200); }
-            appToast('Minimum bet is ' + getCurrencySymbol() + ' ' + (isKenyanUser() ? (minBet * EXCHANGE_RATE_KES) : minBet), 'err');
+            if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',200); }
+            appToast('Minimum bet is KSh ' + minBet, 'err');
             return;
         }
         const balance = parseFloat(currentProfile?.balance||0);
@@ -4482,53 +4548,43 @@ function renderFeatMoreMkts(m, mn) {
         }).catch(()=>prompt('Copy this address:', addr));
     }
 
-    // ===== CURRENCY HELPER =====
-    // Internal balance is always stored in USD.
-    // Kenyan users (country KE or phone starts with 254) see KES at a live-ish rate.
-    const EXCHANGE_RATE_KES = 130; // 1 USD ≈ 130 KES (update as needed)
+    // ===== CURRENCY HELPER (KES is primary for now) =====
+    // Balance, stakes, deposits stored & shown in Kenya Shillings.
+    const EXCHANGE_RATE_KES = 130; // kept for later USD mode
+    const MIN_BET_SPORTS = 500;    // KSh — featured & sports slip
+    const MIN_BET_AVIATOR = 50;    // KSh
+    const MIN_DEPOSIT_CRYPTO = 100; // KSh display note (crypto still USDT)
 
     function isKenyanUser() {
-        return !!(currentProfile && (currentProfile.country === 'KE' || (currentProfile.phone||'').startsWith('254')));
+        return true; // KES mode for everyone until USD relaunch
     }
 
-    function fmtMoney(amountUSD, forceKE) {
-        const n = parseFloat(amountUSD) || 0;
-        const showKE = forceKE === true || (forceKE !== false && isKenyanUser());
-        if (showKE) {
-            return 'KSh ' + Math.round(n * EXCHANGE_RATE_KES).toLocaleString();
-        }
-        return '$' + n.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:2});
+    function fmtMoney(amount, forceKE) {
+        const n = parseFloat(amount) || 0;
+        return 'KSh ' + Math.round(n).toLocaleString();
     }
 
     function getCurrencySymbol() {
-        return isKenyanUser() ? 'KSh' : '$';
+        return 'KSh';
     }
 
-    // Convert a display stake (what user typed) back to USD for DB
+    // Identity: display amount IS the stored amount (KES)
     function stakeToUSD(displayVal) {
-        const v = parseFloat(displayVal) || 0;
-        if (isKenyanUser()) return Math.round((v / EXCHANGE_RATE_KES) * 100) / 100;
-        return v;
+        return Math.round((parseFloat(displayVal) || 0) * 100) / 100;
     }
-
-    // Convert USD stake to display amount
-    function stakeToDisplay(usd) {
-        const v = parseFloat(usd) || 0;
-        if (isKenyanUser()) return Math.round(v * EXCHANGE_RATE_KES);
-        return v;
+    function stakeToDisplay(stored) {
+        return Math.round(parseFloat(stored) || 0);
     }
 
     function updateStakeUIForCurrency() {
         const prefix = document.getElementById('stake-prefix');
         const label = document.getElementById('stake-label');
         const inp = document.getElementById('stake');
-        if (prefix) prefix.textContent = getCurrencySymbol();
-        if (label) label.textContent = 'Stake (' + getCurrencySymbol() + ')';
+        if (prefix) prefix.textContent = 'KSh';
+        if (label) label.textContent = 'Stake (KSh)';
         if (inp) {
-            // keep min 10 USD equivalent
-            const minDisp = isKenyanUser() ? 10 * EXCHANGE_RATE_KES : 10;
-            inp.min = minDisp;
-            if (parseFloat(inp.value) < minDisp) inp.value = minDisp;
+            inp.min = MIN_BET_SPORTS;
+            if (parseFloat(inp.value) < MIN_BET_SPORTS) inp.value = MIN_BET_SPORTS;
         }
         try { calcPayout(); } catch(e){}
     }
@@ -4537,6 +4593,8 @@ function renderFeatMoreMkts(m, mn) {
     window.stakeToDisplay = stakeToDisplay;
     window.isKenyanUser = isKenyanUser;
     window.EXCHANGE_RATE_KES = EXCHANGE_RATE_KES;
+    window.MIN_BET_SPORTS = MIN_BET_SPORTS;
+    window.MIN_BET_AVIATOR = MIN_BET_AVIATOR;
 
     // ===== AVIATOR =====
     let av = 1, avRun = false, avInterval = null, avHistory = [];
@@ -4610,7 +4668,7 @@ function renderFeatMoreMkts(m, mn) {
         }
 
         const stakeInp = document.getElementById('av-stake');
-        const stake = Math.max(1, parseFloat(stakeInp?.value) || 1);
+        const stake = Math.max((typeof MIN_BET_AVIATOR!=='undefined'?MIN_BET_AVIATOR:50), parseFloat(stakeInp?.value) || (typeof MIN_BET_AVIATOR!=='undefined'?MIN_BET_AVIATOR:50));
         if(stakeInp) stakeInp.value = stake;
         const lbl = document.getElementById('av-stake-lbl');
         if(lbl) lbl.textContent = stake;
@@ -4844,8 +4902,14 @@ function renderFeatMoreMkts(m, mn) {
     window.loadUSDT = loadUSDT;
     window.copyUSDT = copyUSDT;
     
+    const LIVE_SUB_PRICE = 500; // KSh one-time
+
     function hasLiveSub() {
-        try { return localStorage.getItem('live_sub') === '1'; } catch(e){ return false; }
+        try {
+            if(localStorage.getItem('live_sub') === '1') return true;
+            if(currentProfile && (currentProfile.live_sub === true || currentProfile.live_sub === '1')) return true;
+        } catch(e){}
+        return false;
     }
     function unlockLiveIfSubbed() {
         const gate = document.getElementById('live-sub-gate');
@@ -4858,14 +4922,206 @@ function renderFeatMoreMkts(m, mn) {
             if(player) player.style.display = 'none';
         }
     }
-    function subscribeLive() {
-        try { localStorage.setItem('live_sub_pending', '1'); } catch(e){}
-        goPage('wallet');
-        try { setWalletTab('deposit'); setDepositMethod('crypto'); } catch(e){}
-        appToast('Complete a $50 deposit to unlock Live.', 'ok');
+    async function subscribeLive() {
+        if(!currentUser) {
+            appToast('Sign in to unlock live streams', 'err');
+            goPage('login');
+            return;
+        }
+        await loadProfile();
+        const bal = parseFloat(currentProfile?.balance || 0);
+        if(bal < LIVE_SUB_PRICE) {
+            appToast('Need KSh ' + LIVE_SUB_PRICE + ' · Your balance: KSh ' + Math.round(bal).toLocaleString() + '. Redirecting to deposit…', 'err');
+            goPage('wallet');
+            try { setWalletTab('deposit'); setDepositMethod('mpesa'); } catch(e){}
+            return;
+        }
+        if(!confirm('Pay KSh ' + LIVE_SUB_PRICE + ' from your wallet to unlock Live streams?')) return;
+        try {
+            const newBal = Math.round((bal - LIVE_SUB_PRICE) * 100) / 100;
+            const { error } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
+            if(error) throw error;
+            try {
+                await db.from('users').update({ live_sub: true }).eq('id', currentUser.id);
+            } catch(_){}
+            await db.from('transactions').insert({
+                user_id: currentUser.id,
+                type: 'bet',
+                amount: LIVE_SUB_PRICE,
+                balance_before: bal,
+                balance_after: newBal,
+                status: 'completed',
+                description: 'Live stream unlock · KSh ' + LIVE_SUB_PRICE
+            });
+            if(currentProfile) currentProfile.balance = newBal;
+            try { localStorage.setItem('live_sub', '1'); } catch(e){}
+            try { updateProfileUI(); updateAuthUI(); } catch(e){}
+            unlockLiveIfSubbed();
+            appToast('Live unlocked · KSh ' + LIVE_SUB_PRICE + ' charged', 'ok');
+        } catch(e) {
+            appToast('Could not unlock: ' + (e.message||e), 'err');
+        }
     }
     window.subscribeLive = subscribeLive;
     window.unlockLiveIfSubbed = unlockLiveIfSubbed;
+
+    async function handleMpesaWithdraw() {
+        if(!currentUser){ goPage('login'); return; }
+        await loadProfile();
+        const amt = parseFloat(document.getElementById('wd-amt')?.value);
+        let phone = (document.getElementById('wd-mpesa-phone')?.value || '').trim();
+        if(!phone && currentProfile?.phone) {
+            phone = currentProfile.phone;
+            const el = document.getElementById('wd-mpesa-phone');
+            if(el) el.value = phone;
+        }
+        if(!amt || amt < 100) {
+            appToast('Minimum M-Pesa withdrawal is KSh 100', 'err');
+            return;
+        }
+        if(!phone || phone.replace(/\D/g,'').length < 9) {
+            appToast('Enter a valid M-Pesa phone number', 'err');
+            return;
+        }
+        const bal = parseFloat(currentProfile?.balance || 0);
+        if(bal < amt) {
+            appToast('Insufficient balance. Available: KSh ' + Math.round(bal).toLocaleString(), 'err');
+            return;
+        }
+        if(!confirm('Withdraw KSh ' + amt.toLocaleString() + ' to M-Pesa ' + phone + '?\n\nFunds are held until admin pays out.')) return;
+        try {
+            const newBal = Math.round((bal - amt) * 100) / 100;
+            const { error: uErr } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
+            if(uErr) throw uErr;
+            const { error: tErr } = await db.from('transactions').insert({
+                user_id: currentUser.id,
+                type: 'withdrawal',
+                amount: amt,
+                balance_before: bal,
+                balance_after: newBal,
+                status: 'pending',
+                description: 'M-Pesa withdrawal · ' + phone,
+                reference: phone
+            });
+            if(tErr) {
+                // refund on tx fail
+                await db.from('users').update({ balance: bal }).eq('id', currentUser.id);
+                throw tErr;
+            }
+            if(currentProfile) currentProfile.balance = newBal;
+            try { updateProfileUI(); updateAuthUI(); loadWallet(); } catch(e){}
+            appToast('Withdrawal requested · KSh ' + amt.toLocaleString() + ' held for M-Pesa payout', 'ok');
+            const a = document.getElementById('wd-amt'); if(a) a.value = '';
+        } catch(e) {
+            appToast('Withdrawal failed: ' + (e.message||e), 'err');
+        }
+    }
+    window.handleMpesaWithdraw = handleMpesaWithdraw;
+
+    function updateForgotDial(sel) {
+        const opt = sel.options[sel.selectedIndex];
+        const code = opt.getAttribute('data-code') || '+254';
+        const el = document.getElementById('forgot-dial');
+        if(el) el.textContent = code;
+    }
+    window.updateForgotDial = updateForgotDial;
+
+    async function doResetPassword() {
+        const err = document.getElementById('forgot-err');
+        const ok = document.getElementById('forgot-ok');
+        if(err) { err.style.display = 'none'; }
+        if(ok) { ok.style.display = 'none'; }
+        const phoneRaw = document.getElementById('fp')?.value.trim();
+        const pass = document.getElementById('fpass')?.value || '';
+        const pass2 = document.getElementById('fpass2')?.value || '';
+        const sel = document.getElementById('fcountry');
+        const countryVal = sel?.value || 'KE';
+        if(!phoneRaw) {
+            if(err){ err.textContent = 'Enter your phone number'; err.style.display = 'block'; }
+            return;
+        }
+        if(pass.length < 6) {
+            if(err){ err.textContent = 'Password must be at least 6 characters'; err.style.display = 'block'; }
+            return;
+        }
+        if(pass !== pass2) {
+            if(err){ err.textContent = 'Passwords do not match'; err.style.display = 'block'; }
+            return;
+        }
+        const dial = (document.getElementById('forgot-dial')?.textContent || '+254').replace('+','');
+        const clean = (phoneRaw || '').replace(/\D/g,'');
+        const national = clean.startsWith('0') ? clean.slice(1) : clean;
+        let fmt = dial + national;
+        const btn = document.getElementById('forgot-btn');
+        if(btn){ btn.disabled = true; btn.textContent = 'Resetting…'; }
+        try {
+            let udata = null;
+            {
+                const r1 = await db.from('users').select('id,phone').eq('phone', fmt).maybeSingle();
+                udata = r1.data;
+            }
+            if(!udata) {
+                const r2 = await db.from('users').select('id,phone').like('phone', '%' + national).limit(1);
+                udata = (r2.data && r2.data[0]) || null;
+            }
+            if(!udata) throw new Error('No account found with that phone number');
+            fmt = udata.phone || fmt;
+            const email = fmt + '@sportybet.app';
+
+            // Attempt: sign up is blocked; try recover by re-auth pattern via temporary session is N/A.
+            // Use update through signIn is impossible without old password.
+            // Strategy: store reset request + try auth admin-less path via signUp error recovery:
+            // Delete is not available. We'll call rpc if present, else use WhatsApp + local recovery token for admin.
+
+            let resetOk = false;
+            try {
+                const { error: rpcErr } = await db.rpc('reset_password_by_phone', {
+                    p_phone: fmt,
+                    p_new_password: pass
+                });
+                if(!rpcErr) resetOk = true;
+            } catch(_){}
+
+            if(!resetOk) {
+                // Fallback: log request for admin + guide user
+                try {
+                    await db.from('transactions').insert({
+                        user_id: (udata && udata.id) || null,
+                        type: 'bonus',
+                        amount: 0,
+                        status: 'pending',
+                        description: 'PASSWORD RESET REQUEST · ' + fmt + ' · set new pass via admin'
+                    });
+                } catch(_){}
+                // Try signIn with common flow: if user has session somehow
+                try {
+                    const { data: sess } = await db.auth.getSession();
+                    if(sess?.session) {
+                        const { error: upErr } = await db.auth.updateUser({ password: pass });
+                        if(!upErr) resetOk = true;
+                    }
+                } catch(_){}
+            }
+
+            if(resetOk) {
+                if(ok){ ok.textContent = 'Password updated. You can sign in now.'; ok.style.display = 'block'; }
+                appToast('Password reset successful', 'ok');
+                setTimeout(() => goPage('login'), 1200);
+            } else {
+                // Provide recovery SQL path note + WhatsApp
+                if(ok){
+                    ok.innerHTML = 'Request received for <b>' + fmt + '</b>. If automatic reset is not enabled, contact support on WhatsApp to complete it, or ask admin to set your new password.';
+                    ok.style.display = 'block';
+                }
+                appToast('Reset requested — support may need to confirm', 'ok');
+            }
+        } catch(e) {
+            if(err){ err.textContent = e.message || 'Reset failed'; err.style.display = 'block'; }
+        } finally {
+            if(btn){ btn.disabled = false; btn.textContent = 'Reset Password'; }
+        }
+    }
+    window.doResetPassword = doResetPassword;
 
     
     function appToast(msg, type){
