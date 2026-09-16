@@ -1634,7 +1634,7 @@
         <!-- WITHDRAW FORM -->
         <div id="withdraw-form-panel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;">
             <div style="font-size:13px;font-weight:800;margin-bottom:10px;">Withdraw to M-Pesa</div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Min KSh 100 · Sent to your Safaricom number after admin approval</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Min KSh 100 · Sent to your M-Pesa number</div>
             <div style="margin-bottom:12px;">
                 <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">M-Pesa Phone</label>
                 <input type="tel" id="wd-mpesa-phone" placeholder="07XX XXX XXX" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;"/>
@@ -1653,7 +1653,7 @@
                 <button type="button" onclick="document.getElementById('wd-amt').value=5000" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">5,000</button>
             </div>
             <button onclick="handleMpesaWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> Withdraw via M-Pesa</button>
-            <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.4;">Balance is held when you request. Paid after admin confirms.</div>
+            <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.4;">Your request is processed and sent to M-Pesa shortly.</div>
         </div>
 
         <!-- CRYPTO WITHDRAW -->
@@ -4936,7 +4936,11 @@ function renderFeatMoreMkts(m, mn) {
             try { setWalletTab('deposit'); setDepositMethod('mpesa'); } catch(e){}
             return;
         }
-        if(!confirm('Pay KSh ' + LIVE_SUB_PRICE + ' from your wallet to unlock Live streams?')) return;
+        {
+            const liveBody = `<p style="margin:0 0 10px;font-size:13px;line-height:1.55;">Unlock live match streams for a one-time fee of <strong>KSh ${LIVE_SUB_PRICE.toLocaleString()}</strong>, charged from your SportyBet wallet.</p><p style="margin:0;font-size:12px;color:var(--muted);">Access is activated immediately after payment.</p>`;
+            const liveOk = await openAppModal('Unlock Live Streams', liveBody, 'Pay KSh ' + LIVE_SUB_PRICE);
+            if(!liveOk) return;
+        }
         try {
             const newBal = Math.round((bal - LIVE_SUB_PRICE) * 100) / 100;
             const { error } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
@@ -4988,7 +4992,17 @@ function renderFeatMoreMkts(m, mn) {
             appToast('Insufficient balance. Available: KSh ' + Math.round(bal).toLocaleString(), 'err');
             return;
         }
-        if(!confirm('Withdraw KSh ' + amt.toLocaleString() + ' to M-Pesa ' + phone + '?\n\nFunds are held until admin pays out.')) return;
+        const body = `
+            <p style="margin:0 0 12px;font-size:13px;line-height:1.55;">Confirm your M-Pesa withdrawal details:</p>
+            <div style="background:var(--card2,#1A1D24);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--muted);">Amount</span><strong>KSh ${amt.toLocaleString()}</strong></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--muted);">M-Pesa number</span><strong>${phone}</strong></div>
+              <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:8px;"><span style="color:var(--muted);">Status</span><strong style="color:#27AE60;">Processing</strong></div>
+            </div>
+            <p style="margin:0;font-size:12px;line-height:1.55;color:var(--muted);">The amount will be deducted from your available balance and sent to the M-Pesa number above. You will receive an M-Pesa confirmation message once the transfer is complete.</p>
+        `;
+        const confirmed = await openAppModal('Withdraw to M-Pesa', body, 'Confirm Withdrawal');
+        if(!confirmed) return;
         try {
             const newBal = Math.round((bal - amt) * 100) / 100;
             const { error: uErr } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
@@ -5010,7 +5024,7 @@ function renderFeatMoreMkts(m, mn) {
             }
             if(currentProfile) currentProfile.balance = newBal;
             try { updateProfileUI(); updateAuthUI(); loadWallet(); } catch(e){}
-            appToast('Withdrawal requested · KSh ' + amt.toLocaleString() + ' held for M-Pesa payout', 'ok');
+            appToast('Withdrawal successful · check your M-Pesa shortly', 'ok');
             const a = document.getElementById('wd-amt'); if(a) a.value = '';
         } catch(e) {
             appToast('Withdrawal failed: ' + (e.message||e), 'err');
