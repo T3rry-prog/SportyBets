@@ -2233,9 +2233,14 @@
             renderMatchList('upcoming-matches', demo.filter(m=>m.status==='upcoming'), false);
             return;
         }
-        const featured = allMatches.find(m => m.is_featured);
-        if(featured) renderFeatured(featured);
-        else document.getElementById('featured-section').innerHTML = '';
+        const featured = allMatches.find(m => m.is_featured === true || m.is_featured === 'true' || m.is_featured === 1);
+        if(featured) {
+            ensureMatchOdds([featured]);
+            renderFeatured(featured);
+        } else {
+            const fs = document.getElementById('featured-section');
+            if(fs) fs.innerHTML = '';
+        }
         renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
         renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
     }
@@ -2760,25 +2765,79 @@
         for (let i = 0; i < t.length; i++) h = ((h << 5) - h) + t.charCodeAt(i) | 0;
         return Math.abs(h);
     }
+    function roundOdd(x) {
+        const n = Math.max(1.01, parseFloat(x) || 1.01);
+        return Math.round(n * 100) / 100;
+    }
+    // Build extra markets from 1X2 prices (your main odds drive everything)
+    function marketsFrom1x2(oh, od, oa) {
+        oh = parseFloat(oh) || 2; od = parseFloat(od) || 3.2; oa = parseFloat(oa) || 3.5;
+        const ih = 1 / oh, id = 1 / od, ia = 1 / oa;
+        const sum = ih + id + ia || 1;
+        const ph = ih / sum, pd = id / sum, pa = ia / sum;
+        // Goal expectancy from win probs
+        const eh = 0.7 + ph * 2.4;
+        const ea = 0.7 + pa * 2.4;
+        const pois = (lam, k) => {
+            let p = Math.exp(-lam);
+            for (let i = 1; i <= k; i++) p *= lam / i;
+            return p;
+        };
+        const margin = 1.08; // book margin
+        const oddP = (p) => roundOdd(margin / Math.max(0.002, p));
+
+        const out = [
+            { market_type: '1x2', selection: 'Home Win', odds: roundOdd(oh) },
+            { market_type: '1x2', selection: 'Draw', odds: roundOdd(od) },
+            { market_type: '1x2', selection: 'Away Win', odds: roundOdd(oa) },
+            { market_type: 'double_chance', selection: '1X', odds: oddP(ph + pd) },
+            { market_type: 'double_chance', selection: '12', odds: oddP(ph + pa) },
+            { market_type: 'double_chance', selection: 'X2', odds: oddP(pd + pa) },
+            { market_type: 'btts', selection: 'Yes', odds: oddP(1 - pois(eh, 0) - pois(ea, 0) + pois(eh, 0) * pois(ea, 0)) },
+            { market_type: 'btts', selection: 'No', odds: oddP(pois(eh, 0) + pois(ea, 0) - pois(eh, 0) * pois(ea, 0)) },
+        ];
+        // Over/Under from total goals expectation
+        const et = eh + ea;
+        const pOver = (line) => {
+            let p = 0;
+            for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) if (i + j > line) p += pois(eh, i) * pois(ea, j);
+            return p;
+        };
+        [1.5, 2.5, 3.5].forEach(line => {
+            const po = pOver(line);
+            out.push({ market_type: 'over_under', selection: 'Over ' + line, odds: oddP(po) });
+            out.push({ market_type: 'over_under', selection: 'Under ' + line, odds: oddP(1 - po) });
+        });
+        out.push(
+            { market_type: 'ht_result', selection: 'Home Win', odds: roundOdd(oh * 1.35) },
+            { market_type: 'ht_result', selection: 'Draw', odds: roundOdd(od * 0.85) },
+            { market_type: 'ht_result', selection: 'Away Win', odds: roundOdd(oa * 1.35) }
+        );
+        // Correct scores from Poisson × 1X2 strength
+        for (let hg = 0; hg <= 5; hg++) {
+            for (let ag = 0; ag <= 5; ag++) {
+                if (hg + ag > 7 && (hg > 4 || ag > 4)) continue;
+                const p = pois(eh, hg) * pois(ea, ag);
+                out.push({ market_type: 'correct_score', selection: hg + '-' + ag, odds: oddP(p) });
+            }
+        }
+        return out;
+    }
     function default1x2(m) {
         const h = hashStr((m.id || '') + (m.home_team || '') + (m.away_team || ''));
-        const home = (1.45 + (h % 90) / 100).toFixed(2);
-        const draw = (2.90 + (h % 70) / 100).toFixed(2);
-        const away = (2.10 + ((h >> 3) % 120) / 100).toFixed(2);
-        return [
-            { market_type: '1x2', selection: 'Home Win', odds: home },
-            { market_type: '1x2', selection: 'Draw', odds: draw },
-            { market_type: '1x2', selection: 'Away Win', odds: away }
-        ];
+        const home = (1.45 + (h % 90) / 100);
+        const draw = (2.90 + (h % 70) / 100);
+        const away = (2.10 + ((h >> 3) % 120) / 100);
+        return marketsFrom1x2(home, draw, away);
     }
     function ensureMatchOdds(matches) {
         (matches || []).forEach(m => {
             if (!m.markets) m.markets = [];
-            // Normalize selection labels
             m.markets.forEach(mk => {
                 if (!mk.market_type) return;
-                const mt = String(mk.market_type).toLowerCase();
-                if (mt === '1x2' || mt === 'match_result' || mt === 'match result') mk.market_type = '1x2';
+                const mt = String(mk.market_type).toLowerCase().replace(/\s+/g, '_');
+                if (mt === '1x2' || mt === 'match_result') mk.market_type = '1x2';
+                else mk.market_type = mt;
                 const sel = String(mk.selection || '').toLowerCase();
                 if (mk.market_type === '1x2') {
                     if (sel === '1' || sel === 'home' || sel === 'home win') mk.selection = 'Home Win';
@@ -2787,13 +2846,24 @@
                 }
                 if (mk.odds != null) mk.odds = parseFloat(mk.odds);
             });
-            const has1x2 = m.markets.some(x => x.market_type === '1x2');
-            if (!has1x2) {
-                m.markets = default1x2(m).concat(m.markets);
+            const one = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Home Win');
+            const drw = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Draw');
+            const awy = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Away Win');
+            if (one && drw && awy) {
+                // Keep your 1X2; rebuild other markets from those prices
+                const derived = marketsFrom1x2(one.odds, drw.odds, awy.odds);
+                const keep1x2 = m.markets.filter(x => x.market_type === '1x2');
+                const rest = derived.filter(x => x.market_type !== '1x2');
+                // Prefer DB non-1x2 if present and richer, else derived
+                const dbExtra = m.markets.filter(x => x.market_type !== '1x2');
+                m.markets = keep1x2.concat(dbExtra.length >= 6 ? dbExtra : rest);
+            } else {
+                m.markets = default1x2(m).concat(m.markets.filter(x => x.market_type !== '1x2'));
             }
         });
         return matches;
     }
+
 
     // ===== LOAD MATCHES =====
     async function loadMatches() {
@@ -3058,6 +3128,15 @@
 
     // ===== MATCH RENDERING =====
     function renderFeatured(m) {
+        if(!m) {
+            m = (allMatches || []).find(x => x.is_featured === true || x.is_featured === 'true' || x.is_featured === 1);
+        }
+        if(!m) {
+            const sec = document.getElementById('featured-section');
+            if(sec) sec.innerHTML = '';
+            return;
+        }
+        ensureMatchOdds([m]);
         const evs = m.live_events || [];
         const chips = [
             ...evs.filter(e=>e.event_type==='goal').map(e => `<span class="ev-chip goal"><i class="fas fa-futbol"></i> ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}${e.player_name?' · '+e.player_name:''}</span>`),
@@ -3243,36 +3322,6 @@ function renderFeatMoreMkts(m, mn) {
     const goals = [...get('btts'), ...get('over_under'), ...get('total_goals')];
     const ht = [...get('ht_result')];
     let cs = get('correct_score');
-
-    // Stable fixed odds for correct scores — NEVER change on re-render
-    // 0-3 locked at 41.54 as requested
-    const FIXED_CS = {
-        "0-0": 8.50, "1-0": 7.20, "0-1": 9.40, "1-1": 6.80,
-        "2-0": 11.00, "0-2": 14.50, "2-1": 9.80, "1-2": 12.00, "2-2": 13.50,
-        "3-0": 21.00, "0-3": 41.54, "3-1": 18.00, "1-3": 26.00,
-        "3-2": 22.00, "2-3": 28.00, "3-3": 35.00,
-        "4-0": 41.00, "0-4": 55.00, "4-1": 34.00, "1-4": 48.00,
-        "4-2": 38.00, "2-4": 52.00, "4-3": 45.00, "3-4": 55.00,
-        "5-0": 65.00, "0-5": 85.00, "5-1": 55.00, "1-5": 75.00,
-        "5-2": 60.00, "2-5": 80.00, "5-3": 70.00, "3-5": 90.00,
-        "5-4": 85.00, "4-5": 95.00,
-        "Any Other Home": 18.00, "Any Other Draw": 25.00, "Any Other Away": 22.00
-    };
-    const extraCS = Object.keys(FIXED_CS);
-
-    extraCS.forEach(score => {
-        const existing = cs.find(x => x.selection === score);
-        if(existing) {
-            // Keep DB odds if present, but force 0-3 to 41.54
-            if(score === '0-3') existing.odds = 41.54;
-        } else {
-            cs.push({
-                market_type: 'correct_score',
-                selection: score,
-                odds: FIXED_CS[score]
-            });
-        }
-    });
 
     function renderGroup(list){
         if(!list.length) return '<div>No data</div>';
@@ -5392,4 +5441,3 @@ window.switchTab = switchTab;
 
 </body>
 </html>
-
