@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <title>SportyBet — Sports Betting</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;10;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://nmcdwmmfdrazmufodirq.supabase.co" crossorigin />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" /></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" />
     <style>
         /* ===== RESET & VARIABLES ===== */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -1530,7 +1534,7 @@
 
             <div id="dep-crypto-panel" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
                 <div style="font-size:13px;font-weight:800;margin-bottom:4px;">Deposit</div>
-                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Crypto (USDT / BTC / ETH) · Min $50</div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Crypto (USDT / BTC / ETH) · Min KSh 500</div>
 
                 <button type="button" id="btn-show-crypto" onclick="toggleCryptoDetails(true)" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">
                     💳 Pay with Crypto
@@ -1572,7 +1576,7 @@
                     <span style="font-size:18px;" id="crypto-coin-icon">₮</span>
                     <div>
                         <div style="font-size:13px;font-weight:800;" id="crypto-coin-title">Deposit with USDT (TRC20)</div>
-                        <div style="font-size:11px;color:var(--muted);" id="crypto-coin-sub">TRON network only · Minimum $50</div>
+                        <div style="font-size:11px;color:var(--muted);" id="crypto-coin-sub">TRON network only · Minimum KSh 500</div>
                     </div>
                 </div>
                 <div style="text-align:center;margin-bottom:12px;">
@@ -1587,7 +1591,7 @@
                     <strong style="color:var(--text);">How to deposit:</strong><br>
                     1. Copy the address or scan the QR<br>
                     2. Send <strong>USDT on TRON (TRC20)</strong> only<br>
-                    3. Min $50 · Credited after network confirmation<br>
+                    3. Min KSh 500 · Credited after network confirmation<br>
                     4. Wrong network = permanent loss
                 </div>
 
@@ -1596,7 +1600,7 @@
                     <div style="font-size:12px;font-weight:800;margin-bottom:8px;">✅ Confirm your transfer</div>
                     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.4;">Enter the amount transferred and optional transaction hash. Your balance will be credited after verification.</div>
                     <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Amount sent (USD)</label>
-                    <input type="number" id="crypto-dep-amt" min="50" step="1" placeholder="e.g. 100" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;font-weight:700;color:var(--text);background:var(--input-bg);outline:none;margin-bottom:8px;"/>
+                    <input type="number" id="crypto-dep-amt" min="500" step="1" placeholder="e.g. 100" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;font-weight:700;color:var(--text);background:var(--input-bg);outline:none;margin-bottom:8px;"/>
                     <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">TX Hash / Reference (optional)</label>
                     <input type="text" id="crypto-dep-hash" placeholder="Paste transaction hash" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:12px;color:var(--text);background:var(--input-bg);outline:none;font-family:monospace;margin-bottom:10px;"/>
                     <button type="button" id="crypto-confirm-btn" onclick="submitCryptoDeposit()" style="width:100%;padding:13px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">Submit for verification</button>
@@ -1616,18 +1620,18 @@
                     <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount (KSh)</label>
                     <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;">
                         <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
-                        <input type="number" id="wf-amt" placeholder="Min 100" min="100" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                        <input type="number" id="wf-amt" placeholder="Min 500" min="500" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                     </div>
-                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh 100</div>
+                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh 500</div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:14px;">
-                    <div class="qs" onclick="setWAmt(100)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">100</div>
-                    <div class="qs" onclick="setWAmt(200)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">200</div>
-                    <div class="qs" onclick="setWAmt(10)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">10</div>
-                    <div class="qs" onclick="setWAmt(20)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
+                    <div class="qs" onclick="setWAmt(500)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">500</div>
+                    <div class="qs" onclick="setWAmt(1000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
+                    <div class="qs" onclick="setWAmt(2000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">2,000</div>
+                    <div class="qs" onclick="setWAmt(5000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">5,000</div>
                 </div>
                 <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesaFromWallet()"><i class="fas fa-mobile-alt"></i> Pay with M-Pesa</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh 100</div>
+                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh 500</div>
             </div>
         </div>
 
@@ -2386,9 +2390,9 @@
     function openMpesaFromWallet() {
         const amt = parseFloat(document.getElementById('wf-amt')?.value);
         const err = document.getElementById('mpesa-min-err');
-        if(!amt || amt < 100) {
+        if(!amt || amt < 500) {
             if(err) err.style.display = 'block';
-            appToast('Minimum M-Pesa deposit is KSh 100', 'err');
+            appToast('Minimum deposit is KSh 500', 'err');
             return;
         }
         if(err) err.style.display = 'none';
@@ -2752,8 +2756,9 @@
     async function loadMatches() {
         try {
             const { data, error } = await db.from('matches')
-                .select('*, markets(*), live_events(*)')
-                .order('kick_off', {ascending:true});
+                .select('id,home_team,away_team,status,minute,home_score,away_score,kick_off,is_featured,league,sport,game_code,markets(id,market_type,selection,odds,match_id)')
+                .order('kick_off', {ascending:true})
+                .limit(80);
             if(error) throw error;
             const now = Date.now();
             const threeHoursAgo = now - 3*60*60*20;
@@ -3519,7 +3524,8 @@ function renderFeatMoreMkts(m, mn) {
         const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
         const totalOdds = (typeof getSlipTotalOdds === 'function') ? getSlipTotalOdds() : (slipMode==='acca'?slip.reduce((a,s)=>a*(parseFloat(s.val)||1),1):(slip.length?parseFloat(slip[slip.length-1].val)||1:1));
         const potWin = Math.round(stake * totalOdds * 100) / 100;
-        const ref='#XO'+Math.floor(Math.random()*90000+200);
+        // Betika-style ticket / bet ID e.g. SB260917-4829103
+        const ref = (typeof generateBetId === 'function') ? generateBetId() : ('SB' + Date.now().toString().slice(-10));
         try {
             const {data:bet}=await db.from('bets').insert({
                 user_id:currentUser.id,
@@ -3560,9 +3566,9 @@ function renderFeatMoreMkts(m, mn) {
                 try { updateProfileUI(); updateAuthUI(); } catch(_){}
             }
             setEl('bet-ref', ref);
-            setEl('bet-stake-display', '$ '+stake.toLocaleString());
+            setEl('bet-stake-display', 'KSh '+Math.round(stake).toLocaleString());
             setEl('bet-odds-display', parseFloat(totalOdds.toFixed(2)).toString()+'x');
-            setEl('bet-win-display', '$ '+potWin.toLocaleString());
+            setEl('bet-win-display', 'KSh '+Math.round(potWin).toLocaleString());
             const selDisplay = document.getElementById('bet-selections-display');
             if(selDisplay) {
                 selDisplay.innerHTML = slip.map(s =>
@@ -3654,9 +3660,10 @@ function renderFeatMoreMkts(m, mn) {
 
     async function proceedDeposit() {
         const amt = parseFloat(document.getElementById('mpesa-amt-input')?.value);
-        if(!amt || amt < 100) {
+        if(!amt || amt < 500) {
             const inp = document.getElementById('mpesa-amt-input');
             if(inp) { inp.style.border='1.5px solid var(--live)'; setTimeout(()=>inp.style.border='',110); }
+            appToast('Minimum deposit is KSh 500', 'err');
             return;
         }
         setEl('mpesa-amount','$ '+parseInt(amt).toLocaleString());
@@ -4193,7 +4200,7 @@ function renderFeatMoreMkts(m, mn) {
                     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
                         <div style="padding:12px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
                             <div>
-                                <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">${b.bet_type} · ${b.reference||''}</div>
+                                <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:.3px;">Ticket ${b.reference||'—'}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px;">${b.bet_type}</div>
                                 <div style="font-size:12px;color:var(--muted);margin-top:2px;">${new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'})}</div>
                             </div>
                             <div style="background:${statusBgCol};border-radius:4px;padding:4px 10px;font-size:11px;font-weight:800;color:${statusCol};">${label}</div>
@@ -4202,7 +4209,7 @@ function renderFeatMoreMkts(m, mn) {
                             <div style="padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
                                 <div>
                                     <div style="font-size:12px;font-weight:600;">${s.match_name||''}</div>
-                                    <div style="font-size:11px;color:var(--muted);margin-top:1px;">${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:#27AE60;font-weight:700;">${s.selection||''}</span></div>
+                                    <div style="font-size:10px;color:var(--muted);margin-top:1px;">${s.match_id ? ('ID ' + String(s.match_id).replace(/-/g,'').slice(-6).toUpperCase() + ' · ') : ''}${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:#27AE60;font-weight:700;">${s.selection||''}</span></div>
                                 </div>
                                 <div style="font-size:14px;font-weight:800;color:var(--gold);">${parseFloat(s.odds||0).toFixed(2)}</div>
                             </div>
@@ -4386,9 +4393,9 @@ function renderFeatMoreMkts(m, mn) {
             network: "TRC20 (Tron)",
             icon: "₮",
             title: "Deposit with USDT (TRC20)",
-            sub: "TRON network only · Minimum $50",
+            sub: "TRON network only · Minimum KSh 500",
             addrLabel: "Deposit Address (TRC20)",
-            howto: "1. Copy the address or scan the QR<br>2. Send <strong>USDT on TRON (TRC20)</strong> only<br>3. Min $50 · Credited after network confirmation<br>4. Wrong network = permanent loss",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>USDT on TRON (TRC20)</strong> only<br>3. Min KSh 500 · Credited after network confirmation<br>4. Wrong network = permanent loss",
             withdrawPlaceholder: "T...",
             withdrawHint: "Must be a TRC20 address starting with T · Processed 1–24h · Min $20"
         },
@@ -4397,9 +4404,9 @@ function renderFeatMoreMkts(m, mn) {
             network: "Bitcoin",
             icon: "₿",
             title: "Deposit with Bitcoin (BTC)",
-            sub: "Bitcoin network only · Minimum $50",
+            sub: "Bitcoin network only · Minimum KSh 500",
             addrLabel: "Deposit Address (BTC)",
-            howto: "1. Copy the address or scan the QR<br>2. Send <strong>BTC on the Bitcoin network</strong> only<br>3. Min $50 · Credited after ~1–3 confirmations<br>4. Wrong network = permanent loss",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>BTC on the Bitcoin network</strong> only<br>3. Min KSh 500 · Credited after ~1–3 confirmations<br>4. Wrong network = permanent loss",
             withdrawPlaceholder: "bc1... or 1...",
             withdrawHint: "Bitcoin address only · Processed 1–24h · Min $20"
         },
@@ -4408,9 +4415,9 @@ function renderFeatMoreMkts(m, mn) {
             network: "ERC20 (Ethereum)",
             icon: "Ξ",
             title: "Deposit with Ethereum (ETH)",
-            sub: "Ethereum ERC20 only · Minimum $50",
+            sub: "Ethereum ERC20 only · Minimum KSh 500",
             addrLabel: "Deposit Address (ERC20)",
-            howto: "1. Copy the address or scan the QR<br>2. Send <strong>ETH on Ethereum (ERC20)</strong> only<br>3. Min $50 · Credited after network confirmation<br>4. Do not send tokens other than ETH · Wrong network = permanent loss",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>ETH on Ethereum (ERC20)</strong> only<br>3. Min KSh 500 · Credited after network confirmation<br>4. Do not send tokens other than ETH · Wrong network = permanent loss",
             withdrawPlaceholder: "0x...",
             withdrawHint: "Must be an ERC20 address starting with 0x · Processed 1–24h · Min $20"
         }
@@ -4506,8 +4513,8 @@ function renderFeatMoreMkts(m, mn) {
         const coin = selectedCryptoCoin || 'USDT';
         const w = CRYPTO_WALLETS[coin] || CRYPTO_WALLETS.USDT;
 
-        if(!amount || amount < 50) {
-            if(msg){ msg.style.display='block'; msg.style.color='var(--live)'; msg.textContent='Minimum deposit is $50'; }
+        if(!amount || amount < 500) {
+            if(msg){ msg.style.display='block'; msg.style.color='var(--live)'; msg.textContent='Minimum deposit is KSh 500'; }
             return;
         }
         if(btn){ btn.disabled=true; btn.textContent='Submitting...'; }
@@ -4553,7 +4560,7 @@ function renderFeatMoreMkts(m, mn) {
     const EXCHANGE_RATE_KES = 130; // kept for later USD mode
     const MIN_BET_SPORTS = 500;    // KSh — featured & sports slip
     const MIN_BET_AVIATOR = 50;    // KSh
-    const MIN_DEPOSIT_CRYPTO = 100; // KSh display note (crypto still USDT)
+    const MIN_DEPOSIT = 500; // KSh min deposit (M-Pesa & crypto)
 
     function isKenyanUser() {
         return true; // KES mode for everyone until USD relaunch
@@ -4595,6 +4602,27 @@ function renderFeatMoreMkts(m, mn) {
     window.EXCHANGE_RATE_KES = EXCHANGE_RATE_KES;
     window.MIN_BET_SPORTS = MIN_BET_SPORTS;
     window.MIN_BET_AVIATOR = MIN_BET_AVIATOR;
+
+    function generateBetId() {
+        const d = new Date();
+        const yy = String(d.getFullYear()).slice(2);
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const r = String(Math.floor(1000000 + Math.random() * 9000000)); // 7 digits
+        return 'SB' + yy + mm + dd + '-' + r; // e.g. SB260917-4829103
+    }
+    function matchGameId(m) {
+        if(!m) return '';
+        if(m.game_code) return String(m.game_code);
+        // Short stable code from uuid / id
+        const id = String(m.id || '');
+        if(!id) return '';
+        const compact = id.replace(/-/g, '').slice(-6).toUpperCase();
+        return 'G' + compact;
+    }
+    window.generateBetId = generateBetId;
+    window.matchGameId = matchGameId;
+
 
     // ===== AVIATOR =====
     let av = 1, avRun = false, avInterval = null, avHistory = [];
@@ -4828,7 +4856,7 @@ function renderFeatMoreMkts(m, mn) {
         loadMatches().catch(()=>{});
         try { subscribeRealtime(); } catch(_){}
         renderWinners();
-        setInterval(async () => { await loadMatches(); }, 90 * 1000);
+        setInterval(async () => { await loadMatches(); }, 120 * 1000);
         // Check for deep link
         const params = new URLSearchParams(window.location.search);
         const matchId = params.get('match');
@@ -5248,3 +5276,4 @@ window.switchTab = switchTab;
 
 </body>
 </html>
+
