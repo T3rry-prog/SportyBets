@@ -5489,5 +5489,87 @@ window.switchTab = switchTab;
 
 </script>
 
+
+<script>
+function loadFeaturedMatch() {
+    const container = document.getElementById("featured-section");
+    if (!container) return;
+
+    const html = `
+    <div class="featured-wrap">
+        <div class="feat-header">
+            <div class="feat-badge">⭐ Featured Match</div>
+            <div class="feat-countdown">FT</div>
+        </div>
+
+        <div class="feat-body">
+            <div class="feat-teams">
+                <div class="ft-team">
+                    <div class="ft-emoji">⚽</div>
+                    <div class="ft-name">Tunstall Athletic</div>
+                    <div class="ft-score">0</div>
+                </div>
+
+                <div class="ft-vs">VS</div>
+
+                <div class="ft-team">
+                    <div class="ft-emoji">⚽</div>
+                    <div class="ft-name">Atletico Marsund</div>
+                    <div class="ft-score">3</div>
+                </div>
+            </div>
+
+            <div class="feat-meta">
+                Weald Premier Division · 0-3 · Atletico Marsund won
+            </div>
+
+            <div style="background:#eef7ee;padding:10px;border-radius:10px;text-align:center;font-size:12px;margin-bottom:10px;">
+                ✅ Full Time — Betting closed
+            </div>
+
+            <div class="feat-odds-wrap closed">
+                <div class="feat-closed-overlay">
+                    <div class="feat-closed-stamp">CLOSED</div>
+                </div>
+
+                <div class="feat-odds-section">
+                    <div class="odd-btn">
+                        <div class="odd-lbl">1 Home</div>
+                        <div class="odd-val">4.79</div>
+                    </div>
+                    <div class="odd-btn">
+                        <div class="odd-lbl">X Draw</div>
+                        <div class="odd-val">4.15</div>
+                    </div>
+                    <div class="odd-btn">
+                        <div class="odd-lbl">2 Away</div>
+                        <div class="odd-val">1.56</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="feat-bottom">
+            <div class="feat-min">Betting closed</div>
+            <div class="feat-share">🔗 Share</div>
+        </div>
+    </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+// Run on load
+document.addEventListener("DOMContentLoaded", loadFeaturedMatch);
+
+// Keep it permanent (re-render safe)
+setInterval(() => {
+    if (!document.querySelector(".featured-wrap")) {
+        loadFeaturedMatch();
+    }
+}, 1500);
+</script>
+
 </body>
 </html>
+
