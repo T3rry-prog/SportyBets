@@ -414,43 +414,16 @@
             margin-top: 12px;
         }
         .feat-closed-overlay {
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--r);
-            background: rgba(255,255,255,0.55);
-            backdrop-filter: blur(2.5px);
-            -webkit-backdrop-filter: blur(2.5px);
-            pointer-events: none;
-        }
-        [data-theme="dark"] .feat-closed-overlay {
-            background: rgba(15,17,21,0.55);
+            display: none;
         }
         .feat-closed-stamp {
-            font-size: 15px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: rgba(226,27,45,0.85);
-            border: 2.5px solid rgba(226,27,45,0.7);
-            padding: 8px 16px;
-            border-radius: 8px;
-            transform: rotate(-12deg);
-            background: rgba(255,255,255,0.75);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-        }
-        [data-theme="dark"] .feat-closed-stamp {
-            background: rgba(26,29,36,0.85);
-            color: rgba(255,80,90,0.95);
-            border-color: rgba(255,80,90,0.75);
+            display: none;
         }
         .feat-odds-wrap.closed .feat-odds-section {
-            filter: blur(1.5px);
-            opacity: 0.45;
+            filter: blur(3px);
+            opacity: 0.4;
             pointer-events: none;
+            user-select: none;
         }
 
         .feat-odds-section {
@@ -2267,72 +2240,158 @@
     }
 
     function filterMatchesBySport() {
-        // Show all sports – use football data as fallback for others (stagnant demo matches)
+        // Home shows every sport so the list is never empty when football has nothing
         const supported = ['football','basketball','tennis','rugby','cricket','boxing','hockey','esports'];
         if(!supported.includes(currentSport)) currentSport = 'football';
-        // Featured is global and must never disappear when another sport is selected.
+
         const featured = allMatches.find(m => m.is_featured === true || m.is_featured === 'true' || m.is_featured === 1);
         if(featured) {
             ensureMatchOdds([featured]);
             renderFeatured(featured);
         }
-        if(currentSport !== 'football') {
-            const demo = getDemoMatches(currentSport);
-            renderMatchList('live-matches', demo.filter(m=>m.status==='live'), true);
-            renderMatchList('upcoming-matches', demo.filter(m=>m.status==='upcoming'), false);
-            return;
+
+        const nowTs = Date.now();
+        const isLiveStatus = m => {
+            const st = (m.status || '').toLowerCase();
+            if(st === 'live' || st === 'inplay') return true;
+            if(st === 'finished' || st === 'ft' || st === 'ended') return false;
+            const ko = m.kick_off ? new Date(m.kick_off).getTime() : NaN;
+            return !isNaN(ko) && ko <= nowTs && (nowTs - ko) <= 150 * 60 * 1000;
+        };
+        const isUpcomingFuture = m => {
+            const st = (m.status || '').toLowerCase();
+            if(st === 'live' || st === 'inplay' || st === 'finished' || st === 'ft' || st === 'ended') return false;
+            const ko = m.kick_off ? new Date(m.kick_off).getTime() : NaN;
+            return isNaN(ko) || ko > nowTs;
+        };
+        const matchSport = m => (m.sport || 'football').toLowerCase();
+
+        // Home shows all sports together. Sport tab narrows only when that sport has fixtures.
+        let pool = allMatches || [];
+        if(currentSport && currentSport !== 'all' && currentSport !== 'football') {
+            const bySport = pool.filter(m => matchSport(m) === currentSport);
+            pool = bySport.length ? bySport : pool; // fallback to all if empty
         }
-        /* Football lists exclude the featured match, but the featured card remains above them. */
-        renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
-        renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
+        // football tab (default) → full multi-sport list so home is never empty
+
+        // Sort upcoming by kick-off soonest first
+        const upcoming = pool.filter(m => isUpcomingFuture(m)).sort((a,b) => {
+            const ka = a.kick_off ? new Date(a.kick_off).getTime() : 0;
+            const kb = b.kick_off ? new Date(b.kick_off).getTime() : 0;
+            return ka - kb;
+        });
+        renderMatchList('live-matches', pool.filter(m => isLiveStatus(m) && !m.is_featured), true);
+        renderMatchList('upcoming-matches', upcoming, false);
     }
 
     
     function getDemoMatches(sport) {
+        const footballFixtures = [
+            {h:'Liverpool', a:'Arsenal', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', hours:3},
+            {h:'Man City', a:'Chelsea', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', hours:5},
+            {h:'Man United', a:'Tottenham', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', hours:8},
+            {h:'Newcastle', a:'Aston Villa', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', hours:26},
+            {h:'Brighton', a:'West Ham', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', hours:28},
+            {h:'Barcelona', a:'Real Madrid', league:'La Liga', flag:'🇪🇸', hours:6},
+            {h:'Bayern Munich', a:'Dortmund', league:'Bundesliga', flag:'🇩🇪', hours:7},
+            {h:'AC Milan', a:'Inter', league:'Serie A', flag:'🇮🇹', hours:30},
+            {h:'PSG', a:'Marseille', league:'Ligue 1', flag:'🇫🇷', hours:32},
+            {h:'Gor Mahia', a:'AFC Leopards', league:'Kenya Premier League', flag:'🇰🇪', hours:4},
+            {h:'Tusker FC', a:'Kakamega Homeboyz', league:'Kenya Premier League', flag:'🇰🇪', hours:27}
+        ];
         const teams = {
-            football: [
-                ['Liverpool','Arsenal'],
-                ['Man City','Chelsea'],
-                ['Man United','Tottenham'],
-                ['Newcastle','Aston Villa'],
-                ['Brighton','West Ham'],
-                ['Crystal Palace','Fulham'],
-                ['Brentford','Wolves'],
-                ['Everton','Nottingham Forest']
+            football: footballFixtures,
+            basketball: [
+                {h:'Lakers', a:'Celtics', league:'NBA', flag:'🏀', hours:4},
+                {h:'Warriors', a:'Nets', league:'NBA', flag:'🏀', hours:6},
+                {h:'Bulls', a:'Heat', league:'NBA', flag:'🏀', hours:28}
             ],
-            basketball: [['Lakers','Celtics'],['Warriors','Nets'],['Bulls','Heat'],['Nuggets','Suns']],
-            tennis: [['Djokovic','Alcaraz'],['Sinner','Medvedev'],['Swiatek','Gauff']],
-            rugby: [['All Blacks','Springboks'],['England','Ireland']],
-            cricket: [['India','Australia'],['England','Pakistan']],
-            boxing: [['Fury','Usyk'],['Canelo','Benavidez']],
-            hockey: [['Rangers','Bruins'],['Maple Leafs','Canadiens']],
-            esports: [['Team Liquid','Fnatic'],['Navi','G2']]
+            tennis: [
+                {h:'Djokovic', a:'Alcaraz', league:'ATP', flag:'🎾', hours:3},
+                {h:'Sinner', a:'Medvedev', league:'ATP', flag:'🎾', hours:5}
+            ],
+            rugby: [
+                {h:'All Blacks', a:'Springboks', league:'Rugby', flag:'🏉', hours:8},
+                {h:'England', a:'Ireland', league:'Rugby', flag:'🏉', hours:30}
+            ],
+            cricket: [
+                {h:'India', a:'Australia', league:'Cricket', flag:'🏏', hours:6},
+                {h:'England', a:'Pakistan', league:'Cricket', flag:'🏏', hours:28}
+            ],
+            boxing: [
+                {h:'Fury', a:'Usyk', league:'Boxing', flag:'🥊', hours:48},
+                {h:'Canelo', a:'Benavidez', league:'Boxing', flag:'🥊', hours:72}
+            ],
+            hockey: [
+                {h:'Rangers', a:'Bruins', league:'NHL', flag:'🏒', hours:5},
+                {h:'Maple Leafs', a:'Canadiens', league:'NHL', flag:'🏒', hours:29}
+            ],
+            esports: [
+                {h:'Team Liquid', a:'Fnatic', league:'Esports', flag:'🎮', hours:2},
+                {h:'Navi', a:'G2', league:'Esports', flag:'🎮', hours:10}
+            ]
         };
         const list = teams[sport] || teams.football;
-        // Realistic live scores / minutes for first few; rest upcoming
-        // No fake live matches — only upcoming demos
         return list.map((t,i) => {
-            const live = null;
-            const ko = new Date(Date.now() + (i+1) * 3600000).toISOString();
+            const hours = t.hours != null ? t.hours : (i + 2);
+            const ko = new Date(Date.now() + hours * 3600000).toISOString();
             return {
                 id: 'demo-'+sport+'-'+i,
-                home_team: t[0], away_team: t[1],
+                home_team: t.h, away_team: t.a,
                 home_score: 0,
                 away_score: 0,
                 status: 'upcoming',
                 minute: 0,
-                league: sport==='football' ? 'Premier League' : (sport.charAt(0).toUpperCase()+sport.slice(1)),
-                league_flag: getSportEmoji(sport),
+                sport: sport,
+                league: t.league || (sport==='football' ? 'Premier League' : (sport.charAt(0).toUpperCase()+sport.slice(1))),
+                league_flag: t.flag || getSportEmoji(sport),
                 kick_off: ko,
+                is_featured: sport === 'football' && i === 0,
                 markets: [
-                    {market_type:'1x2', selection:'Home Win', odds:(1.50 + (i % 5) * 0.12).toFixed(2)},
-                    {market_type:'1x2', selection:'Draw', odds:(3.20 + (i % 4) * 0.15).toFixed(2)},
-                    {market_type:'1x2', selection:'Away Win', odds:(2.40 + (i % 6) * 0.25).toFixed(2)}
+                    {market_type:'1x2', selection:'Home Win', odds:(1.55 + (i % 5) * 0.11).toFixed(2)},
+                    {market_type:'1x2', selection:'Draw', odds:(3.20 + (i % 4) * 0.14).toFixed(2)},
+                    {market_type:'1x2', selection:'Away Win', odds:(2.35 + (i % 6) * 0.22).toFixed(2)},
+                    {market_type:'btts', selection:'Yes', odds:'1.72'},
+                    {market_type:'btts', selection:'No', odds:'2.05'},
+                    {market_type:'over_under', selection:'Over 2.5', odds:'1.85'},
+                    {market_type:'over_under', selection:'Under 2.5', odds:'1.95'}
                 ],
                 home_form: [], away_form: [],
-                live_events: live && live.hs+live.as_ > 0 ? [{event_type:'goal', minute: Math.max(5, live.min-8), team:'home'}] : []
+                live_events: []
             };
         });
+    }
+
+    function getAllDemoMatches() {
+        const sports = ['football','basketball','tennis','rugby','cricket','boxing','hockey','esports'];
+        const out = [];
+        sports.forEach(s => {
+            getDemoMatches(s).forEach(m => out.push(m));
+        });
+        return out;
+    }
+
+    function seedDemoMatchesIfEmpty() {
+        const hasUpcoming = (allMatches || []).some(m => {
+            const st = (m.status || '').toLowerCase();
+            if(st === 'live' || st === 'inplay') return true;
+            if(st === 'finished' || st === 'ft' || st === 'ended') return false;
+            const ko = m.kick_off ? new Date(m.kick_off).getTime() : NaN;
+            return isNaN(ko) || ko > Date.now();
+        });
+        if(hasUpcoming) {
+            // Still ensure non-football demos exist so home always has variety
+            const hasOther = (allMatches || []).some(m => (m.sport || 'football') !== 'football');
+            if(!hasOther) {
+                const others = getAllDemoMatches().filter(m => m.sport !== 'football');
+                allMatches = [...(allMatches || []), ...others];
+                ensureMatchOdds(allMatches);
+            }
+            return false;
+        }
+        allMatches = getAllDemoMatches();
+        ensureMatchOdds(allMatches);
+        return true;
     }
 
     function getSportEmoji(sport) {
@@ -2922,6 +2981,14 @@
             if(error) throw error;
             if(data && data.length) {
                 const featured = data[0];
+                // Align status with kick-off so betting closes when the match starts
+                const ko = featured.kick_off ? new Date(featured.kick_off).getTime() : NaN;
+                const st = (featured.status || '').toLowerCase();
+                if(!isNaN(ko) && (st === 'upcoming' || st === 'scheduled' || !st)) {
+                    const now = Date.now();
+                    if(ko <= now && (now - ko) <= 150 * 60 * 1000) featured.status = 'live';
+                    else if(ko < now - 150 * 60 * 1000) featured.status = 'finished';
+                }
                 ensureMatchOdds([featured]);
                 const old = (allMatches || []).find(x => x.id === featured.id);
                 if(old) Object.assign(old, featured);
@@ -2965,22 +3032,46 @@
 
             const now = Date.now();
             const dayAgo = now - 24*60*60*1000;
-            allMatches = (data || []).filter(m => {
+            // Typical football window: kick-off → ~2.5 hours later
+            const MATCH_DURATION_MS = 150 * 60 * 1000;
+
+            allMatches = (data || []).map(m => {
+                // Correct stale statuses from kick_off so August rows don't stay "upcoming"
+                const ko = m.kick_off ? new Date(m.kick_off).getTime() : NaN;
+                let st = (m.status || '').toLowerCase();
+                if(!isNaN(ko)) {
+                    if(st === 'upcoming' || st === 'scheduled' || !st) {
+                        if(ko <= now && (now - ko) <= MATCH_DURATION_MS) {
+                            m.status = 'live';
+                            st = 'live';
+                        } else if(ko < now - MATCH_DURATION_MS) {
+                            m.status = 'finished';
+                            st = 'finished';
+                        }
+                    }
+                }
+                return m;
+            }).filter(m => {
                 const st = (m.status || '').toLowerCase();
+                const ko = m.kick_off ? new Date(m.kick_off).getTime() : 0;
                 if(m.is_featured) return true;
                 if(st === 'live') return true;
-                if(st === 'upcoming' || st === 'scheduled' || !st) return true;
-                if(st === 'finished' || st === 'ft') {
-                    const ko = m.kick_off ? new Date(m.kick_off).getTime() : 0;
+                // Only keep upcoming matches with a future kick-off (drops August fixtures in September)
+                if(st === 'upcoming' || st === 'scheduled' || !st) {
+                    return !ko || ko > now;
+                }
+                if(st === 'finished' || st === 'ft' || st === 'ended') {
                     return ko > dayAgo;
                 }
-                return true;
+                return false;
             });
 
             // Attach markets in background (optional — UI can show matches without odds first)
             // Always show odds (DB or stable defaults) so list is not blank
             ensureMatchOdds(allMatches);
             normalizeLiveMatches();
+            // If DB only had past (e.g. August) fixtures, seed current upcoming demos
+            seedDemoMatchesIfEmpty();
             filterMatchesBySport();
             updateTicker(allMatches.filter(m => (m.status||'').toLowerCase() === 'live'));
             startLiveClock();
@@ -3037,10 +3128,13 @@
         } catch(e) {
             console.error('Match load error:', e);
             allMatches = allMatches || [];
-            showEmpty();
-            const el = document.getElementById('upcoming-matches');
-            if(el && (!allMatches || !allMatches.length)) {
-                el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Pull to refresh or check connection.</div>';
+            seedDemoMatchesIfEmpty();
+            ensureMatchOdds(allMatches);
+            filterMatchesBySport();
+            if(!allMatches.length) {
+                showEmpty();
+                const el = document.getElementById('upcoming-matches');
+                if(el) el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Pull to refresh or check connection.</div>';
             }
         }
     }
@@ -3240,8 +3334,10 @@
         const mn = `${m.home_team} vs ${m.away_team}`.replace(/'/g,"&#39;");
         const shareUrl = `${window.location.origin}${window.location.pathname}?match=${m.id}`;
         const kickoffTime = new Date(m.kick_off).getTime();
-        const isFinished = m.status === 'finished' || m.status === 'ft' || m.status === 'FT' || m.status === 'ended';
-        const isLive = m.status === 'live' && !isFinished;
+        const kickOffPassed = !isNaN(kickoffTime) && kickoffTime <= Date.now();
+        const isFinished = m.status === 'finished' || m.status === 'ft' || m.status === 'FT' || m.status === 'ended'
+            || (kickOffPassed && (Date.now() - kickoffTime) > 150 * 60 * 1000);
+        const isLive = !isFinished && (m.status === 'live' || (kickOffPassed && !isFinished));
         const hs = parseInt(m.home_score)||0, as_ = parseInt(m.away_score)||0;
         let resultLabel = '';
         if (isFinished) {
@@ -3283,14 +3379,7 @@
                     ${isLive ? `<div style="margin:10px 0 6px;"><button type="button" onclick="goPage('live')" style="width:100%;padding:11px;border-radius:8px;border:none;background:#E21B2D;color:#fff;font-size:13px;font-weight:800;cursor:pointer;">● Watch match live</button></div>` : ''}
                     ${chips ? `<div class="feat-events">${chips}</div>` : ''}
                     ${(isLive || isFinished) ? `
-                    <div style="text-align:center;padding:14px 10px;background:var(--card2);border-radius:var(--r);margin-top:8px;">
-                        <div style="font-size:13px;font-weight:800;color:${isFinished ? '#27AE60' : 'var(--live)'};margin-bottom:4px;">
-                            ${isFinished ? '✅ Full Time — Betting closed' : '🔴 Live — Betting closed'}
-                        </div>
-                        <div style="font-size:11px;color:var(--muted);">${isFinished ? (resultLabel || 'Match finished') : ('Minute ' + (m.minute||0) + "' · Watch live for updates")}</div>
-                    </div>
                     <div class="feat-odds-wrap closed">
-                        <div class="feat-closed-overlay"><div class="feat-closed-stamp">Betting closed</div></div>
                         <div class="feat-odds-section">
                             <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
                             <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
@@ -3317,7 +3406,7 @@
                     `}
                 </div>
                 <div class="feat-bottom">
-                    <div class="feat-min">${(isLive || isFinished) ? '<strong style="color:var(--muted);">Betting closed</strong>' : 'Min bet: <strong>KSh 500</strong>'}</div>
+                    <div class="feat-min">${(isLive || isFinished) ? '<span style="color:var(--muted);">Unavailable</span>' : 'Min bet: <strong>KSh 500</strong>'}</div>
                     <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')"><i class="fas fa-share-alt"></i> Share</button>
                 </div>
                 ${(isLive || isFinished) ? '' : `
@@ -3347,6 +3436,7 @@
 
     function startCountdown(kickoffTime) {
         if(countdownInterval) clearInterval(countdownInterval);
+        let closedOnce = false;
         const tick = () => {
             const el = document.getElementById('feat-countdown');
             if(!el) return;
@@ -3354,10 +3444,26 @@
             if(featured) {
                 const st = String(featured.status || '').toLowerCase();
                 if(st === 'finished' || st === 'ft' || st === 'ended') { el.textContent = 'FT'; return; }
-                if(st === 'live') { el.textContent = '🔴 LIVE'; return; }
+                if(st === 'live') {
+                    el.textContent = '🔴 LIVE';
+                    if(!closedOnce) {
+                        closedOnce = true;
+                        featured.status = 'live';
+                        try { renderFeatured(featured); } catch(_){}
+                    }
+                    return;
+                }
             }
             const diff = Number(kickoffTime) - Date.now();
-            if(!Number.isFinite(diff) || diff <= 0) { el.textContent = '🔴 LIVE'; return; }
+            if(!Number.isFinite(diff) || diff <= 0) {
+                el.textContent = '🔴 LIVE';
+                if(!closedOnce && featured) {
+                    closedOnce = true;
+                    featured.status = 'live';
+                    try { renderFeatured(featured); filterMatchesBySport(); } catch(_){}
+                }
+                return;
+            }
             const h = Math.floor(diff/3600000);
             const m = Math.floor((diff%3600000)/60000);
             const sec = Math.floor((diff%60000)/1000);
@@ -3454,6 +3560,10 @@ function renderFeatMoreMkts(m, mn) {
         const halfLbl = liveMin <= 45 ? '1H' : (liveMin <= 90 ? '2H' : 'ET');
         const hs = parseInt(m.home_score, 10) || 0;
         const ascore = parseInt(m.away_score, 10) || 0;
+        const koTs = m.kick_off ? new Date(m.kick_off).getTime() : NaN;
+        const startedOrOver = isLive
+            || (m.status === 'finished' || m.status === 'ft' || m.status === 'ended')
+            || (!isNaN(koTs) && koTs <= Date.now());
 
         return `
             <div class="match-main">
@@ -3464,7 +3574,7 @@ function renderFeatMoreMkts(m, mn) {
                     <div class="match-actions-top">
                         
                         ${sf.length ? `<button class="btn-stats" onclick="togglePanel('st-${m.id}')"><i class="fas fa-chart-bar"></i></button>` : ''}
-                        ${hasMkts ? `<button class="btn-expand" onclick="togglePanel('mm-${m.id}')">More ▾</button>` : ''}
+                        ${hasMkts && !startedOrOver ? `<button class="btn-expand" onclick="togglePanel('mm-${m.id}')">More ▾</button>` : ''}
                     </div>
                 </div>
                 <div class="teams">
@@ -3474,7 +3584,7 @@ function renderFeatMoreMkts(m, mn) {
                 <div class="odds-section">
                     <div class="odds-mkt-lbl">Match Result (1X2)</div>
                     <div class="odds-3">
-                        ${isLive || (m.status==='finished'||m.status==='ft')
+                        ${startedOrOver
                           ? `<div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
                              <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
                              <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>`
@@ -3537,6 +3647,11 @@ function renderFeatMoreMkts(m, mn) {
         if(!m) return true; // unknown — allow (builder etc.)
         const st = (m.status || '').toLowerCase();
         if(st === 'live' || st === 'finished' || st === 'ft' || st === 'ended' || st === 'inplay') return false;
+        // Close as soon as kick-off time is reached (even if status still says upcoming)
+        if(m.kick_off) {
+            const ko = new Date(m.kick_off).getTime();
+            if(!isNaN(ko) && ko <= Date.now()) return false;
+        }
         return true;
     }
 
@@ -3544,8 +3659,12 @@ function renderFeatMoreMkts(m, mn) {
         const m = getMatchById(matchId);
         if(!m) return 'Betting closed for this match';
         const st = (m.status || '').toLowerCase();
-        if(st === 'live') return 'Match is live — betting closed';
+        if(st === 'live' || st === 'inplay') return 'Match is live — betting closed';
         if(st === 'finished' || st === 'ft' || st === 'ended') return 'Match finished — betting closed';
+        if(m.kick_off) {
+            const ko = new Date(m.kick_off).getTime();
+            if(!isNaN(ko) && ko <= Date.now()) return 'Match has started — betting closed';
+        }
         return 'Betting closed for this match';
     }
 
@@ -5517,4 +5636,4 @@ window.switchTab = switchTab;
 <!-- Featured Match is rendered exclusively from the Supabase matches table. -->>
 
 </body>
-</html>
+                            </html>
