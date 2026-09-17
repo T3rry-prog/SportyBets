@@ -923,10 +923,7 @@ async function createManualMatch() {
   if(!hOdd||!dOdd||!aOdd){showToast('Enter all three odds','err');return;}
 
   try {
-    // Unfeature all existing
-    await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
-
-    // Create new match
+    // Create the new match first. Do not remove the current Featured Match until this succeeds.
     const {data:nm,error} = await db.from('matches').insert({
       sport:'football',
       league: league||'Featured Match',
@@ -935,11 +932,20 @@ async function createManualMatch() {
       home_score:0, away_score:0,
       status:'upcoming',
       kick_off: kickoff ? new Date(kickoff).toISOString() : new Date().toISOString(),
-      minute:0, is_featured:true,
+      minute:0, is_featured:false,
       home_form:['W','D','W','L','W'], away_form:['L','W','D','W','L'],
     }).select().single();
 
     if(error) throw error;
+
+    const { error: clearFeaturedError } = await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
+    if(clearFeaturedError) throw clearFeaturedError;
+    const { error: featureNewError } = await db.from('matches').update({is_featured:true}).eq('id',nm.id);
+    if(featureNewError) throw featureNewError;
+    const { error: clearErr } = await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
+    if(clearErr) throw clearErr;
+    const { error: featureErr } = await db.from('matches').update({is_featured:true}).eq('id',nm.id);
+    if(featureErr) throw featureErr;
 
     // Add 1X2 odds
     await db.from('markets').insert([
@@ -1574,12 +1580,16 @@ async function loadAllMatches() {
 // ── SET FEATURED ──
 async function setFeatured(id) {
   try {
-    await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
-    await db.from('matches').update({is_featured:true}).eq('id',id);
+    const { data: target, error: targetErr } = await db.from('matches').select('id').eq('id',id).single();
+    if(targetErr || !target) throw targetErr || new Error('Match not found');
+    const { error: clearErr } = await db.from('matches').update({is_featured:false}).neq('id','00000000-0000-0000-0000-000000000000');
+    if(clearErr) throw clearErr;
+    const { error: featureErr } = await db.from('matches').update({is_featured:true}).eq('id',id);
+    if(featureErr) throw featureErr;
     showToast('⭐ Featured match set!','ok');
-    loadAllMatches();
-    loadMatchSelector();
-  } catch(e) { showToast('Error: '+e.message,'err'); }
+    await loadAllMatches();
+    await loadMatchSelector();
+  } catch(e) { showToast('Error: '+(e.message||e),'err'); console.error('setFeatured',e); }
 }
 
 
