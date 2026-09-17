@@ -408,6 +408,51 @@
         .ev-chip.yellow { border-color: rgba(240,192,64,0.3); color: var(--gold); }
         .ev-chip.corner { border-color: rgba(47,128,237,0.3); color: #7EC8FF; }
 
+        
+        .feat-odds-wrap {
+            position: relative;
+            margin-top: 12px;
+        }
+        .feat-closed-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--r);
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(2.5px);
+            -webkit-backdrop-filter: blur(2.5px);
+            pointer-events: none;
+        }
+        [data-theme="dark"] .feat-closed-overlay {
+            background: rgba(15,17,21,0.55);
+        }
+        .feat-closed-stamp {
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(226,27,45,0.85);
+            border: 2.5px solid rgba(226,27,45,0.7);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transform: rotate(-12deg);
+            background: rgba(255,255,255,0.75);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        }
+        [data-theme="dark"] .feat-closed-stamp {
+            background: rgba(26,29,36,0.85);
+            color: rgba(255,80,90,0.95);
+            border-color: rgba(255,80,90,0.75);
+        }
+        .feat-odds-wrap.closed .feat-odds-section {
+            filter: blur(1.5px);
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
         .feat-odds-section {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -2233,9 +2278,14 @@
             renderMatchList('upcoming-matches', demo.filter(m=>m.status==='upcoming'), false);
             return;
         }
-        const featured = allMatches.find(m => m.is_featured);
-        if(featured) renderFeatured(featured);
-        else document.getElementById('featured-section').innerHTML = '';
+        const featured = allMatches.find(m => m.is_featured === true || m.is_featured === 'true' || m.is_featured === 1);
+        if(featured) {
+            ensureMatchOdds([featured]);
+            renderFeatured(featured);
+        } else {
+            const fs = document.getElementById('featured-section');
+            if(fs) fs.innerHTML = '';
+        }
         renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
         renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
     }
@@ -2752,39 +2802,220 @@
         goPage('login');
     }
 
+    
+    // Stable default 1X2 if DB has no markets (so odds always show)
+    function hashStr(s) {
+        let h = 0;
+        const t = String(s || '');
+        for (let i = 0; i < t.length; i++) h = ((h << 5) - h) + t.charCodeAt(i) | 0;
+        return Math.abs(h);
+    }
+    function roundOdd(x) {
+        const n = Math.max(1.01, parseFloat(x) || 1.01);
+        return Math.round(n * 100) / 100;
+    }
+    // Build extra markets from 1X2 prices (your main odds drive everything)
+    function marketsFrom1x2(oh, od, oa) {
+        oh = parseFloat(oh) || 2; od = parseFloat(od) || 3.2; oa = parseFloat(oa) || 3.5;
+        const ih = 1 / oh, id = 1 / od, ia = 1 / oa;
+        const sum = ih + id + ia || 1;
+        const ph = ih / sum, pd = id / sum, pa = ia / sum;
+        // Goal expectancy from win probs
+        const eh = 0.7 + ph * 2.4;
+        const ea = 0.7 + pa * 2.4;
+        const pois = (lam, k) => {
+            let p = Math.exp(-lam);
+            for (let i = 1; i <= k; i++) p *= lam / i;
+            return p;
+        };
+        const margin = 1.08; // book margin
+        const oddP = (p) => roundOdd(margin / Math.max(0.002, p));
+
+        const out = [
+            { market_type: '1x2', selection: 'Home Win', odds: roundOdd(oh) },
+            { market_type: '1x2', selection: 'Draw', odds: roundOdd(od) },
+            { market_type: '1x2', selection: 'Away Win', odds: roundOdd(oa) },
+            { market_type: 'double_chance', selection: '1X', odds: oddP(ph + pd) },
+            { market_type: 'double_chance', selection: '12', odds: oddP(ph + pa) },
+            { market_type: 'double_chance', selection: 'X2', odds: oddP(pd + pa) },
+            { market_type: 'btts', selection: 'Yes', odds: oddP(1 - pois(eh, 0) - pois(ea, 0) + pois(eh, 0) * pois(ea, 0)) },
+            { market_type: 'btts', selection: 'No', odds: oddP(pois(eh, 0) + pois(ea, 0) - pois(eh, 0) * pois(ea, 0)) },
+        ];
+        // Over/Under from total goals expectation
+        const et = eh + ea;
+        const pOver = (line) => {
+            let p = 0;
+            for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) if (i + j > line) p += pois(eh, i) * pois(ea, j);
+            return p;
+        };
+        [1.5, 2.5, 3.5].forEach(line => {
+            const po = pOver(line);
+            out.push({ market_type: 'over_under', selection: 'Over ' + line, odds: oddP(po) });
+            out.push({ market_type: 'over_under', selection: 'Under ' + line, odds: oddP(1 - po) });
+        });
+        out.push(
+            { market_type: 'ht_result', selection: 'Home Win', odds: roundOdd(oh * 1.35) },
+            { market_type: 'ht_result', selection: 'Draw', odds: roundOdd(od * 0.85) },
+            { market_type: 'ht_result', selection: 'Away Win', odds: roundOdd(oa * 1.35) }
+        );
+        // Correct scores from Poisson × 1X2 strength
+        for (let hg = 0; hg <= 5; hg++) {
+            for (let ag = 0; ag <= 5; ag++) {
+                if (hg + ag > 7 && (hg > 4 || ag > 4)) continue;
+                const p = pois(eh, hg) * pois(ea, ag);
+                out.push({ market_type: 'correct_score', selection: hg + '-' + ag, odds: oddP(p) });
+            }
+        }
+        return out;
+    }
+    function default1x2(m) {
+        const h = hashStr((m.id || '') + (m.home_team || '') + (m.away_team || ''));
+        const home = (1.45 + (h % 90) / 100);
+        const draw = (2.90 + (h % 70) / 100);
+        const away = (2.10 + ((h >> 3) % 120) / 100);
+        return marketsFrom1x2(home, draw, away);
+    }
+    function ensureMatchOdds(matches) {
+        (matches || []).forEach(m => {
+            if (!m.markets) m.markets = [];
+            m.markets.forEach(mk => {
+                if (!mk.market_type) return;
+                const mt = String(mk.market_type).toLowerCase().replace(/\s+/g, '_');
+                if (mt === '1x2' || mt === 'match_result') mk.market_type = '1x2';
+                else mk.market_type = mt;
+                const sel = String(mk.selection || '').toLowerCase();
+                if (mk.market_type === '1x2') {
+                    if (sel === '1' || sel === 'home' || sel === 'home win') mk.selection = 'Home Win';
+                    else if (sel === 'x' || sel === 'draw') mk.selection = 'Draw';
+                    else if (sel === '2' || sel === 'away' || sel === 'away win') mk.selection = 'Away Win';
+                }
+                if (mk.odds != null) mk.odds = parseFloat(mk.odds);
+            });
+            const one = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Home Win');
+            const drw = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Draw');
+            const awy = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Away Win');
+            if (one && drw && awy) {
+                // Keep your 1X2; rebuild other markets from those prices
+                const derived = marketsFrom1x2(one.odds, drw.odds, awy.odds);
+                const keep1x2 = m.markets.filter(x => x.market_type === '1x2');
+                const rest = derived.filter(x => x.market_type !== '1x2');
+                // Prefer DB non-1x2 if present and richer, else derived
+                const dbExtra = m.markets.filter(x => x.market_type !== '1x2');
+                m.markets = keep1x2.concat(dbExtra.length >= 6 ? dbExtra : rest);
+            } else {
+                m.markets = default1x2(m).concat(m.markets.filter(x => x.market_type !== '1x2'));
+            }
+        });
+        return matches;
+    }
+
+
     // ===== LOAD MATCHES =====
     async function loadMatches() {
+        const showEmpty = () => {
+            try {
+                filterMatchesBySport();
+            } catch(_) {
+                const el = document.getElementById('upcoming-matches');
+                if(el) el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No matches available right now</div>';
+            }
+        };
         try {
-            const { data, error } = await db.from('matches')
-                .select('id,home_team,away_team,status,minute,home_score,away_score,kick_off,is_featured,league,sport,game_code,markets(id,market_type,selection,odds,match_id)')
-                .order('kick_off', {ascending:true})
-                .limit(80);
+            // Fast query first (no nested markets — those slow/fail on some schemas)
+            let data = null, error = null;
+            let res = await db.from('matches')
+                .select('id,home_team,away_team,status,minute,home_score,away_score,kick_off,is_featured,league,sport')
+                .order('kick_off', { ascending: true })
+                .limit(60);
+            data = res.data; error = res.error;
+
+            // Fallback if column names differ
+            if(error) {
+                console.warn('Match query retry:', error.message);
+                res = await db.from('matches').select('*').order('kick_off', { ascending: true }).limit(60);
+                data = res.data; error = res.error;
+            }
             if(error) throw error;
+
             const now = Date.now();
-            const threeHoursAgo = now - 3*60*60*20;
-            allMatches = (data||[]).filter(m => {
-                const ko = new Date(m.kick_off).getTime();
+            const dayAgo = now - 24*60*60*1000;
+            allMatches = (data || []).filter(m => {
+                const st = (m.status || '').toLowerCase();
                 if(m.is_featured) return true;
-                if(m.status === 'live') return true;
-                if(m.status === 'upcoming') return ko > now;
-                if(m.status === 'finished') return ko > threeHoursAgo;
-                return false;
+                if(st === 'live') return true;
+                if(st === 'upcoming' || st === 'scheduled' || !st) return true;
+                if(st === 'finished' || st === 'ft') {
+                    const ko = m.kick_off ? new Date(m.kick_off).getTime() : 0;
+                    return ko > dayAgo;
+                }
+                return true;
             });
+
+            // Attach markets in background (optional — UI can show matches without odds first)
+            // Always show odds (DB or stable defaults) so list is not blank
+            ensureMatchOdds(allMatches);
             normalizeLiveMatches();
             filterMatchesBySport();
-            updateTicker(allMatches.filter(m=>m.status==='live'));
+            updateTicker(allMatches.filter(m => (m.status||'').toLowerCase() === 'live'));
             startLiveClock();
-            // If any matches finished, settle this user's pending bets so My Bets shows WON/LOST
-            // Settle in background — do not block UI
+            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+
+            // Overlay real markets from DB when available
+            setTimeout(async () => {
+                try {
+                    const ids = allMatches.slice(0, 50).map(m => m.id).filter(Boolean);
+                    if(!ids.length) return;
+                    let mkts = null;
+                    let r = await db.from('markets')
+                        .select('id,match_id,market_type,selection,odds')
+                        .in('match_id', ids)
+                        .limit(500);
+                    mkts = r.data;
+                    if(r.error || !mkts || !mkts.length) {
+                        // try nested join per match batch
+                        const r2 = await db.from('matches')
+                            .select('id, markets(id,match_id,market_type,selection,odds)')
+                            .in('id', ids);
+                        if(r2.data) {
+                            r2.data.forEach(row => {
+                                const m = allMatches.find(x => x.id === row.id);
+                                if(m && row.markets && row.markets.length) m.markets = row.markets;
+                            });
+                            ensureMatchOdds(allMatches);
+                            filterMatchesBySport();
+                            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+                        }
+                        return;
+                    }
+                    const byMatch = {};
+                    mkts.forEach(x => {
+                        if(!byMatch[x.match_id]) byMatch[x.match_id] = [];
+                        byMatch[x.match_id].push(x);
+                    });
+                    allMatches.forEach(m => {
+                        if(byMatch[m.id] && byMatch[m.id].length) m.markets = byMatch[m.id];
+                    });
+                    ensureMatchOdds(allMatches);
+                    filterMatchesBySport();
+                    try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+                } catch(e) { console.warn('markets load', e); }
+            }, 30);
+
             if(currentUser && typeof settleUserPendingBets === 'function') {
                 setTimeout(() => {
                     settleUserPendingBets().then(() => loadProfile()).then(() => {
                         try { updateAuthUI(); updateProfileUI(); } catch(_){}
                     }).catch(()=>{});
-                }, 0);
+                }, 800);
             }
         } catch(e) {
             console.error('Match load error:', e);
+            allMatches = allMatches || [];
+            showEmpty();
+            const el = document.getElementById('upcoming-matches');
+            if(el && (!allMatches || !allMatches.length)) {
+                el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Pull to refresh or check connection.</div>';
+            }
         }
     }
 
@@ -2942,6 +3173,15 @@
 
     // ===== MATCH RENDERING =====
     function renderFeatured(m) {
+        if(!m) {
+            m = (allMatches || []).find(x => x.is_featured === true || x.is_featured === 'true' || x.is_featured === 1);
+        }
+        if(!m) {
+            const sec = document.getElementById('featured-section');
+            if(sec) sec.innerHTML = '';
+            return;
+        }
+        ensureMatchOdds([m]);
         const evs = m.live_events || [];
         const chips = [
             ...evs.filter(e=>e.event_type==='goal').map(e => `<span class="ev-chip goal"><i class="fas fa-futbol"></i> ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}${e.player_name?' · '+e.player_name:''}</span>`),
@@ -3022,24 +3262,29 @@
                         </div>
                         <div style="font-size:11px;color:var(--muted);">${isFinished ? (resultLabel || 'Match finished') : ('Minute ' + (m.minute||0) + "' · Watch live for updates")}</div>
                     </div>
-                    <div class="feat-odds-section" style="opacity:0.4;pointer-events:none;">
-                        <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
-                        <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
-                        <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>
+                    <div class="feat-odds-wrap closed">
+                        <div class="feat-closed-overlay"><div class="feat-closed-stamp">Betting closed</div></div>
+                        <div class="feat-odds-section">
+                            <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
+                            <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
+                            <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>
+                        </div>
                     </div>
                     ` : `
-                    <div class="feat-odds-section">
-                        <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
-                            <div class="odd-lbl">1 Home</div>
-                            <div class="odd-val">${h?h.odds:'---'}</div>
-                        </div>
-                        <div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d?d.odds:1})">
-                            <div class="odd-lbl">X Draw</div>
-                            <div class="odd-val">${d?d.odds:'---'}</div>
-                        </div>
-                        <div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a?a.odds:1})">
-                            <div class="odd-lbl">2 Away</div>
-                            <div class="odd-val">${a?a.odds:'---'}</div>
+                    <div class="feat-odds-wrap">
+                        <div class="feat-odds-section">
+                            <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
+                                <div class="odd-lbl">1 Home</div>
+                                <div class="odd-val">${h?h.odds:'---'}</div>
+                            </div>
+                            <div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d?d.odds:1})">
+                                <div class="odd-lbl">X Draw</div>
+                                <div class="odd-val">${d?d.odds:'---'}</div>
+                            </div>
+                            <div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a?a.odds:1})">
+                                <div class="odd-lbl">2 Away</div>
+                                <div class="odd-val">${a?a.odds:'---'}</div>
+                            </div>
                         </div>
                     </div>
                     `}
@@ -3127,36 +3372,6 @@ function renderFeatMoreMkts(m, mn) {
     const goals = [...get('btts'), ...get('over_under'), ...get('total_goals')];
     const ht = [...get('ht_result')];
     let cs = get('correct_score');
-
-    // Stable fixed odds for correct scores — NEVER change on re-render
-    // 0-3 locked at 41.54 as requested
-    const FIXED_CS = {
-        "0-0": 8.50, "1-0": 7.20, "0-1": 9.40, "1-1": 6.80,
-        "2-0": 11.00, "0-2": 14.50, "2-1": 9.80, "1-2": 12.00, "2-2": 13.50,
-        "3-0": 21.00, "0-3": 41.54, "3-1": 18.00, "1-3": 26.00,
-        "3-2": 22.00, "2-3": 28.00, "3-3": 35.00,
-        "4-0": 41.00, "0-4": 55.00, "4-1": 34.00, "1-4": 48.00,
-        "4-2": 38.00, "2-4": 52.00, "4-3": 45.00, "3-4": 55.00,
-        "5-0": 65.00, "0-5": 85.00, "5-1": 55.00, "1-5": 75.00,
-        "5-2": 60.00, "2-5": 80.00, "5-3": 70.00, "3-5": 90.00,
-        "5-4": 85.00, "4-5": 95.00,
-        "Any Other Home": 18.00, "Any Other Draw": 25.00, "Any Other Away": 22.00
-    };
-    const extraCS = Object.keys(FIXED_CS);
-
-    extraCS.forEach(score => {
-        const existing = cs.find(x => x.selection === score);
-        if(existing) {
-            // Keep DB odds if present, but force 0-3 to 41.54
-            if(score === '0-3') existing.odds = 41.54;
-        } else {
-            cs.push({
-                market_type: 'correct_score',
-                selection: score,
-                odds: FIXED_CS[score]
-            });
-        }
-    });
 
     function renderGroup(list){
         if(!list.length) return '<div>No data</div>';
@@ -5272,6 +5487,88 @@ function switchTab(i){
 }
 window.switchTab = switchTab;
 
+</script>
+
+
+<script>
+function loadFeaturedMatch() {
+    const match = {
+        home: "Tunstall Athletic",
+        away: "Atletico Marsund",
+        homeScore: 0,
+        awayScore: 3,
+        league: "Weald Premier Division",
+        result: "0-3 · Atletico Marsund won",
+        status: "FT",
+        statusText: "Full Time — Betting closed",
+        closed: true,
+        odds: { home: 4.79, draw: 4.15, away: 1.56 }
+    };
+
+    const container = document.getElementById("featured-section");
+    if (!container) return;
+
+    container.innerHTML = `
+    <div class="featured-wrap">
+        <div class="feat-header">
+            <div class="feat-badge">⭐ Featured Match</div>
+            <div class="feat-countdown">${match.status}</div>
+        </div>
+
+        <div class="feat-body">
+            <div class="feat-teams">
+                <div class="ft-team">
+                    <div class="ft-emoji">⚽</div>
+                    <div class="ft-name">${match.home}</div>
+                    <div class="ft-score">${match.homeScore}</div>
+                </div>
+                <div class="ft-vs">VS</div>
+                <div class="ft-team">
+                    <div class="ft-emoji">⚽</div>
+                    <div class="ft-name">${match.away}</div>
+                    <div class="ft-score">${match.awayScore}</div>
+                </div>
+            </div>
+
+            <div class="feat-meta">
+                ${match.league} · ${match.result}
+            </div>
+
+            <div style="background:#eef7ee;padding:10px;border-radius:10px;text-align:center;font-size:12px;margin-bottom:10px;">
+                ✅ ${match.statusText}
+            </div>
+
+            <div class="feat-odds-wrap ${match.closed ? 'closed' : ''}">
+                ${match.closed ? `
+                <div class="feat-closed-overlay">
+                    <div class="feat-closed-stamp">CLOSED</div>
+                </div>` : ''}
+
+                <div class="feat-odds-section">
+                    <div class="odd-btn">
+                        <div class="odd-lbl">1 Home</div>
+                        <div class="odd-val">${match.odds.home}</div>
+                    </div>
+                    <div class="odd-btn">
+                        <div class="odd-lbl">X Draw</div>
+                        <div class="odd-val">${match.odds.draw}</div>
+                    </div>
+                    <div class="odd-btn">
+                        <div class="odd-lbl">2 Away</div>
+                        <div class="odd-val">${match.odds.away}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="feat-bottom">
+            <div class="feat-min">Betting closed</div>
+            <div class="feat-share">🔗 Share</div>
+        </div>
+    </div>`;
+}
+
+document.addEventListener("DOMContentLoaded", loadFeaturedMatch);
 </script>
 
 </body>
