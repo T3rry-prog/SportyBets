@@ -408,6 +408,51 @@
         .ev-chip.yellow { border-color: rgba(240,192,64,0.3); color: var(--gold); }
         .ev-chip.corner { border-color: rgba(47,128,237,0.3); color: #7EC8FF; }
 
+        
+        .feat-odds-wrap {
+            position: relative;
+            margin-top: 12px;
+        }
+        .feat-closed-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--r);
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(2.5px);
+            -webkit-backdrop-filter: blur(2.5px);
+            pointer-events: none;
+        }
+        [data-theme="dark"] .feat-closed-overlay {
+            background: rgba(15,17,21,0.55);
+        }
+        .feat-closed-stamp {
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(226,27,45,0.85);
+            border: 2.5px solid rgba(226,27,45,0.7);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transform: rotate(-12deg);
+            background: rgba(255,255,255,0.75);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        }
+        [data-theme="dark"] .feat-closed-stamp {
+            background: rgba(26,29,36,0.85);
+            color: rgba(255,80,90,0.95);
+            border-color: rgba(255,80,90,0.75);
+        }
+        .feat-odds-wrap.closed .feat-odds-section {
+            filter: blur(1.5px);
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
         .feat-odds-section {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -3217,24 +3262,29 @@
                         </div>
                         <div style="font-size:11px;color:var(--muted);">${isFinished ? (resultLabel || 'Match finished') : ('Minute ' + (m.minute||0) + "' · Watch live for updates")}</div>
                     </div>
-                    <div class="feat-odds-section" style="opacity:0.4;pointer-events:none;">
-                        <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
-                        <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
-                        <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>
+                    <div class="feat-odds-wrap closed">
+                        <div class="feat-closed-overlay"><div class="feat-closed-stamp">Betting closed</div></div>
+                        <div class="feat-odds-section">
+                            <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
+                            <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
+                            <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>
+                        </div>
                     </div>
                     ` : `
-                    <div class="feat-odds-section">
-                        <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
-                            <div class="odd-lbl">1 Home</div>
-                            <div class="odd-val">${h?h.odds:'---'}</div>
-                        </div>
-                        <div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d?d.odds:1})">
-                            <div class="odd-lbl">X Draw</div>
-                            <div class="odd-val">${d?d.odds:'---'}</div>
-                        </div>
-                        <div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a?a.odds:1})">
-                            <div class="odd-lbl">2 Away</div>
-                            <div class="odd-val">${a?a.odds:'---'}</div>
+                    <div class="feat-odds-wrap">
+                        <div class="feat-odds-section">
+                            <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
+                                <div class="odd-lbl">1 Home</div>
+                                <div class="odd-val">${h?h.odds:'---'}</div>
+                            </div>
+                            <div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d?d.odds:1})">
+                                <div class="odd-lbl">X Draw</div>
+                                <div class="odd-val">${d?d.odds:'---'}</div>
+                            </div>
+                            <div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a?a.odds:1})">
+                                <div class="odd-lbl">2 Away</div>
+                                <div class="odd-val">${a?a.odds:'---'}</div>
+                            </div>
                         </div>
                     </div>
                     `}
