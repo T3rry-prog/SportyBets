@@ -2270,22 +2270,19 @@
         // Show all sports – use football data as fallback for others (stagnant demo matches)
         const supported = ['football','basketball','tennis','rugby','cricket','boxing','hockey','esports'];
         if(!supported.includes(currentSport)) currentSport = 'football';
-        if(currentSport !== 'football') {
-            // Show placeholder stagnant matches for other sports
-            const demo = getDemoMatches(currentSport);
-            document.getElementById('featured-section').innerHTML = '';
-            renderMatchList('live-matches', demo.filter(m=>m.status==='live'), true);
-            renderMatchList('upcoming-matches', demo.filter(m=>m.status==='upcoming'), false);
-            return;
-        }
+        // Featured is global and must never disappear when another sport is selected.
         const featured = allMatches.find(m => m.is_featured === true || m.is_featured === 'true' || m.is_featured === 1);
         if(featured) {
             ensureMatchOdds([featured]);
             renderFeatured(featured);
-        } else {
-            const fs = document.getElementById('featured-section');
-            if(fs) fs.innerHTML = '';
         }
+        if(currentSport !== 'football') {
+            const demo = getDemoMatches(currentSport);
+            renderMatchList('live-matches', demo.filter(m=>m.status==='live'), true);
+            renderMatchList('upcoming-matches', demo.filter(m=>m.status==='upcoming'), false);
+            return;
+        }
+        /* Football lists exclude the featured match, but the featured card remains above them. */
         renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
         renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
     }
@@ -2910,6 +2907,35 @@
     }
 
 
+    // ===== DEDICATED FEATURED MATCH LOADER =====
+    // Featured is loaded independently so normal match filtering/reloads can never remove it.
+    let featuredLoadInFlight = false;
+    async function loadFeaturedMatchFromDB() {
+        if(featuredLoadInFlight) return;
+        featuredLoadInFlight = true;
+        try {
+            const { data, error } = await db.from('matches')
+                .select('*')
+                .eq('is_featured', true)
+                .order('kick_off', { ascending: true })
+                .limit(1);
+            if(error) throw error;
+            if(data && data.length) {
+                const featured = data[0];
+                ensureMatchOdds([featured]);
+                const old = (allMatches || []).find(x => x.id === featured.id);
+                if(old) Object.assign(old, featured);
+                else allMatches = [featured, ...(allMatches || []).filter(x => x.id !== featured.id)];
+                renderFeatured(featured);
+            }
+            // IMPORTANT: on an error or temporary empty response, do not clear the existing card.
+        } catch(e) {
+            console.warn('Featured match load:', e.message || e);
+        } finally {
+            featuredLoadInFlight = false;
+        }
+    }
+
     // ===== LOAD MATCHES =====
     async function loadMatches() {
         const showEmpty = () => {
@@ -2958,7 +2984,7 @@
             filterMatchesBySport();
             updateTicker(allMatches.filter(m => (m.status||'').toLowerCase() === 'live'));
             startLiveClock();
-            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+            try { loadFeaturedMatchFromDB(); } catch(_){}
 
             // Overlay real markets from DB when available
             setTimeout(async () => {
@@ -2983,7 +3009,7 @@
                             });
                             ensureMatchOdds(allMatches);
                             filterMatchesBySport();
-                            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+                            try { loadFeaturedMatchFromDB(); } catch(_){}
                         }
                         return;
                     }
@@ -2997,7 +3023,7 @@
                     });
                     ensureMatchOdds(allMatches);
                     filterMatchesBySport();
-                    try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
+                    try { loadFeaturedMatchFromDB(); } catch(_){}
                 } catch(e) { console.warn('markets load', e); }
             }, 30);
 
@@ -3112,6 +3138,7 @@
         db.channel('live-updates')
             .on('postgres_changes',{event:'*',schema:'public',table:'matches'}, () => {
                 loadMatches();
+                loadFeaturedMatchFromDB();
                 if(currentUser) settleUserPendingBets().then(() => {
                     loadProfile().then(() => { updateAuthUI(); updateProfileUI(); }).catch(()=>{});
                 }).catch(()=>{});
@@ -3320,30 +3347,26 @@
 
     function startCountdown(kickoffTime) {
         if(countdownInterval) clearInterval(countdownInterval);
-        countdownInterval = setInterval(() => {
+        const tick = () => {
             const el = document.getElementById('feat-countdown');
-            if(!el) { clearInterval(countdownInterval); return; }
-            // Never overwrite FT / Finished
-            const t = (el.textContent || '').trim();
-            if(t === 'FT' || t.indexOf('FT') === 0 || t === 'Finished') {
-                clearInterval(countdownInterval);
-                return;
+            if(!el) return;
+            const featured = (allMatches || []).find(x => x.is_featured === true || x.is_featured === 'true' || x.is_featured === 1);
+            if(featured) {
+                const st = String(featured.status || '').toLowerCase();
+                if(st === 'finished' || st === 'ft' || st === 'ended') { el.textContent = 'FT'; return; }
+                if(st === 'live') { el.textContent = '🔴 LIVE'; return; }
             }
-            const now = Date.now();
-            const diff = kickoffTime - now;
-            if(diff <= 0) {
-                // Only show LIVE if not already finished
-                if(t !== 'FT' && t.indexOf('FT') !== 0) el.textContent = '🔴 LIVE';
-                clearInterval(countdownInterval);
-                return;
-            }
+            const diff = Number(kickoffTime) - Date.now();
+            if(!Number.isFinite(diff) || diff <= 0) { el.textContent = '🔴 LIVE'; return; }
             const h = Math.floor(diff/3600000);
             const m = Math.floor((diff%3600000)/60000);
-            const s = Math.floor((diff%60000)/1000);
+            const sec = Math.floor((diff%60000)/1000);
             if(h > 24) el.textContent = `${Math.floor(h/24)}d ${h%24}h`;
-            else if(h > 0) el.textContent = `${h}h ${m}m ${s}s`;
-            else el.textContent = `${m}m ${s}s`;
-        }, 1000);
+            else if(h > 0) el.textContent = `${h}h ${m}m ${sec}s`;
+            else el.textContent = `${m}m ${sec}s`;
+        };
+        tick();
+        countdownInterval = setInterval(tick, 1000);
     }
 
         function toggleFeatMarkets() {
@@ -5069,9 +5092,10 @@ function renderFeatMoreMkts(m, mn) {
         }
         // Show shell first; load data without blocking first paint
         loadMatches().catch(()=>{});
+        loadFeaturedMatchFromDB().catch(()=>{});
         try { subscribeRealtime(); } catch(_){}
         renderWinners();
-        setInterval(async () => { await loadMatches(); }, 120 * 1000);
+        setInterval(async () => { await loadMatches(); await loadFeaturedMatchFromDB(); }, 120 * 1000);
         // Check for deep link
         const params = new URLSearchParams(window.location.search);
         const matchId = params.get('match');
@@ -5490,86 +5514,7 @@ window.switchTab = switchTab;
 </script>
 
 
-<script>
-function loadFeaturedMatch() {
-    const match = {
-        home: "Tunstall Athletic",
-        away: "Atletico Marsund",
-        homeScore: 0,
-        awayScore: 3,
-        league: "Weald Premier Division",
-        result: "0-3 · Atletico Marsund won",
-        status: "FT",
-        statusText: "Full Time — Betting closed",
-        closed: true,
-        odds: { home: 4.79, draw: 4.15, away: 1.56 }
-    };
-
-    const container = document.getElementById("featured-section");
-    if (!container) return;
-
-    container.innerHTML = `
-    <div class="featured-wrap">
-        <div class="feat-header">
-            <div class="feat-badge">⭐ Featured Match</div>
-            <div class="feat-countdown">${match.status}</div>
-        </div>
-
-        <div class="feat-body">
-            <div class="feat-teams">
-                <div class="ft-team">
-                    <div class="ft-emoji">⚽</div>
-                    <div class="ft-name">${match.home}</div>
-                    <div class="ft-score">${match.homeScore}</div>
-                </div>
-                <div class="ft-vs">VS</div>
-                <div class="ft-team">
-                    <div class="ft-emoji">⚽</div>
-                    <div class="ft-name">${match.away}</div>
-                    <div class="ft-score">${match.awayScore}</div>
-                </div>
-            </div>
-
-            <div class="feat-meta">
-                ${match.league} · ${match.result}
-            </div>
-
-            <div style="background:#eef7ee;padding:10px;border-radius:10px;text-align:center;font-size:12px;margin-bottom:10px;">
-                ✅ ${match.statusText}
-            </div>
-
-            <div class="feat-odds-wrap ${match.closed ? 'closed' : ''}">
-                ${match.closed ? `
-                <div class="feat-closed-overlay">
-                    <div class="feat-closed-stamp">CLOSED</div>
-                </div>` : ''}
-
-                <div class="feat-odds-section">
-                    <div class="odd-btn">
-                        <div class="odd-lbl">1 Home</div>
-                        <div class="odd-val">${match.odds.home}</div>
-                    </div>
-                    <div class="odd-btn">
-                        <div class="odd-lbl">X Draw</div>
-                        <div class="odd-val">${match.odds.draw}</div>
-                    </div>
-                    <div class="odd-btn">
-                        <div class="odd-lbl">2 Away</div>
-                        <div class="odd-val">${match.odds.away}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="feat-bottom">
-            <div class="feat-min">Betting closed</div>
-            <div class="feat-share">🔗 Share</div>
-        </div>
-    </div>`;
-}
-
-document.addEventListener("DOMContentLoaded", loadFeaturedMatch);
-</script>
+<!-- Featured Match is rendered exclusively from the Supabase matches table. -->>
 
 </body>
 </html>
