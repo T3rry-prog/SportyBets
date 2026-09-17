@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <title>SportyBet — Sports Betting</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <link rel="preconnect" href="https://nmcdwmmfdrazmufodirq.supabase.co" crossorigin />
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" /></noscript>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;10;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         /* ===== RESET & VARIABLES ===== */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -407,51 +403,6 @@
         .ev-chip.red { border-color: rgba(232,0,45,0.3); color: #FF6B6B; }
         .ev-chip.yellow { border-color: rgba(240,192,64,0.3); color: var(--gold); }
         .ev-chip.corner { border-color: rgba(47,128,237,0.3); color: #7EC8FF; }
-
-        
-        .feat-odds-wrap {
-            position: relative;
-            margin-top: 12px;
-        }
-        .feat-closed-overlay {
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--r);
-            background: rgba(255,255,255,0.55);
-            backdrop-filter: blur(2.5px);
-            -webkit-backdrop-filter: blur(2.5px);
-            pointer-events: none;
-        }
-        [data-theme="dark"] .feat-closed-overlay {
-            background: rgba(15,17,21,0.55);
-        }
-        .feat-closed-stamp {
-            font-size: 15px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: rgba(226,27,45,0.85);
-            border: 2.5px solid rgba(226,27,45,0.7);
-            padding: 8px 16px;
-            border-radius: 8px;
-            transform: rotate(-12deg);
-            background: rgba(255,255,255,0.75);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-        }
-        [data-theme="dark"] .feat-closed-stamp {
-            background: rgba(26,29,36,0.85);
-            color: rgba(255,80,90,0.95);
-            border-color: rgba(255,80,90,0.75);
-        }
-        .feat-odds-wrap.closed .feat-odds-section {
-            filter: blur(1.5px);
-            opacity: 0.45;
-            pointer-events: none;
-        }
 
         .feat-odds-section {
             display: grid;
@@ -1004,7 +955,7 @@
             <button class="btn-join" onclick="goPage('register')">Join Free</button>
         </div>
         <div id="hdr-user" style="display:none;gap:7px;align-items:center;">
-            <div class="bal-chip" onclick="goPage('wallet')"><span id="hdr-currency">KSh</span> <strong id="hdr-bal">0</strong></div>
+            <div class="bal-chip" onclick="goPage('wallet')"><span id="hdr-currency">$</span> <strong id="hdr-bal">0</strong></div>
             <button class="btn-login" onclick="goPage('account')"><i class="fas fa-user"></i></button>
         </div>
     </div>
@@ -1105,7 +1056,7 @@
                 <div style="font-size:28px;margin-bottom:8px;">🔒</div>
                 <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;">Watch Live Matches</div>
                 <div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:14px;max-width:280px;margin-left:auto;margin-right:auto;">
-                    Pay <strong style="color:#27AE60;">KSh 500</strong> once from your wallet to unlock live streams.<br>
+                    One-time <strong style="color:#27AE60;">$50</strong> subscription unlocks live streams.<br>
                     In partnership with <strong style="color:#fff;">SuperSport</strong> &amp; <strong style="color:#fff;">DStv</strong>.
                 </div>
                 <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;">
@@ -1113,9 +1064,9 @@
                     <span style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:#fff;">DStv</span>
                 </div>
                 <button onclick="subscribeLive()" style="width:100%;max-width:260px;padding:13px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">
-                    Unlock Live · KSh 500
+                    Subscribe · $50 once
                 </button>
-                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:8px;">Charged from wallet balance · One-time access</div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:8px;">One-time access · SuperSport & DStv partners</div>
             </div>
         </div>
         <div id="live-player-unlocked" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;">
@@ -1161,13 +1112,13 @@
                 <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Stake ($)</div>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;">
                     <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
-                    <input class="stake-in" id="stake" type="number" inputmode="decimal" value="500" min="500" step="any" oninput="calcPayout()" onchange="calcPayout()" onclick="this.focus();this.select();" ontouchstart="this.focus();" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;-webkit-user-select:text;user-select:text;pointer-events:auto;z-index:5;position:relative;">
+                    <input class="stake-in" id="stake" type="number" inputmode="decimal" value="10" min="10" step="any" oninput="calcPayout()" onchange="calcPayout()" onclick="this.focus();this.select();" ontouchstart="this.focus();" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;-webkit-user-select:text;user-select:text;pointer-events:auto;z-index:5;position:relative;">
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;" id="qs-row">
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1,000</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2,000</div>
-                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(5000)">5,000</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
+                    <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
                 </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;">
                     <span style="font-size:13px;color:var(--muted);">Potential Win</span>
@@ -1313,7 +1264,7 @@
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:6px;display:flex;gap:12px;">
             <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">03</div>
-            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min KSh 500 for sports). Confirm on your phone to complete payment.</div></div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Enter stake & confirm</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Type amount (min $10). Confirm on your phone to complete payment.</div></div>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:10px;display:flex;gap:12px;">
             <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;">04</div>
@@ -1374,56 +1325,10 @@
                 <div class="pass-eye" onclick="toggleEye('lpass',this)" style="padding:11px 12px;color:var(--muted);cursor:pointer;font-size:16px;">👁️</div>
             </div>
         </div>
-        <div style="text-align:right;margin-bottom:16px;"><span style="font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;" onclick="goPage('forgot')">Forgot password?</span></div>
+        <div style="text-align:right;margin-bottom:16px;"><span style="font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;">Forgot password?</span></div>
         <button class="btn-auth" id="login-btn" onclick="doLogin()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">Sign In</button>
         <div style="text-align:center;font-size:13px;color:var(--muted);">No account? <span class="auth-link" style="color:var(--gold);font-weight:700;cursor:pointer;" onclick="goPage('register')">Register free</span></div>
         <div style="text-align:center;margin-top:10px;"><span style="font-size:12px;color:var(--muted);cursor:pointer;" onclick="goPage('home')">← Back to Home</span></div>
-    </div>
-</div>
-
-
-<!-- ===== FORGOT / RESET PASSWORD ===== -->
-<div id="page-forgot" class="page">
-    <div style="padding:20px 16px 80px;">
-        <div style="text-align:center;font-size:26px;font-weight:800;color:var(--gold);margin-bottom:4px;">SportyBet</div>
-        <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">Reset your password</div>
-        <div id="forgot-err" style="display:none;background:rgba(226,27,45,0.1);border:1px solid rgba(226,27,45,0.3);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--live);margin-bottom:12px;"></div>
-        <div id="forgot-ok" style="display:none;background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:var(--r);padding:10px 12px;font-size:12px;color:#27AE60;margin-bottom:12px;"></div>
-
-        <div style="margin-bottom:13px;">
-            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Country</label>
-            <div style="border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);">
-                <select id="fcountry" style="background:var(--input-bg);color:var(--text);width:100%;border:none;outline:none;appearance:none;-webkit-appearance:none;padding:11px 12px;font-size:14px;" onchange="updateForgotDial(this)">
-                    <option value="KE" data-code="+254" data-flag="🇰🇪">🇰🇪 Kenya</option>
-                    <option value="NG" data-code="+234" data-flag="🇳🇬">🇳🇬 Nigeria</option>
-                    <option value="GH" data-code="+233" data-flag="🇬🇭">🇬🇭 Ghana</option>
-                    <option value="UG" data-code="+256" data-flag="🇺🇬">🇺🇬 Uganda</option>
-                    <option value="TZ" data-code="+255" data-flag="🇹🇿">🇹🇿 Tanzania</option>
-                    <option value="OTHER" data-code="+" data-flag="🌍">🌍 Other</option>
-                </select>
-            </div>
-        </div>
-        <div style="margin-bottom:13px;">
-            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Phone Number</label>
-            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);">
-                <div id="forgot-dial" style="padding:11px 12px;font-size:12px;font-weight:600;color:#fff;border-right:1px solid var(--border);background:var(--primary);white-space:nowrap;flex-shrink:0;">+254</div>
-                <input type="tel" id="fp" inputmode="numeric" placeholder="7XX XXX XXX" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
-            </div>
-        </div>
-        <div style="margin-bottom:13px;">
-            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">New Password</label>
-            <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--input-bg);">
-                <input type="password" id="fpass" placeholder="Min. 6 characters" style="flex:1;border:none;background:transparent;padding:11px 12px;font-size:14px;color:var(--text);outline:none;"/>
-                <div class="pass-eye" onclick="toggleEye('fpass',this)" style="padding:11px 12px;color:var(--muted);cursor:pointer;font-size:16px;">👁️</div>
-            </div>
-        </div>
-        <div style="margin-bottom:16px;">
-            <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Confirm New Password</label>
-            <input type="password" id="fpass2" placeholder="Repeat new password" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;"/>
-        </div>
-        <button class="btn-auth" id="forgot-btn" onclick="doResetPassword()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--gold);border:none;color:#000;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">Reset Password</button>
-        <div style="text-align:center;font-size:13px;color:var(--muted);">Remembered it? <span style="color:var(--gold);font-weight:700;cursor:pointer;" onclick="goPage('login')">Sign in</span></div>
-        <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5;">Need help? <a href="https://wa.me/254700000000" target="_blank" style="color:var(--gold);">WhatsApp support</a></div>
     </div>
 </div>
 
@@ -1579,7 +1484,7 @@
 
             <div id="dep-crypto-panel" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;">
                 <div style="font-size:13px;font-weight:800;margin-bottom:4px;">Deposit</div>
-                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Crypto (USDT / BTC / ETH) · Min KSh 500</div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Crypto (USDT / BTC / ETH) · Min $50</div>
 
                 <button type="button" id="btn-show-crypto" onclick="toggleCryptoDetails(true)" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px;">
                     💳 Pay with Crypto
@@ -1621,7 +1526,7 @@
                     <span style="font-size:18px;" id="crypto-coin-icon">₮</span>
                     <div>
                         <div style="font-size:13px;font-weight:800;" id="crypto-coin-title">Deposit with USDT (TRC20)</div>
-                        <div style="font-size:11px;color:var(--muted);" id="crypto-coin-sub">TRON network only · Minimum KSh 500</div>
+                        <div style="font-size:11px;color:var(--muted);" id="crypto-coin-sub">TRON network only · Minimum $50</div>
                     </div>
                 </div>
                 <div style="text-align:center;margin-bottom:12px;">
@@ -1636,7 +1541,7 @@
                     <strong style="color:var(--text);">How to deposit:</strong><br>
                     1. Copy the address or scan the QR<br>
                     2. Send <strong>USDT on TRON (TRC20)</strong> only<br>
-                    3. Min KSh 500 · Credited after network confirmation<br>
+                    3. Min $50 · Credited after network confirmation<br>
                     4. Wrong network = permanent loss
                 </div>
 
@@ -1645,7 +1550,7 @@
                     <div style="font-size:12px;font-weight:800;margin-bottom:8px;">✅ Confirm your transfer</div>
                     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.4;">Enter the amount transferred and optional transaction hash. Your balance will be credited after verification.</div>
                     <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Amount sent (USD)</label>
-                    <input type="number" id="crypto-dep-amt" min="500" step="1" placeholder="e.g. 100" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;font-weight:700;color:var(--text);background:var(--input-bg);outline:none;margin-bottom:8px;"/>
+                    <input type="number" id="crypto-dep-amt" min="50" step="1" placeholder="e.g. 100" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;font-weight:700;color:var(--text);background:var(--input-bg);outline:none;margin-bottom:8px;"/>
                     <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">TX Hash / Reference (optional)</label>
                     <input type="text" id="crypto-dep-hash" placeholder="Paste transaction hash" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:12px;color:var(--text);background:var(--input-bg);outline:none;font-family:monospace;margin-bottom:10px;"/>
                     <button type="button" id="crypto-confirm-btn" onclick="submitCryptoDeposit()" style="width:100%;padding:13px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">Submit for verification</button>
@@ -1665,44 +1570,31 @@
                     <label id="wf-lbl" style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount (KSh)</label>
                     <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;">
                         <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
-                        <input type="number" id="wf-amt" placeholder="Min 500" min="500" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                        <input type="number" id="wf-amt" placeholder="Min 100" min="100" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                     </div>
-                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh 500</div>
+                    <div id="mpesa-min-err" style="display:none;color:var(--live);font-size:11px;margin-top:6px;font-weight:600;">Minimum deposit is KSh 100</div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:14px;">
-                    <div class="qs" onclick="setWAmt(500)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">500</div>
-                    <div class="qs" onclick="setWAmt(1000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
-                    <div class="qs" onclick="setWAmt(2000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">2,000</div>
-                    <div class="qs" onclick="setWAmt(5000)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">5,000</div>
+                    <div class="qs" onclick="setWAmt(100)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">100</div>
+                    <div class="qs" onclick="setWAmt(200)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">200</div>
+                    <div class="qs" onclick="setWAmt(10)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">10</div>
+                    <div class="qs" onclick="setWAmt(20)" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;">1,000</div>
                 </div>
                 <button id="wf-btn" class="btn-place" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;margin-bottom:6px;cursor:pointer;" onclick="openMpesaFromWallet()"><i class="fas fa-mobile-alt"></i> Pay with M-Pesa</button>
-                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh 500</div>
+                <div style="font-size:11px;color:var(--muted);text-align:center;">Kenya numbers only · Min KSh 100</div>
             </div>
         </div>
 
-        <!-- WITHDRAW FORM -->
+        <!-- WITHDRAW FORM (shown when withdraw tab active) -->
         <div id="withdraw-form-panel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;">
-            <div style="font-size:13px;font-weight:800;margin-bottom:10px;">Withdraw to M-Pesa</div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Min KSh 100 · Sent to your M-Pesa number</div>
-            <div style="margin-bottom:12px;">
-                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">M-Pesa Phone</label>
-                <input type="tel" id="wd-mpesa-phone" placeholder="07XX XXX XXX" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px 12px;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;"/>
-            </div>
-            <div style="margin-bottom:12px;">
-                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Amount (KSh)</label>
+            <div style="margin-bottom:13px;">
+                <label style="display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Withdrawal Amount ($)</label>
                 <div style="display:flex;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden;">
-                    <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">KSh</div>
-                    <input type="number" id="wd-amt" placeholder="Min 100" min="100" step="1" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
+                    <div style="padding:12px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);border-right:1px solid var(--border);">$</div>
+                    <input type="number" id="wd-amt" placeholder="Enter amount" min="10" style="flex:1;border:none;background:var(--input-bg);color:var(--text);font-size:17px;font-weight:700;padding:12px;outline:none;"/>
                 </div>
             </div>
-            <div style="display:flex;gap:6px;margin-bottom:12px;">
-                <button type="button" onclick="document.getElementById('wd-amt').value=100" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">100</button>
-                <button type="button" onclick="document.getElementById('wd-amt').value=500" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">500</button>
-                <button type="button" onclick="document.getElementById('wd-amt').value=1000" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">1,000</button>
-                <button type="button" onclick="document.getElementById('wd-amt').value=5000" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;">5,000</button>
-            </div>
-            <button onclick="handleMpesaWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:#27AE60;border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> Withdraw via M-Pesa</button>
-            <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.4;">Amount will be deposited to your M-Pesa within 12 hours.</div>
+            <button onclick="handleWithdraw()" style="width:100%;padding:14px;border-radius:var(--r);background:var(--primary);border:none;color:#fff;font-size:15px;font-weight:800;cursor:pointer;">📤 Request Withdrawal</button>
         </div>
 
         <!-- CRYPTO WITHDRAW -->
@@ -1930,7 +1822,7 @@
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 13px;margin-bottom:16px;display:flex;gap:12px;">
             <div style="font-size:20px;font-weight:800;color:var(--gold);opacity:.4;flex-shrink:0;width:26px;line-height:1;">5</div>
-            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-trophy"></i> Win and withdraw</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Balance updates instantly. Withdraw to M-Pesa any time — funds arrive within 12 hours.</div></div>
+            <div><div style="font-size:13px;font-weight:700;margin-bottom:3px;"><i class="fas fa-trophy"></i> Win and withdraw</div><div style="font-size:11px;color:var(--muted);line-height:1.6;">Balance updates instantly. Withdraw to M-Pesa in under 30 seconds, any time.</div></div>
         </div>
         <button class="btn-hero" onclick="goPage('register')" style="width:100%;padding:14px;font-size:14px;background:var(--gold);color:#000;border:none;border-radius:var(--r);font-weight:800;cursor:pointer;">Get Started Free</button>
     </div>
@@ -2013,24 +1905,24 @@
             <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;">
                 <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 14px;min-width:90px;">
                     <div style="font-size:9px;color:var(--muted);">STAKE</div>
-                    <div style="font-size:14px;font-weight:800;color:#fff;">KSh <span id="av-stake-lbl">50</span></div>
+                    <div style="font-size:14px;font-weight:800;color:#fff;">$ <span id="av-stake-lbl">1</span></div>
                 </div>
                 <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 14px;min-width:90px;">
                     <div style="font-size:9px;color:var(--muted);">PROFIT</div>
-                    <div style="font-size:14px;font-weight:800;color:#27AE60;" id="av-profit">KSh 0</div>
+                    <div style="font-size:14px;font-weight:800;color:#27AE60;" id="av-profit">$ 0.00</div>
                 </div>
             </div>
 
             <div style="display:flex;gap:8px;margin-bottom:10px;">
-                <input type="number" id="av-stake" value="50" min="50" step="10" style="flex:1;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);font-size:15px;font-weight:700;outline:none;text-align:center;"/>
+                <input type="number" id="av-stake" value="1" min="1" step="1" style="flex:1;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);font-size:15px;font-weight:700;outline:none;text-align:center;"/>
                 <button onclick="startAv()" id="av-start-btn" style="flex:1.2;padding:12px;border-radius:8px;background:#27AE60;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;">BET</button>
                 <button onclick="cashoutAv()" id="av-cash-btn" style="flex:1.2;padding:12px;border-radius:8px;background:#E21B2D;border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;opacity:0.45;" disabled>CASH OUT</button>
             </div>
             <div style="display:flex;gap:6px;justify-content:center;">
-                <button onclick="setAvStake(50)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">50</button>
-                <button onclick="setAvStake(100)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">100</button>
-                <button onclick="setAvStake(200)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">200</button>
-                <button onclick="setAvStake(500)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">500</button>
+                <button onclick="setAvStake(1)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$1</button>
+                <button onclick="setAvStake(5)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$5</button>
+                <button onclick="setAvStake(10)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$10</button>
+                <button onclick="setAvStake(50)" style="padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">$50</button>
             </div>
             <div style="font-size:10px;color:var(--muted);margin-top:12px;">Min bet $1 · Stake taken from your balance</div>
         </div>
@@ -2214,7 +2106,7 @@
         {home:'Crystal Palace', away:'Fulham', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', h:2.50, d:3.20, a:2.85}
     ];
 
-    const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','forgot','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets','jackpot','aviator'];
+    const ALL_PAGES = ['home','live','slip','builder','leaderboard','promos','whatsapp','login','register','dashboard','wallet','account','faq','contact','terms','privacy','responsible','howitworks','mybets','jackpot','aviator'];
     const BN_MAP = {home:'bn-home', live:'bn-live', slip:'bn-slip', mybets:'bn-mybets', account:'bn-account', dashboard:'bn-account', wallet:'bn-account'};
 
     function goPage(p) {
@@ -2278,14 +2170,9 @@
             renderMatchList('upcoming-matches', demo.filter(m=>m.status==='upcoming'), false);
             return;
         }
-        const featured = allMatches.find(m => m.is_featured === true || m.is_featured === 'true' || m.is_featured === 1);
-        if(featured) {
-            ensureMatchOdds([featured]);
-            renderFeatured(featured);
-        } else {
-            const fs = document.getElementById('featured-section');
-            if(fs) fs.innerHTML = '';
-        }
+        const featured = allMatches.find(m => m.is_featured);
+        if(featured) renderFeatured(featured);
+        else document.getElementById('featured-section').innerHTML = '';
         renderMatchList('live-matches', allMatches.filter(m => m.status==='live' && !m.is_featured), true);
         renderMatchList('upcoming-matches', allMatches.filter(m => m.status==='upcoming'), false);
     }
@@ -2407,10 +2294,6 @@
             if(depMethods) depMethods.style.display = 'none';
             if(wdPanel) wdPanel.style.display = 'block';
             if(cryptoSec) cryptoSec.style.display = 'block';
-            try {
-                const ph = document.getElementById('wd-mpesa-phone');
-                if(ph && !ph.value && currentProfile?.phone) ph.value = currentProfile.phone;
-            } catch(_){}
         }
     }
 
@@ -2440,9 +2323,9 @@
     function openMpesaFromWallet() {
         const amt = parseFloat(document.getElementById('wf-amt')?.value);
         const err = document.getElementById('mpesa-min-err');
-        if(!amt || amt < 500) {
+        if(!amt || amt < 100) {
             if(err) err.style.display = 'block';
-            appToast('Minimum deposit is KSh 500', 'err');
+            appToast('Minimum M-Pesa deposit is KSh 100', 'err');
             return;
         }
         if(err) err.style.display = 'none';
@@ -2711,10 +2594,6 @@
             if(error) throw error;
             btn.textContent='Sign In'; btn.disabled=false;
             currentUser=data.user; await loadProfile(); updateAuthUI();
-            try {
-                if(currentProfile && (currentProfile.live_sub === true || currentProfile.live_sub === '1'))
-                    localStorage.setItem('live_sub', '1');
-            } catch(_){}
             goPage('dashboard');
         } catch(e) {
             btn.textContent='Sign In'; btn.disabled=false;
@@ -2760,7 +2639,7 @@
                 const bal = parseFloat(currentProfile.balance||0);
                 // Show converted amount for Kenyans, raw number for others
                 if (isKenyanUser()) {
-                    setEl('hdr-bal', Math.round(bal).toLocaleString());
+                    setEl('hdr-bal', Math.round(bal * EXCHANGE_RATE_KES).toLocaleString());
                 } else {
                     setEl('hdr-bal', bal.toLocaleString());
                 }
@@ -2782,7 +2661,7 @@
         setEl('dash-vip',pts.toLocaleString());
         setEl('wallet-bal-display', fmtMoney(bal));
         if (isKenyanUser()) {
-            setEl('hdr-bal', Math.round(bal).toLocaleString());
+            setEl('hdr-bal', Math.round(bal * EXCHANGE_RATE_KES).toLocaleString());
         } else {
             setEl('hdr-bal', bal.toLocaleString());
         }
@@ -2802,220 +2681,38 @@
         goPage('login');
     }
 
-    
-    // Stable default 1X2 if DB has no markets (so odds always show)
-    function hashStr(s) {
-        let h = 0;
-        const t = String(s || '');
-        for (let i = 0; i < t.length; i++) h = ((h << 5) - h) + t.charCodeAt(i) | 0;
-        return Math.abs(h);
-    }
-    function roundOdd(x) {
-        const n = Math.max(1.01, parseFloat(x) || 1.01);
-        return Math.round(n * 100) / 100;
-    }
-    // Build extra markets from 1X2 prices (your main odds drive everything)
-    function marketsFrom1x2(oh, od, oa) {
-        oh = parseFloat(oh) || 2; od = parseFloat(od) || 3.2; oa = parseFloat(oa) || 3.5;
-        const ih = 1 / oh, id = 1 / od, ia = 1 / oa;
-        const sum = ih + id + ia || 1;
-        const ph = ih / sum, pd = id / sum, pa = ia / sum;
-        // Goal expectancy from win probs
-        const eh = 0.7 + ph * 2.4;
-        const ea = 0.7 + pa * 2.4;
-        const pois = (lam, k) => {
-            let p = Math.exp(-lam);
-            for (let i = 1; i <= k; i++) p *= lam / i;
-            return p;
-        };
-        const margin = 1.08; // book margin
-        const oddP = (p) => roundOdd(margin / Math.max(0.002, p));
-
-        const out = [
-            { market_type: '1x2', selection: 'Home Win', odds: roundOdd(oh) },
-            { market_type: '1x2', selection: 'Draw', odds: roundOdd(od) },
-            { market_type: '1x2', selection: 'Away Win', odds: roundOdd(oa) },
-            { market_type: 'double_chance', selection: '1X', odds: oddP(ph + pd) },
-            { market_type: 'double_chance', selection: '12', odds: oddP(ph + pa) },
-            { market_type: 'double_chance', selection: 'X2', odds: oddP(pd + pa) },
-            { market_type: 'btts', selection: 'Yes', odds: oddP(1 - pois(eh, 0) - pois(ea, 0) + pois(eh, 0) * pois(ea, 0)) },
-            { market_type: 'btts', selection: 'No', odds: oddP(pois(eh, 0) + pois(ea, 0) - pois(eh, 0) * pois(ea, 0)) },
-        ];
-        // Over/Under from total goals expectation
-        const et = eh + ea;
-        const pOver = (line) => {
-            let p = 0;
-            for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) if (i + j > line) p += pois(eh, i) * pois(ea, j);
-            return p;
-        };
-        [1.5, 2.5, 3.5].forEach(line => {
-            const po = pOver(line);
-            out.push({ market_type: 'over_under', selection: 'Over ' + line, odds: oddP(po) });
-            out.push({ market_type: 'over_under', selection: 'Under ' + line, odds: oddP(1 - po) });
-        });
-        out.push(
-            { market_type: 'ht_result', selection: 'Home Win', odds: roundOdd(oh * 1.35) },
-            { market_type: 'ht_result', selection: 'Draw', odds: roundOdd(od * 0.85) },
-            { market_type: 'ht_result', selection: 'Away Win', odds: roundOdd(oa * 1.35) }
-        );
-        // Correct scores from Poisson × 1X2 strength
-        for (let hg = 0; hg <= 5; hg++) {
-            for (let ag = 0; ag <= 5; ag++) {
-                if (hg + ag > 7 && (hg > 4 || ag > 4)) continue;
-                const p = pois(eh, hg) * pois(ea, ag);
-                out.push({ market_type: 'correct_score', selection: hg + '-' + ag, odds: oddP(p) });
-            }
-        }
-        return out;
-    }
-    function default1x2(m) {
-        const h = hashStr((m.id || '') + (m.home_team || '') + (m.away_team || ''));
-        const home = (1.45 + (h % 90) / 100);
-        const draw = (2.90 + (h % 70) / 100);
-        const away = (2.10 + ((h >> 3) % 120) / 100);
-        return marketsFrom1x2(home, draw, away);
-    }
-    function ensureMatchOdds(matches) {
-        (matches || []).forEach(m => {
-            if (!m.markets) m.markets = [];
-            m.markets.forEach(mk => {
-                if (!mk.market_type) return;
-                const mt = String(mk.market_type).toLowerCase().replace(/\s+/g, '_');
-                if (mt === '1x2' || mt === 'match_result') mk.market_type = '1x2';
-                else mk.market_type = mt;
-                const sel = String(mk.selection || '').toLowerCase();
-                if (mk.market_type === '1x2') {
-                    if (sel === '1' || sel === 'home' || sel === 'home win') mk.selection = 'Home Win';
-                    else if (sel === 'x' || sel === 'draw') mk.selection = 'Draw';
-                    else if (sel === '2' || sel === 'away' || sel === 'away win') mk.selection = 'Away Win';
-                }
-                if (mk.odds != null) mk.odds = parseFloat(mk.odds);
-            });
-            const one = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Home Win');
-            const drw = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Draw');
-            const awy = m.markets.find(x => x.market_type === '1x2' && x.selection === 'Away Win');
-            if (one && drw && awy) {
-                // Keep your 1X2; rebuild other markets from those prices
-                const derived = marketsFrom1x2(one.odds, drw.odds, awy.odds);
-                const keep1x2 = m.markets.filter(x => x.market_type === '1x2');
-                const rest = derived.filter(x => x.market_type !== '1x2');
-                // Prefer DB non-1x2 if present and richer, else derived
-                const dbExtra = m.markets.filter(x => x.market_type !== '1x2');
-                m.markets = keep1x2.concat(dbExtra.length >= 6 ? dbExtra : rest);
-            } else {
-                m.markets = default1x2(m).concat(m.markets.filter(x => x.market_type !== '1x2'));
-            }
-        });
-        return matches;
-    }
-
-
     // ===== LOAD MATCHES =====
     async function loadMatches() {
-        const showEmpty = () => {
-            try {
-                filterMatchesBySport();
-            } catch(_) {
-                const el = document.getElementById('upcoming-matches');
-                if(el) el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">No matches available right now</div>';
-            }
-        };
         try {
-            // Fast query first (no nested markets — those slow/fail on some schemas)
-            let data = null, error = null;
-            let res = await db.from('matches')
-                .select('id,home_team,away_team,status,minute,home_score,away_score,kick_off,is_featured,league,sport')
-                .order('kick_off', { ascending: true })
-                .limit(60);
-            data = res.data; error = res.error;
-
-            // Fallback if column names differ
-            if(error) {
-                console.warn('Match query retry:', error.message);
-                res = await db.from('matches').select('*').order('kick_off', { ascending: true }).limit(60);
-                data = res.data; error = res.error;
-            }
+            const { data, error } = await db.from('matches')
+                .select('*, markets(*), live_events(*)')
+                .order('kick_off', {ascending:true});
             if(error) throw error;
-
             const now = Date.now();
-            const dayAgo = now - 24*60*60*1000;
-            allMatches = (data || []).filter(m => {
-                const st = (m.status || '').toLowerCase();
+            const threeHoursAgo = now - 3*60*60*20;
+            allMatches = (data||[]).filter(m => {
+                const ko = new Date(m.kick_off).getTime();
                 if(m.is_featured) return true;
-                if(st === 'live') return true;
-                if(st === 'upcoming' || st === 'scheduled' || !st) return true;
-                if(st === 'finished' || st === 'ft') {
-                    const ko = m.kick_off ? new Date(m.kick_off).getTime() : 0;
-                    return ko > dayAgo;
-                }
-                return true;
+                if(m.status === 'live') return true;
+                if(m.status === 'upcoming') return ko > now;
+                if(m.status === 'finished') return ko > threeHoursAgo;
+                return false;
             });
-
-            // Attach markets in background (optional — UI can show matches without odds first)
-            // Always show odds (DB or stable defaults) so list is not blank
-            ensureMatchOdds(allMatches);
             normalizeLiveMatches();
             filterMatchesBySport();
-            updateTicker(allMatches.filter(m => (m.status||'').toLowerCase() === 'live'));
+            updateTicker(allMatches.filter(m=>m.status==='live'));
             startLiveClock();
-            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
-
-            // Overlay real markets from DB when available
-            setTimeout(async () => {
-                try {
-                    const ids = allMatches.slice(0, 50).map(m => m.id).filter(Boolean);
-                    if(!ids.length) return;
-                    let mkts = null;
-                    let r = await db.from('markets')
-                        .select('id,match_id,market_type,selection,odds')
-                        .in('match_id', ids)
-                        .limit(500);
-                    mkts = r.data;
-                    if(r.error || !mkts || !mkts.length) {
-                        // try nested join per match batch
-                        const r2 = await db.from('matches')
-                            .select('id, markets(id,match_id,market_type,selection,odds)')
-                            .in('id', ids);
-                        if(r2.data) {
-                            r2.data.forEach(row => {
-                                const m = allMatches.find(x => x.id === row.id);
-                                if(m && row.markets && row.markets.length) m.markets = row.markets;
-                            });
-                            ensureMatchOdds(allMatches);
-                            filterMatchesBySport();
-                            try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
-                        }
-                        return;
-                    }
-                    const byMatch = {};
-                    mkts.forEach(x => {
-                        if(!byMatch[x.match_id]) byMatch[x.match_id] = [];
-                        byMatch[x.match_id].push(x);
-                    });
-                    allMatches.forEach(m => {
-                        if(byMatch[m.id] && byMatch[m.id].length) m.markets = byMatch[m.id];
-                    });
-                    ensureMatchOdds(allMatches);
-                    filterMatchesBySport();
-                    try { if(typeof renderFeatured === 'function') renderFeatured(); } catch(_){}
-                } catch(e) { console.warn('markets load', e); }
-            }, 30);
-
+            // If any matches finished, settle this user's pending bets so My Bets shows WON/LOST
+            // Settle in background — do not block UI
             if(currentUser && typeof settleUserPendingBets === 'function') {
                 setTimeout(() => {
                     settleUserPendingBets().then(() => loadProfile()).then(() => {
                         try { updateAuthUI(); updateProfileUI(); } catch(_){}
                     }).catch(()=>{});
-                }, 800);
+                }, 0);
             }
         } catch(e) {
             console.error('Match load error:', e);
-            allMatches = allMatches || [];
-            showEmpty();
-            const el = document.getElementById('upcoming-matches');
-            if(el && (!allMatches || !allMatches.length)) {
-                el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--muted);text-align:center;">Could not load matches. Pull to refresh or check connection.</div>';
-            }
         }
     }
 
@@ -3173,15 +2870,6 @@
 
     // ===== MATCH RENDERING =====
     function renderFeatured(m) {
-        if(!m) {
-            m = (allMatches || []).find(x => x.is_featured === true || x.is_featured === 'true' || x.is_featured === 1);
-        }
-        if(!m) {
-            const sec = document.getElementById('featured-section');
-            if(sec) sec.innerHTML = '';
-            return;
-        }
-        ensureMatchOdds([m]);
         const evs = m.live_events || [];
         const chips = [
             ...evs.filter(e=>e.event_type==='goal').map(e => `<span class="ev-chip goal"><i class="fas fa-futbol"></i> ${e.minute}' ${e.team==='home'?m.home_team:m.away_team}${e.player_name?' · '+e.player_name:''}</span>`),
@@ -3262,35 +2950,30 @@
                         </div>
                         <div style="font-size:11px;color:var(--muted);">${isFinished ? (resultLabel || 'Match finished') : ('Minute ' + (m.minute||0) + "' · Watch live for updates")}</div>
                     </div>
-                    <div class="feat-odds-wrap closed">
-                        <div class="feat-closed-overlay"><div class="feat-closed-stamp">Betting closed</div></div>
-                        <div class="feat-odds-section">
-                            <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
-                            <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
-                            <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>
-                        </div>
+                    <div class="feat-odds-section" style="opacity:0.4;pointer-events:none;">
+                        <div class="odd-btn suspended"><div class="odd-lbl">1 Home</div><div class="odd-val">${h?h.odds:'---'}</div></div>
+                        <div class="odd-btn suspended"><div class="odd-lbl">X Draw</div><div class="odd-val">${d?d.odds:'---'}</div></div>
+                        <div class="odd-btn suspended"><div class="odd-lbl">2 Away</div><div class="odd-val">${a?a.odds:'---'}</div></div>
                     </div>
                     ` : `
-                    <div class="feat-odds-wrap">
-                        <div class="feat-odds-section">
-                            <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
-                                <div class="odd-lbl">1 Home</div>
-                                <div class="odd-val">${h?h.odds:'---'}</div>
-                            </div>
-                            <div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d?d.odds:1})">
-                                <div class="odd-lbl">X Draw</div>
-                                <div class="odd-val">${d?d.odds:'---'}</div>
-                            </div>
-                            <div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a?a.odds:1})">
-                                <div class="odd-lbl">2 Away</div>
-                                <div class="odd-val">${a?a.odds:'---'}</div>
-                            </div>
+                    <div class="feat-odds-section">
+                        <div class="odd-btn${isSel(m.id,'1x2','Home Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Home Win',${h?h.odds:1})">
+                            <div class="odd-lbl">1 Home</div>
+                            <div class="odd-val">${h?h.odds:'---'}</div>
+                        </div>
+                        <div class="odd-btn${isSel(m.id,'1x2','Draw')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Draw',${d?d.odds:1})">
+                            <div class="odd-lbl">X Draw</div>
+                            <div class="odd-val">${d?d.odds:'---'}</div>
+                        </div>
+                        <div class="odd-btn${isSel(m.id,'1x2','Away Win')?' sel':''}" onclick="addFeaturedOdd(this,'${m.id}','1x2','${mn}','Away Win',${a?a.odds:1})">
+                            <div class="odd-lbl">2 Away</div>
+                            <div class="odd-val">${a?a.odds:'---'}</div>
                         </div>
                     </div>
                     `}
                 </div>
                 <div class="feat-bottom">
-                    <div class="feat-min">${(isLive || isFinished) ? '<strong style="color:var(--muted);">Betting closed</strong>' : 'Min bet: <strong>KSh 500</strong>'}</div>
+                    <div class="feat-min">${(isLive || isFinished) ? '<strong style="color:var(--muted);">Betting closed</strong>' : 'Min bet: <strong>$10</strong>'}</div>
                     <button class="feat-share" onclick="shareFeatured('${shareUrl}','${mn}')"><i class="fas fa-share-alt"></i> Share</button>
                 </div>
                 ${(isLive || isFinished) ? '' : `
@@ -3372,6 +3055,36 @@ function renderFeatMoreMkts(m, mn) {
     const goals = [...get('btts'), ...get('over_under'), ...get('total_goals')];
     const ht = [...get('ht_result')];
     let cs = get('correct_score');
+
+    // Stable fixed odds for correct scores — NEVER change on re-render
+    // 0-3 locked at 41.54 as requested
+    const FIXED_CS = {
+        "0-0": 8.50, "1-0": 7.20, "0-1": 9.40, "1-1": 6.80,
+        "2-0": 11.00, "0-2": 14.50, "2-1": 9.80, "1-2": 12.00, "2-2": 13.50,
+        "3-0": 21.00, "0-3": 41.54, "3-1": 18.00, "1-3": 26.00,
+        "3-2": 22.00, "2-3": 28.00, "3-3": 35.00,
+        "4-0": 41.00, "0-4": 55.00, "4-1": 34.00, "1-4": 48.00,
+        "4-2": 38.00, "2-4": 52.00, "4-3": 45.00, "3-4": 55.00,
+        "5-0": 65.00, "0-5": 85.00, "5-1": 55.00, "1-5": 75.00,
+        "5-2": 60.00, "2-5": 80.00, "5-3": 70.00, "3-5": 90.00,
+        "5-4": 85.00, "4-5": 95.00,
+        "Any Other Home": 18.00, "Any Other Draw": 25.00, "Any Other Away": 22.00
+    };
+    const extraCS = Object.keys(FIXED_CS);
+
+    extraCS.forEach(score => {
+        const existing = cs.find(x => x.selection === score);
+        if(existing) {
+            // Keep DB odds if present, but force 0-3 to 41.54
+            if(score === '0-3') existing.odds = 41.54;
+        } else {
+            cs.push({
+                market_type: 'correct_score',
+                selection: score,
+                odds: FIXED_CS[score]
+            });
+        }
+    });
 
     function renderGroup(list){
         if(!list.length) return '<div>No data</div>';
@@ -3548,10 +3261,10 @@ function renderFeatMoreMkts(m, mn) {
             isFeaturedBet=false;
             const qsRow = document.getElementById('qs-row');
             if(qsRow) qsRow.innerHTML = `
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1,000</div>
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2,000</div>
-                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(5000)">5,000</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
+                <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
             `;
         }
         renderSlip();
@@ -3680,13 +3393,13 @@ function renderFeatMoreMkts(m, mn) {
         isFeaturedBet = true;
         addOdd(btn, matchId, marketType, matchName, selection, val);
         const stakeEl = document.getElementById('stake');
-        if(stakeEl && parseFloat(stakeEl.value) < (typeof MIN_BET_SPORTS!=='undefined'?MIN_BET_SPORTS:500)) { stakeEl.value = (typeof MIN_BET_SPORTS!=='undefined'?MIN_BET_SPORTS:500); calcPayout(); }
+        if(stakeEl && parseFloat(stakeEl.value) < 10) { stakeEl.value = 10; calcPayout(); }
         const qsRow = document.getElementById('qs-row');
         if(qsRow) qsRow.innerHTML = `
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(500)">500</div>
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(1000)">1,000</div>
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(2000)">2,000</div>
-            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(5000)">5,000</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(10)">10</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(20)">20</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(50)">50</div>
+            <div class="qs" style="text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;" onclick="setStake(100)">100</div>
         `;
         goPage('slip');
     }
@@ -3704,11 +3417,12 @@ function renderFeatMoreMkts(m, mn) {
         }
         const displayStake=parseFloat(document.getElementById('stake')?.value)||0;
         const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
-        const minBet = (typeof MIN_BET_SPORTS !== 'undefined' ? MIN_BET_SPORTS : 500); // KSh
+        const minBet = 10; // USD base minimum
         if(stake < minBet){
             const inp=document.getElementById('stake');
-            if(inp){ inp.value=minBet; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',200); }
-            appToast('Minimum bet is KSh ' + minBet, 'err');
+            const minDisp = isKenyanUser() ? minBet * EXCHANGE_RATE_KES : minBet;
+            if(inp){ inp.value=minDisp; inp.style.borderColor='var(--gold)'; calcPayout(); setTimeout(()=>inp.style.borderColor='',200); }
+            appToast('Minimum bet is ' + getCurrencySymbol() + ' ' + (isKenyanUser() ? (minBet * EXCHANGE_RATE_KES) : minBet), 'err');
             return;
         }
         const balance = parseFloat(currentProfile?.balance||0);
@@ -3739,8 +3453,7 @@ function renderFeatMoreMkts(m, mn) {
         const stake = (typeof stakeToUSD === 'function') ? stakeToUSD(displayStake) : displayStake;
         const totalOdds = (typeof getSlipTotalOdds === 'function') ? getSlipTotalOdds() : (slipMode==='acca'?slip.reduce((a,s)=>a*(parseFloat(s.val)||1),1):(slip.length?parseFloat(slip[slip.length-1].val)||1:1));
         const potWin = Math.round(stake * totalOdds * 100) / 100;
-        // Betika-style ticket / bet ID e.g. SB260917-4829103
-        const ref = (typeof generateBetId === 'function') ? generateBetId() : ('SB' + Date.now().toString().slice(-10));
+        const ref='#XO'+Math.floor(Math.random()*90000+200);
         try {
             const {data:bet}=await db.from('bets').insert({
                 user_id:currentUser.id,
@@ -3781,9 +3494,9 @@ function renderFeatMoreMkts(m, mn) {
                 try { updateProfileUI(); updateAuthUI(); } catch(_){}
             }
             setEl('bet-ref', ref);
-            setEl('bet-stake-display', 'KSh '+Math.round(stake).toLocaleString());
+            setEl('bet-stake-display', '$ '+stake.toLocaleString());
             setEl('bet-odds-display', parseFloat(totalOdds.toFixed(2)).toString()+'x');
-            setEl('bet-win-display', 'KSh '+Math.round(potWin).toLocaleString());
+            setEl('bet-win-display', '$ '+potWin.toLocaleString());
             const selDisplay = document.getElementById('bet-selections-display');
             if(selDisplay) {
                 selDisplay.innerHTML = slip.map(s =>
@@ -3875,10 +3588,9 @@ function renderFeatMoreMkts(m, mn) {
 
     async function proceedDeposit() {
         const amt = parseFloat(document.getElementById('mpesa-amt-input')?.value);
-        if(!amt || amt < 500) {
+        if(!amt || amt < 100) {
             const inp = document.getElementById('mpesa-amt-input');
             if(inp) { inp.style.border='1.5px solid var(--live)'; setTimeout(()=>inp.style.border='',110); }
-            appToast('Minimum deposit is KSh 500', 'err');
             return;
         }
         setEl('mpesa-amount','$ '+parseInt(amt).toLocaleString());
@@ -4415,7 +4127,7 @@ function renderFeatMoreMkts(m, mn) {
                     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;">
                         <div style="padding:12px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
                             <div>
-                                <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:.3px;">Ticket ${b.reference||'—'}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px;">${b.bet_type}</div>
+                                <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">${b.bet_type} · ${b.reference||''}</div>
                                 <div style="font-size:12px;color:var(--muted);margin-top:2px;">${new Date(b.created_at).toLocaleString('en-KE',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Nairobi'})}</div>
                             </div>
                             <div style="background:${statusBgCol};border-radius:4px;padding:4px 10px;font-size:11px;font-weight:800;color:${statusCol};">${label}</div>
@@ -4424,7 +4136,7 @@ function renderFeatMoreMkts(m, mn) {
                             <div style="padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
                                 <div>
                                     <div style="font-size:12px;font-weight:600;">${s.match_name||''}</div>
-                                    <div style="font-size:10px;color:var(--muted);margin-top:1px;">${s.match_id ? ('ID ' + String(s.match_id).replace(/-/g,'').slice(-6).toUpperCase() + ' · ') : ''}${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:#27AE60;font-weight:700;">${s.selection||''}</span></div>
+                                    <div style="font-size:11px;color:var(--muted);margin-top:1px;">${(s.market_type||'').replace(/_/g,' ').toUpperCase()} · <span style="color:#27AE60;font-weight:700;">${s.selection||''}</span></div>
                                 </div>
                                 <div style="font-size:14px;font-weight:800;color:var(--gold);">${parseFloat(s.odds||0).toFixed(2)}</div>
                             </div>
@@ -4608,9 +4320,9 @@ function renderFeatMoreMkts(m, mn) {
             network: "TRC20 (Tron)",
             icon: "₮",
             title: "Deposit with USDT (TRC20)",
-            sub: "TRON network only · Minimum KSh 500",
+            sub: "TRON network only · Minimum $50",
             addrLabel: "Deposit Address (TRC20)",
-            howto: "1. Copy the address or scan the QR<br>2. Send <strong>USDT on TRON (TRC20)</strong> only<br>3. Min KSh 500 · Credited after network confirmation<br>4. Wrong network = permanent loss",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>USDT on TRON (TRC20)</strong> only<br>3. Min $50 · Credited after network confirmation<br>4. Wrong network = permanent loss",
             withdrawPlaceholder: "T...",
             withdrawHint: "Must be a TRC20 address starting with T · Processed 1–24h · Min $20"
         },
@@ -4619,9 +4331,9 @@ function renderFeatMoreMkts(m, mn) {
             network: "Bitcoin",
             icon: "₿",
             title: "Deposit with Bitcoin (BTC)",
-            sub: "Bitcoin network only · Minimum KSh 500",
+            sub: "Bitcoin network only · Minimum $50",
             addrLabel: "Deposit Address (BTC)",
-            howto: "1. Copy the address or scan the QR<br>2. Send <strong>BTC on the Bitcoin network</strong> only<br>3. Min KSh 500 · Credited after ~1–3 confirmations<br>4. Wrong network = permanent loss",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>BTC on the Bitcoin network</strong> only<br>3. Min $50 · Credited after ~1–3 confirmations<br>4. Wrong network = permanent loss",
             withdrawPlaceholder: "bc1... or 1...",
             withdrawHint: "Bitcoin address only · Processed 1–24h · Min $20"
         },
@@ -4630,9 +4342,9 @@ function renderFeatMoreMkts(m, mn) {
             network: "ERC20 (Ethereum)",
             icon: "Ξ",
             title: "Deposit with Ethereum (ETH)",
-            sub: "Ethereum ERC20 only · Minimum KSh 500",
+            sub: "Ethereum ERC20 only · Minimum $50",
             addrLabel: "Deposit Address (ERC20)",
-            howto: "1. Copy the address or scan the QR<br>2. Send <strong>ETH on Ethereum (ERC20)</strong> only<br>3. Min KSh 500 · Credited after network confirmation<br>4. Do not send tokens other than ETH · Wrong network = permanent loss",
+            howto: "1. Copy the address or scan the QR<br>2. Send <strong>ETH on Ethereum (ERC20)</strong> only<br>3. Min $50 · Credited after network confirmation<br>4. Do not send tokens other than ETH · Wrong network = permanent loss",
             withdrawPlaceholder: "0x...",
             withdrawHint: "Must be an ERC20 address starting with 0x · Processed 1–24h · Min $20"
         }
@@ -4728,8 +4440,8 @@ function renderFeatMoreMkts(m, mn) {
         const coin = selectedCryptoCoin || 'USDT';
         const w = CRYPTO_WALLETS[coin] || CRYPTO_WALLETS.USDT;
 
-        if(!amount || amount < 500) {
-            if(msg){ msg.style.display='block'; msg.style.color='var(--live)'; msg.textContent='Minimum deposit is KSh 500'; }
+        if(!amount || amount < 50) {
+            if(msg){ msg.style.display='block'; msg.style.color='var(--live)'; msg.textContent='Minimum deposit is $50'; }
             return;
         }
         if(btn){ btn.disabled=true; btn.textContent='Submitting...'; }
@@ -4770,43 +4482,53 @@ function renderFeatMoreMkts(m, mn) {
         }).catch(()=>prompt('Copy this address:', addr));
     }
 
-    // ===== CURRENCY HELPER (KES is primary for now) =====
-    // Balance, stakes, deposits stored & shown in Kenya Shillings.
-    const EXCHANGE_RATE_KES = 130; // kept for later USD mode
-    const MIN_BET_SPORTS = 500;    // KSh — featured & sports slip
-    const MIN_BET_AVIATOR = 50;    // KSh
-    const MIN_DEPOSIT = 500; // KSh min deposit (M-Pesa & crypto)
+    // ===== CURRENCY HELPER =====
+    // Internal balance is always stored in USD.
+    // Kenyan users (country KE or phone starts with 254) see KES at a live-ish rate.
+    const EXCHANGE_RATE_KES = 130; // 1 USD ≈ 130 KES (update as needed)
 
     function isKenyanUser() {
-        return true; // KES mode for everyone until USD relaunch
+        return !!(currentProfile && (currentProfile.country === 'KE' || (currentProfile.phone||'').startsWith('254')));
     }
 
-    function fmtMoney(amount, forceKE) {
-        const n = parseFloat(amount) || 0;
-        return 'KSh ' + Math.round(n).toLocaleString();
+    function fmtMoney(amountUSD, forceKE) {
+        const n = parseFloat(amountUSD) || 0;
+        const showKE = forceKE === true || (forceKE !== false && isKenyanUser());
+        if (showKE) {
+            return 'KSh ' + Math.round(n * EXCHANGE_RATE_KES).toLocaleString();
+        }
+        return '$' + n.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:2});
     }
 
     function getCurrencySymbol() {
-        return 'KSh';
+        return isKenyanUser() ? 'KSh' : '$';
     }
 
-    // Identity: display amount IS the stored amount (KES)
+    // Convert a display stake (what user typed) back to USD for DB
     function stakeToUSD(displayVal) {
-        return Math.round((parseFloat(displayVal) || 0) * 100) / 100;
+        const v = parseFloat(displayVal) || 0;
+        if (isKenyanUser()) return Math.round((v / EXCHANGE_RATE_KES) * 100) / 100;
+        return v;
     }
-    function stakeToDisplay(stored) {
-        return Math.round(parseFloat(stored) || 0);
+
+    // Convert USD stake to display amount
+    function stakeToDisplay(usd) {
+        const v = parseFloat(usd) || 0;
+        if (isKenyanUser()) return Math.round(v * EXCHANGE_RATE_KES);
+        return v;
     }
 
     function updateStakeUIForCurrency() {
         const prefix = document.getElementById('stake-prefix');
         const label = document.getElementById('stake-label');
         const inp = document.getElementById('stake');
-        if (prefix) prefix.textContent = 'KSh';
-        if (label) label.textContent = 'Stake (KSh)';
+        if (prefix) prefix.textContent = getCurrencySymbol();
+        if (label) label.textContent = 'Stake (' + getCurrencySymbol() + ')';
         if (inp) {
-            inp.min = MIN_BET_SPORTS;
-            if (parseFloat(inp.value) < MIN_BET_SPORTS) inp.value = MIN_BET_SPORTS;
+            // keep min 10 USD equivalent
+            const minDisp = isKenyanUser() ? 10 * EXCHANGE_RATE_KES : 10;
+            inp.min = minDisp;
+            if (parseFloat(inp.value) < minDisp) inp.value = minDisp;
         }
         try { calcPayout(); } catch(e){}
     }
@@ -4815,29 +4537,6 @@ function renderFeatMoreMkts(m, mn) {
     window.stakeToDisplay = stakeToDisplay;
     window.isKenyanUser = isKenyanUser;
     window.EXCHANGE_RATE_KES = EXCHANGE_RATE_KES;
-    window.MIN_BET_SPORTS = MIN_BET_SPORTS;
-    window.MIN_BET_AVIATOR = MIN_BET_AVIATOR;
-
-    function generateBetId() {
-        const d = new Date();
-        const yy = String(d.getFullYear()).slice(2);
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        const r = String(Math.floor(1000000 + Math.random() * 9000000)); // 7 digits
-        return 'SB' + yy + mm + dd + '-' + r; // e.g. SB260917-4829103
-    }
-    function matchGameId(m) {
-        if(!m) return '';
-        if(m.game_code) return String(m.game_code);
-        // Short stable code from uuid / id
-        const id = String(m.id || '');
-        if(!id) return '';
-        const compact = id.replace(/-/g, '').slice(-6).toUpperCase();
-        return 'G' + compact;
-    }
-    window.generateBetId = generateBetId;
-    window.matchGameId = matchGameId;
-
 
     // ===== AVIATOR =====
     let av = 1, avRun = false, avInterval = null, avHistory = [];
@@ -4911,7 +4610,7 @@ function renderFeatMoreMkts(m, mn) {
         }
 
         const stakeInp = document.getElementById('av-stake');
-        const stake = Math.max((typeof MIN_BET_AVIATOR!=='undefined'?MIN_BET_AVIATOR:50), parseFloat(stakeInp?.value) || (typeof MIN_BET_AVIATOR!=='undefined'?MIN_BET_AVIATOR:50));
+        const stake = Math.max(1, parseFloat(stakeInp?.value) || 1);
         if(stakeInp) stakeInp.value = stake;
         const lbl = document.getElementById('av-stake-lbl');
         if(lbl) lbl.textContent = stake;
@@ -5071,7 +4770,7 @@ function renderFeatMoreMkts(m, mn) {
         loadMatches().catch(()=>{});
         try { subscribeRealtime(); } catch(_){}
         renderWinners();
-        setInterval(async () => { await loadMatches(); }, 120 * 1000);
+        setInterval(async () => { await loadMatches(); }, 90 * 1000);
         // Check for deep link
         const params = new URLSearchParams(window.location.search);
         const matchId = params.get('match');
@@ -5145,14 +4844,8 @@ function renderFeatMoreMkts(m, mn) {
     window.loadUSDT = loadUSDT;
     window.copyUSDT = copyUSDT;
     
-    const LIVE_SUB_PRICE = 500; // KSh one-time
-
     function hasLiveSub() {
-        try {
-            if(localStorage.getItem('live_sub') === '1') return true;
-            if(currentProfile && (currentProfile.live_sub === true || currentProfile.live_sub === '1')) return true;
-        } catch(e){}
-        return false;
+        try { return localStorage.getItem('live_sub') === '1'; } catch(e){ return false; }
     }
     function unlockLiveIfSubbed() {
         const gate = document.getElementById('live-sub-gate');
@@ -5165,220 +4858,14 @@ function renderFeatMoreMkts(m, mn) {
             if(player) player.style.display = 'none';
         }
     }
-    async function subscribeLive() {
-        if(!currentUser) {
-            appToast('Sign in to unlock live streams', 'err');
-            goPage('login');
-            return;
-        }
-        await loadProfile();
-        const bal = parseFloat(currentProfile?.balance || 0);
-        if(bal < LIVE_SUB_PRICE) {
-            appToast('Need KSh ' + LIVE_SUB_PRICE + ' · Your balance: KSh ' + Math.round(bal).toLocaleString() + '. Redirecting to deposit…', 'err');
-            goPage('wallet');
-            try { setWalletTab('deposit'); setDepositMethod('mpesa'); } catch(e){}
-            return;
-        }
-        {
-            const liveBody = `<p style="margin:0 0 10px;font-size:13px;line-height:1.55;">Unlock live match streams for a one-time fee of <strong>KSh ${LIVE_SUB_PRICE.toLocaleString()}</strong>, charged from your SportyBet wallet.</p><p style="margin:0;font-size:12px;color:var(--muted);">Access is activated immediately after payment.</p>`;
-            const liveOk = await openAppModal('Unlock Live Streams', liveBody, 'Pay KSh ' + LIVE_SUB_PRICE);
-            if(!liveOk) return;
-        }
-        try {
-            const newBal = Math.round((bal - LIVE_SUB_PRICE) * 100) / 100;
-            const { error } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
-            if(error) throw error;
-            try {
-                await db.from('users').update({ live_sub: true }).eq('id', currentUser.id);
-            } catch(_){}
-            await db.from('transactions').insert({
-                user_id: currentUser.id,
-                type: 'bet',
-                amount: LIVE_SUB_PRICE,
-                balance_before: bal,
-                balance_after: newBal,
-                status: 'completed',
-                description: 'Live stream unlock · KSh ' + LIVE_SUB_PRICE
-            });
-            if(currentProfile) currentProfile.balance = newBal;
-            try { localStorage.setItem('live_sub', '1'); } catch(e){}
-            try { updateProfileUI(); updateAuthUI(); } catch(e){}
-            unlockLiveIfSubbed();
-            appToast('Live unlocked · KSh ' + LIVE_SUB_PRICE + ' charged', 'ok');
-        } catch(e) {
-            appToast('Could not unlock: ' + (e.message||e), 'err');
-        }
+    function subscribeLive() {
+        try { localStorage.setItem('live_sub_pending', '1'); } catch(e){}
+        goPage('wallet');
+        try { setWalletTab('deposit'); setDepositMethod('crypto'); } catch(e){}
+        appToast('Complete a $50 deposit to unlock Live.', 'ok');
     }
     window.subscribeLive = subscribeLive;
     window.unlockLiveIfSubbed = unlockLiveIfSubbed;
-
-    async function handleMpesaWithdraw() {
-        if(!currentUser){ goPage('login'); return; }
-        await loadProfile();
-        const amt = parseFloat(document.getElementById('wd-amt')?.value);
-        let phone = (document.getElementById('wd-mpesa-phone')?.value || '').trim();
-        if(!phone && currentProfile?.phone) {
-            phone = currentProfile.phone;
-            const el = document.getElementById('wd-mpesa-phone');
-            if(el) el.value = phone;
-        }
-        if(!amt || amt < 100) {
-            appToast('Minimum M-Pesa withdrawal is KSh 100', 'err');
-            return;
-        }
-        if(!phone || phone.replace(/\D/g,'').length < 9) {
-            appToast('Enter a valid M-Pesa phone number', 'err');
-            return;
-        }
-        const bal = parseFloat(currentProfile?.balance || 0);
-        if(bal < amt) {
-            appToast('Insufficient balance. Available: KSh ' + Math.round(bal).toLocaleString(), 'err');
-            return;
-        }
-        const body = `
-            <p style="margin:0 0 12px;font-size:13px;line-height:1.55;">Confirm your M-Pesa withdrawal details:</p>
-            <div style="background:var(--card2,#1A1D24);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;">
-              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--muted);">Amount</span><strong>KSh ${amt.toLocaleString()}</strong></div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--muted);">M-Pesa number</span><strong>${phone}</strong></div>
-              <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:8px;"><span style="color:var(--muted);">Status</span><strong style="color:#27AE60;">Processing</strong></div>
-            </div>
-            <p style="margin:0;font-size:12px;line-height:1.55;color:var(--muted);">The amount will be deducted from your available balance. Funds will be deposited to the M-Pesa number above in <strong>less than 12 hours</strong>.</p>
-        `;
-        const confirmed = await openAppModal('Withdraw to M-Pesa', body, 'Confirm Withdrawal');
-        if(!confirmed) return;
-        try {
-            const newBal = Math.round((bal - amt) * 100) / 100;
-            const { error: uErr } = await db.from('users').update({ balance: newBal }).eq('id', currentUser.id);
-            if(uErr) throw uErr;
-            const { error: tErr } = await db.from('transactions').insert({
-                user_id: currentUser.id,
-                type: 'withdrawal',
-                amount: amt,
-                balance_before: bal,
-                balance_after: newBal,
-                status: 'pending',
-                description: 'M-Pesa withdrawal · ' + phone,
-                reference: phone
-            });
-            if(tErr) {
-                // refund on tx fail
-                await db.from('users').update({ balance: bal }).eq('id', currentUser.id);
-                throw tErr;
-            }
-            if(currentProfile) currentProfile.balance = newBal;
-            try { updateProfileUI(); updateAuthUI(); loadWallet(); } catch(e){}
-            appToast('Withdrawal submitted · funds will reach your M-Pesa within 12 hours', 'ok');
-            const a = document.getElementById('wd-amt'); if(a) a.value = '';
-        } catch(e) {
-            appToast('Withdrawal failed: ' + (e.message||e), 'err');
-        }
-    }
-    window.handleMpesaWithdraw = handleMpesaWithdraw;
-
-    function updateForgotDial(sel) {
-        const opt = sel.options[sel.selectedIndex];
-        const code = opt.getAttribute('data-code') || '+254';
-        const el = document.getElementById('forgot-dial');
-        if(el) el.textContent = code;
-    }
-    window.updateForgotDial = updateForgotDial;
-
-    async function doResetPassword() {
-        const err = document.getElementById('forgot-err');
-        const ok = document.getElementById('forgot-ok');
-        if(err) { err.style.display = 'none'; }
-        if(ok) { ok.style.display = 'none'; }
-        const phoneRaw = document.getElementById('fp')?.value.trim();
-        const pass = document.getElementById('fpass')?.value || '';
-        const pass2 = document.getElementById('fpass2')?.value || '';
-        const sel = document.getElementById('fcountry');
-        const countryVal = sel?.value || 'KE';
-        if(!phoneRaw) {
-            if(err){ err.textContent = 'Enter your phone number'; err.style.display = 'block'; }
-            return;
-        }
-        if(pass.length < 6) {
-            if(err){ err.textContent = 'Password must be at least 6 characters'; err.style.display = 'block'; }
-            return;
-        }
-        if(pass !== pass2) {
-            if(err){ err.textContent = 'Passwords do not match'; err.style.display = 'block'; }
-            return;
-        }
-        const dial = (document.getElementById('forgot-dial')?.textContent || '+254').replace('+','');
-        const clean = (phoneRaw || '').replace(/\D/g,'');
-        const national = clean.startsWith('0') ? clean.slice(1) : clean;
-        let fmt = dial + national;
-        const btn = document.getElementById('forgot-btn');
-        if(btn){ btn.disabled = true; btn.textContent = 'Resetting…'; }
-        try {
-            let udata = null;
-            {
-                const r1 = await db.from('users').select('id,phone').eq('phone', fmt).maybeSingle();
-                udata = r1.data;
-            }
-            if(!udata) {
-                const r2 = await db.from('users').select('id,phone').like('phone', '%' + national).limit(1);
-                udata = (r2.data && r2.data[0]) || null;
-            }
-            if(!udata) throw new Error('No account found with that phone number');
-            fmt = udata.phone || fmt;
-            const email = fmt + '@sportybet.app';
-
-            // Attempt: sign up is blocked; try recover by re-auth pattern via temporary session is N/A.
-            // Use update through signIn is impossible without old password.
-            // Strategy: store reset request + try auth admin-less path via signUp error recovery:
-            // Delete is not available. We'll call rpc if present, else use WhatsApp + local recovery token for admin.
-
-            let resetOk = false;
-            try {
-                const { error: rpcErr } = await db.rpc('reset_password_by_phone', {
-                    p_phone: fmt,
-                    p_new_password: pass
-                });
-                if(!rpcErr) resetOk = true;
-            } catch(_){}
-
-            if(!resetOk) {
-                // Fallback: log request for admin + guide user
-                try {
-                    await db.from('transactions').insert({
-                        user_id: (udata && udata.id) || null,
-                        type: 'bonus',
-                        amount: 0,
-                        status: 'pending',
-                        description: 'PASSWORD RESET REQUEST · ' + fmt + ' · set new pass via admin'
-                    });
-                } catch(_){}
-                // Try signIn with common flow: if user has session somehow
-                try {
-                    const { data: sess } = await db.auth.getSession();
-                    if(sess?.session) {
-                        const { error: upErr } = await db.auth.updateUser({ password: pass });
-                        if(!upErr) resetOk = true;
-                    }
-                } catch(_){}
-            }
-
-            if(resetOk) {
-                if(ok){ ok.textContent = 'Password updated. You can sign in now.'; ok.style.display = 'block'; }
-                appToast('Password reset successful', 'ok');
-                setTimeout(() => goPage('login'), 1200);
-            } else {
-                // Provide recovery SQL path note + WhatsApp
-                if(ok){
-                    ok.innerHTML = 'Request received for <b>' + fmt + '</b>. If automatic reset is not enabled, contact support on WhatsApp to complete it, or ask admin to set your new password.';
-                    ok.style.display = 'block';
-                }
-                appToast('Reset requested — support may need to confirm', 'ok');
-            }
-        } catch(e) {
-            if(err){ err.textContent = e.message || 'Reset failed'; err.style.display = 'block'; }
-        } finally {
-            if(btn){ btn.disabled = false; btn.textContent = 'Reset Password'; }
-        }
-    }
-    window.doResetPassword = doResetPassword;
 
     
     function appToast(msg, type){
@@ -5489,87 +4976,5 @@ window.switchTab = switchTab;
 
 </script>
 
-
-<script>
-function loadFeaturedMatch() {
-    const container = document.getElementById("featured-section");
-    if (!container) return;
-
-    const html = `
-    <div class="featured-wrap">
-        <div class="feat-header">
-            <div class="feat-badge">⭐ Featured Match</div>
-            <div class="feat-countdown">FT</div>
-        </div>
-
-        <div class="feat-body">
-            <div class="feat-teams">
-                <div class="ft-team">
-                    <div class="ft-emoji">⚽</div>
-                    <div class="ft-name">Tunstall Athletic</div>
-                    <div class="ft-score">0</div>
-                </div>
-
-                <div class="ft-vs">VS</div>
-
-                <div class="ft-team">
-                    <div class="ft-emoji">⚽</div>
-                    <div class="ft-name">Atletico Marsund</div>
-                    <div class="ft-score">3</div>
-                </div>
-            </div>
-
-            <div class="feat-meta">
-                Weald Premier Division · 0-3 · Atletico Marsund won
-            </div>
-
-            <div style="background:#eef7ee;padding:10px;border-radius:10px;text-align:center;font-size:12px;margin-bottom:10px;">
-                ✅ Full Time — Betting closed
-            </div>
-
-            <div class="feat-odds-wrap closed">
-                <div class="feat-closed-overlay">
-                    <div class="feat-closed-stamp">CLOSED</div>
-                </div>
-
-                <div class="feat-odds-section">
-                    <div class="odd-btn">
-                        <div class="odd-lbl">1 Home</div>
-                        <div class="odd-val">4.79</div>
-                    </div>
-                    <div class="odd-btn">
-                        <div class="odd-lbl">X Draw</div>
-                        <div class="odd-val">4.15</div>
-                    </div>
-                    <div class="odd-btn">
-                        <div class="odd-lbl">2 Away</div>
-                        <div class="odd-val">1.56</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="feat-bottom">
-            <div class="feat-min">Betting closed</div>
-            <div class="feat-share">🔗 Share</div>
-        </div>
-    </div>
-    `;
-
-    container.innerHTML = html;
-}
-
-// Run on load
-document.addEventListener("DOMContentLoaded", loadFeaturedMatch);
-
-// Keep it permanent (re-render safe)
-setInterval(() => {
-    if (!document.querySelector(".featured-wrap")) {
-        loadFeaturedMatch();
-    }
-}, 1500);
-</script>
-
 </body>
-</html>
-
+            </html>
